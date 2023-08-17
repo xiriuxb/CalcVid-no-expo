@@ -1,10 +1,11 @@
-import React, {useRef, useState, useEffect} from 'react';
+import {useRef, useState, useContext} from 'react';
 import {View, StyleSheet, Modal, Text} from 'react-native';
 import {Button, Snackbar, TextInput} from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import GlassPiece from '../../models/GlassPiece';
 import Vidrio from '../../models/Vidrio';
 import globalStyles from '../common/Styles';
+import WindowsListContext from './context/WindowsListContext';
 
 const listForDropdown = (list: Vidrio[]) => {
   return list.map((el: Vidrio) => {
@@ -15,16 +16,9 @@ const listForDropdown = (list: Vidrio[]) => {
 interface props {
   modalVisible: boolean;
   closeModal: () => void;
-  lista: Vidrio[];
-  addGlassPiece: (gp: GlassPiece) => void;
 }
 
-const AddGlassPieceModal = ({
-  modalVisible,
-  closeModal,
-  lista,
-  addGlassPiece,
-}: props) => {
+const AddGlassPieceModal = ({modalVisible, closeModal}: props) => {
   const [quantity, setQuantity] = useState('');
   const [width, setWidth] = useState('');
   const [height, setHeight] = useState('');
@@ -36,6 +30,7 @@ const AddGlassPieceModal = ({
   const [tipoVidrio, setTipoVidrio] = useState('');
   const [showDropDown, setShowDropDown] = useState(false);
   const tipoVidrioObject = useRef<Vidrio>();
+  const {addPieceToWindow, listaVidrios} = useContext(WindowsListContext);
 
   const hideSnackBar = () => {
     setSnackVisible(false);
@@ -47,7 +42,7 @@ const AddGlassPieceModal = ({
     }
   };
 
-  const addPieceToWindow = () => {
+  const handleAddPiece = () => {
     setTipoVidrioObject();
     if (!width || !height || !tipoVidrio) {
       snackMessage.current = 'Faltan datos';
@@ -61,12 +56,12 @@ const AddGlassPieceModal = ({
         parseFloat(quantity),
         tipoVidrioObject.current,
       );
-      addGlassPiece(newPiece);
+      addPieceToWindow(newPiece);
     }
   };
 
   const setTipoVidrioObject = () => {
-    const vidrio = lista.find(el => el.name == tipoVidrio);
+    const vidrio = listaVidrios.find(el => el.name == tipoVidrio);
     tipoVidrioObject.current = vidrio;
   };
 
@@ -81,13 +76,13 @@ const AddGlassPieceModal = ({
   return (
     <Modal visible={modalVisible} animationType="fade" transparent={true}>
       <View style={styles.modalContainer}>
-        <Text style={styles.modalText}>Nuevo vidrio</Text>
+        <Text style={styles.modalText}>Nuevo</Text>
         <DropDownPicker
           placeholder="Tipo de vidrio"
           listMode="MODAL"
           style={[styles.input, {zIndex: 50, alignSelf: 'center'}]}
           mode="BADGE"
-          items={listForDropdown(lista)}
+          items={listForDropdown(listaVidrios)}
           value={tipoVidrio}
           setValue={setTipoVidrio}
           itemKey="label"
@@ -130,7 +125,7 @@ const AddGlassPieceModal = ({
             Cerrar
           </Button>
           <Button
-            onPress={addPieceToWindow}
+            onPress={handleAddPiece}
             mode="outlined"
             textColor="#fff"
             buttonColor="#007bff">

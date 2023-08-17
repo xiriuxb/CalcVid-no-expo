@@ -1,25 +1,20 @@
-import React, {useState, useEffect, useRef} from 'react';
+import {useState, useEffect, useContext} from 'react';
 import {ScrollView, View} from 'react-native';
 import AddVidrioModal from './AddVidrioModal';
 import VidrioDetailComponent from './VidrioDetailComponent';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Button} from 'react-native-paper';
 import Vidrio from '../../models/Vidrio';
+import WindowsListContext from '../listas/context/WindowsListContext';
 
 const ListaVidriosView = () => {
-  const [listaVidrios, setListaVidrios] = useState<Vidrio[]>([]);
   const [modalVisible, setModalVisible] = useState(false);
-  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const [productToEdit, setProductToEdit] = useState<Vidrio | null>(null);
+  const {listaVidrios, setListaVidrios} = useContext(WindowsListContext);
 
   useEffect(() => {
-    if (isInitialLoad) {
-      loadProducts();
-      setIsInitialLoad(false);
-    } else {
-      storeProducts();
-    }
-  }, [listaVidrios, modalVisible]);
+    storeProducts();
+  }, [listaVidrios]);
 
   const openModal = () => {
     setModalVisible(true);
@@ -32,7 +27,9 @@ const ListaVidriosView = () => {
 
   const deleteProduct = (elementName: string) => {
     const newList = listaVidrios.filter((el: Vidrio) => el.name != elementName);
-    setListaVidrios(newList);
+    if (setListaVidrios) {
+      setListaVidrios(newList);
+    }
   };
 
   const openModalToEdit = (productName: string) => {
@@ -41,17 +38,6 @@ const ListaVidriosView = () => {
       setProductToEdit(p);
     }
     setModalVisible(true);
-  };
-
-  const loadProducts = async () => {
-    try {
-      const storedProducts = await AsyncStorage.getItem('products');
-      if (storedProducts) {
-        setListaVidrios(JSON.parse(storedProducts));
-      }
-    } catch (error) {
-      console.error('Error loading products:', error);
-    }
   };
 
   const storeProducts = async () => {
@@ -72,8 +58,6 @@ const ListaVidriosView = () => {
           <AddVidrioModal
             modalVisible={modalVisible}
             closeModal={closeModal}
-            lista={listaVidrios}
-            setLista={setListaVidrios}
             editProduct={productToEdit}></AddVidrioModal>
         )}
         {listaVidrios &&

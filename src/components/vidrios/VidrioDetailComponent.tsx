@@ -39,10 +39,10 @@ const VidrioDetailComponent = ({vidrio, deleteElement, toEdit}: props) => {
       </TouchableNativeFeedback>
       {showDetails && (
         <View style={styles.ventana}>
-          <Text style={globalStyles.sizedText}>
+          {/* <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>UUID </Text>
             {vidrio.id}
-          </Text>
+          </Text> */}
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Precio (m²) A: </Text>
             {vidrio.meterPriceA}

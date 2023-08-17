@@ -3,27 +3,27 @@ import {Button} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import Ventana from '../../models/Ventana';
 import GlassPieceDetail from './GlassPieceDetailComponent';
-import GlassPiece from '../../models/GlassPiece';
+import {useContext, useEffect} from 'react';
+import WindowsListContext from './context/WindowsListContext';
 
 interface props {
   ventana: Ventana;
   changeModalVisible: (state: boolean) => void;
-  setSelectedWindow: React.Dispatch<React.SetStateAction<Ventana | undefined>>;
 }
 
-const WindowDetailComponent = ({
-  ventana,
-  changeModalVisible,
-  setSelectedWindow,
-}: props) => {
+const WindowDetailComponent = ({ventana, changeModalVisible}: props) => {
+  const {setSelectedWindow, removeWindow} = useContext(WindowsListContext);
+
   const changeCurrentWindow = () => {
-    setSelectedWindow(ventana);
+    if (setSelectedWindow) {
+      setSelectedWindow(ventana.id);
+    }
     changeModalVisible(true);
   };
 
-  const addGlassPiece = (newGlassPiece: GlassPiece) => {
-    ventana.setGlassPieces([...ventana.glassPieces, newGlassPiece]);
-  };
+  useEffect(() => {
+    console.log('Me dibujé');
+  }, []);
 
   return (
     <View style={styles.ventana}>
@@ -34,6 +34,7 @@ const WindowDetailComponent = ({
           alignItems: 'center',
         }}>
         <Text style={[{fontSize: 18, fontWeight: 'bold'}]}>{ventana.name}</Text>
+        <Button onPress={() => removeWindow(ventana.id)}>Eliminar</Button>
       </View>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <View style={{flexDirection: 'row'}}>

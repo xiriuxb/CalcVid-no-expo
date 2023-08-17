@@ -1,30 +1,23 @@
+import {useContext} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import globalStyles from '../common/Styles';
+import WindowsListContext from './context/WindowsListContext';
 
-interface props {
-  totalMeters: number;
-  totalGlassPieces: number;
-  totalPrice: number;
-}
-
-export const TopStatus = ({
-  totalMeters,
-  totalGlassPieces,
-  totalPrice,
-}: props) => {
+export const TopStatus = () => {
+  const context = useContext(WindowsListContext);
   return (
     <View style={styles.container}>
       <Text style={globalStyles.sizedText}>
         <Text style={globalStyles.boldText}>Metros(m²):</Text>
-        {totalMeters.toFixed(2)}
+        {context.totals.totalArea.toFixed(2)}
       </Text>
       <Text style={globalStyles.sizedText}>
         <Text style={globalStyles.boldText}>Vidrios:</Text>
-        {totalGlassPieces}
+        {context.totals.totalPieces}
       </Text>
       <Text style={globalStyles.sizedText}>
         <Text style={globalStyles.boldText}>Precio:</Text>{' '}
-        {totalPrice.toFixed(2)}
+        {context.totals.totalPrice.toFixed(2)}
       </Text>
     </View>
   );

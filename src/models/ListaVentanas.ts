@@ -25,6 +25,13 @@ export default class WindowsList {
     this.list = list;
   }
 
+  addWindow(): void {
+    this.list = [
+      ...this.list,
+      new Ventana(`Ventana ${this.list.length + 1}`, []),
+    ];
+  }
+
   getWindow(id: string): Ventana | undefined {
     return this.list.find((window: Ventana) => window.id === id);
   }
