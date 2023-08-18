@@ -4,6 +4,8 @@ import Vidrio from '../../models/Vidrio';
 import {Button, Snackbar, TextInput} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import WindowsListContext from '../listas/context/WindowsListContext';
+import SnackBarComponent from '../snack-bar/SnackBar';
+import {useSnackBar} from '../snack-bar/SnackBarContext';
 
 interface props {
   modalVisible: boolean;
@@ -26,10 +28,9 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
   const priceARef = useRef(null);
   const priceBRef = useRef(null);
   const priceCRef = useRef(null);
-  const snackMessage = useRef('');
-  const [snackVisible, setSnackVisible] = useState(false);
   const editMode = useRef(false);
   const {listaVidrios, setListaVidrios} = useContext(WindowsListContext);
+  const {snackMessage, showSnackMessage} = useSnackBar();
 
   useEffect(() => {
     if (editProduct) {
@@ -47,10 +48,6 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
     }
   }, [editProduct]);
 
-  const hideSnackBar = () => {
-    setSnackVisible(false);
-  };
-
   const handleNextInput = (nextInputRef: React.MutableRefObject<any>) => {
     if (nextInputRef && nextInputRef.current) {
       nextInputRef.current.focus();
@@ -59,14 +56,12 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
 
   const addVidrioToList = () => {
     if (!priceA || !name) {
-      snackMessage.current = 'Faltan datos';
-      setSnackVisible(true);
+      showSnackMessage('Faltan datos', 3000);
       return;
     } else {
       const elementExists = listaVidrios.find(el => el.name === name);
       if (elementExists) {
-        snackMessage.current = 'Ya existe';
-        setSnackVisible(true);
+        showSnackMessage('Ya existe', 3000);
         return;
       } else {
         const vidrio = new Vidrio(
@@ -81,6 +76,7 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
         const a = [...listaVidrios, vidrio];
         if (setListaVidrios) {
           setListaVidrios(a);
+          showSnackMessage('Guardado', 500);
         }
         cleanInputs();
         closeModal();
@@ -90,16 +86,14 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
 
   const updateproduct = () => {
     if (priceA === '' || name === '') {
-      snackMessage.current = 'Faltan datos';
-      setSnackVisible(true);
+      showSnackMessage('Faltan datos', 3000);
     } else {
       if (editProduct && editMode) {
         const mismoNombre = listaVidrios.filter(
           el => el.name === name && el.id != editProduct?.id,
         );
         if (mismoNombre.length > 0) {
-          snackMessage.current = 'Ya existe ese nombre';
-          setSnackVisible(true);
+          showSnackMessage('Ya existe ese nombre', 3000);
         } else {
           const updatedList: Vidrio[] = listaVidrios.map(el => {
             if (el.id === editProduct?.id) {
@@ -118,6 +112,7 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
           });
           if (setListaVidrios) {
             setListaVidrios(updatedList);
+            showSnackMessage('Actualizado', 500);
           }
           cleanInputs();
           closeModal();
@@ -234,18 +229,7 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
           </Button>
         </View>
       </View>
-      <View style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
-        <Snackbar
-          visible={snackVisible}
-          duration={3000}
-          onDismiss={hideSnackBar}
-          action={{
-            label: 'Ocultar',
-            onPress: hideSnackBar,
-          }}>
-          {snackMessage.current}
-        </Snackbar>
-      </View>
+      {snackMessage && <SnackBarComponent></SnackBarComponent>}
     </Modal>
   );
 };

@@ -1,11 +1,13 @@
 import {useRef, useState, useContext} from 'react';
 import {View, StyleSheet, Modal, Text} from 'react-native';
-import {Button, Snackbar, TextInput} from 'react-native-paper';
+import {Button, TextInput} from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
 import GlassPiece from '../../models/GlassPiece';
 import Vidrio from '../../models/Vidrio';
 import globalStyles from '../common/Styles';
 import WindowsListContext from './context/WindowsListContext';
+import {useSnackBar} from '../snack-bar/SnackBarContext';
+import SnackBarComponent from '../snack-bar/SnackBar';
 
 const listForDropdown = (list: Vidrio[]) => {
   return list.map((el: Vidrio) => {
@@ -23,30 +25,25 @@ const AddGlassPieceModal = ({modalVisible, closeModal}: props) => {
   const [width, setWidth] = useState('');
   const [height, setHeight] = useState('');
   const quantityRef = useRef(null);
-  const widthRef = useRef(null);
-  const heightRef = useRef(null);
-  const [snackVisible, setSnackVisible] = useState(false);
-  const snackMessage = useRef('a');
+  const widthRef = useRef<null>(null);
+  const heightRef = useRef<any | null>(null);
   const [tipoVidrio, setTipoVidrio] = useState('');
   const [showDropDown, setShowDropDown] = useState(false);
   const tipoVidrioObject = useRef<Vidrio>();
   const {addPieceToWindow, listaVidrios} = useContext(WindowsListContext);
-
-  const hideSnackBar = () => {
-    setSnackVisible(false);
-  };
+  const {snackMessage, showSnackMessage} = useSnackBar();
 
   const handleNextInput = (nextInputRef: React.MutableRefObject<any>) => {
     if (nextInputRef && nextInputRef.current) {
       nextInputRef.current.focus();
+      nextInputRef.current.clear();
     }
   };
 
   const handleAddPiece = () => {
     setTipoVidrioObject();
     if (!width || !height || !tipoVidrio) {
-      snackMessage.current = 'Faltan datos';
-      setSnackVisible(true);
+      showSnackMessage('Faltan datos', 3000);
       return;
     }
     if (tipoVidrioObject.current) {
@@ -57,6 +54,11 @@ const AddGlassPieceModal = ({modalVisible, closeModal}: props) => {
         tipoVidrioObject.current,
       );
       addPieceToWindow(newPiece);
+      showSnackMessage('Agregado', 500);
+      if (widthRef && widthRef.current) {
+        heightRef.current.focus();
+        heightRef.current.clear();
+      }
     }
   };
 
@@ -69,12 +71,20 @@ const AddGlassPieceModal = ({modalVisible, closeModal}: props) => {
 
   const atCancel = () => {};
 
-  const cleanInputs = () => {};
+  const cleanInputs = () => {
+    setHeight('');
+    setQuantity('');
+    setWidth('');
+  };
 
   const addOrUpdate = () => {};
 
   return (
-    <Modal visible={modalVisible} animationType="fade" transparent={true}>
+    <Modal
+      visible={modalVisible}
+      animationType="fade"
+      transparent={true}
+      style={{zIndex: 50}}>
       <View style={styles.modalContainer}>
         <Text style={styles.modalText}>Nuevo</Text>
         <DropDownPicker
@@ -133,18 +143,7 @@ const AddGlassPieceModal = ({modalVisible, closeModal}: props) => {
           </Button>
         </View>
       </View>
-      <View style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
-        <Snackbar
-          visible={snackVisible}
-          duration={3000}
-          onDismiss={hideSnackBar}
-          action={{
-            label: 'Ocultar',
-            onPress: hideSnackBar,
-          }}>
-          {snackMessage.current}
-        </Snackbar>
-      </View>
+      {snackMessage && <SnackBarComponent></SnackBarComponent>}
     </Modal>
   );
 };

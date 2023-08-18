@@ -77,7 +77,6 @@ const styles = StyleSheet.create({
     borderStyle: 'solid',
     borderWidth: 1,
     margin: 5,
-    flex: 1,
   },
   buttonIcon: {
     width: 32,
