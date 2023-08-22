@@ -5,20 +5,23 @@ import Ventana from '../../models/Ventana';
 import GlassPieceDetail from './GlassPieceDetailComponent';
 import {useContext, useEffect} from 'react';
 import WindowsListContext from './context/WindowsListContext';
+import PieceModalContext from './context/PieceModalContext';
 
 interface props {
   ventana: Ventana;
-  changeModalVisible: (state: boolean) => void;
 }
 
-const WindowDetailComponent = ({ventana, changeModalVisible}: props) => {
+const WindowDetailComponent = ({ventana}: props) => {
   const {setSelectedWindow, removeWindow} = useContext(WindowsListContext);
+  const {setPieceModalVisible, pieceModalVisible} =
+    useContext(PieceModalContext);
 
   const changeCurrentWindow = () => {
     if (setSelectedWindow) {
       setSelectedWindow(ventana.id);
     }
-    changeModalVisible(true);
+    if (setPieceModalVisible) setPieceModalVisible(true);
+    console.log(pieceModalVisible);
   };
 
   useEffect(() => {

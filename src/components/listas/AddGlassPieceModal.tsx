@@ -8,6 +8,7 @@ import globalStyles from '../common/Styles';
 import WindowsListContext from './context/WindowsListContext';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
 import SnackBarComponent from '../snack-bar/SnackBar';
+import PieceModalContext from './context/PieceModalContext';
 
 const listForDropdown = (list: Vidrio[]) => {
   return list.map((el: Vidrio) => {
@@ -15,12 +16,7 @@ const listForDropdown = (list: Vidrio[]) => {
   });
 };
 
-interface props {
-  modalVisible: boolean;
-  closeModal: () => void;
-}
-
-const AddGlassPieceModal = ({modalVisible, closeModal}: props) => {
+const AddGlassPieceModal = () => {
   const [quantity, setQuantity] = useState('');
   const [width, setWidth] = useState('');
   const [height, setHeight] = useState('');
@@ -32,12 +28,18 @@ const AddGlassPieceModal = ({modalVisible, closeModal}: props) => {
   const tipoVidrioObject = useRef<Vidrio>();
   const {addPieceToWindow, listaVidrios} = useContext(WindowsListContext);
   const {snackMessage, showSnackMessage} = useSnackBar();
+  const {setPieceModalVisible, pieceModalVisible} =
+    useContext(PieceModalContext);
 
   const handleNextInput = (nextInputRef: React.MutableRefObject<any>) => {
     if (nextInputRef && nextInputRef.current) {
       nextInputRef.current.focus();
       nextInputRef.current.clear();
     }
+  };
+
+  const handleCloseModal = () => {
+    setPieceModalVisible(false);
   };
 
   const handleAddPiece = () => {
@@ -71,17 +73,11 @@ const AddGlassPieceModal = ({modalVisible, closeModal}: props) => {
 
   const atCancel = () => {};
 
-  const cleanInputs = () => {
-    setHeight('');
-    setQuantity('');
-    setWidth('');
-  };
-
   const addOrUpdate = () => {};
 
   return (
     <Modal
-      visible={modalVisible}
+      visible={pieceModalVisible}
       animationType="fade"
       transparent={true}
       style={{zIndex: 50}}>
@@ -128,7 +124,7 @@ const AddGlassPieceModal = ({modalVisible, closeModal}: props) => {
           keyboardAppearance="dark"></TextInput>
         <View style={[globalStyles.buttonGroup, globalStyles.centered]}>
           <Button
-            onPress={closeModal}
+            onPress={handleCloseModal}
             mode="outlined"
             textColor="#fff"
             buttonColor="#d15656">
