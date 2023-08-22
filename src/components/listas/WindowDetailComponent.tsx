@@ -12,16 +12,14 @@ interface props {
 }
 
 const WindowDetailComponent = ({ventana}: props) => {
-  const {setSelectedWindow, removeWindow} = useContext(WindowsListContext);
+  const {selectWindow, removeWindow} = useContext(WindowsListContext);
   const {setPieceModalVisible, pieceModalVisible} =
     useContext(PieceModalContext);
 
   const changeCurrentWindow = () => {
-    if (setSelectedWindow) {
-      setSelectedWindow(ventana.id);
-    }
+    selectWindow(ventana.id);
+
     if (setPieceModalVisible) setPieceModalVisible(true);
-    console.log(pieceModalVisible);
   };
 
   useEffect(() => {
@@ -62,7 +60,12 @@ const WindowDetailComponent = ({ventana}: props) => {
       </Text>
       {ventana.glassPieces.map(el => {
         return (
-          <GlassPieceDetail glassPiece={el} key={el.id}></GlassPieceDetail>
+          <GlassPieceDetail
+            glassPiece={el}
+            key={el.id}
+            selectWindow={() => {
+              selectWindow(ventana.id);
+            }}></GlassPieceDetail>
         );
       })}
       <Button mode="contained-tonal" onPress={changeCurrentWindow}>

@@ -3,10 +3,8 @@ import {TopStatus} from './TopStatus';
 import WindowDetailComponent from './WindowDetailComponent';
 import {ScrollView, View} from 'react-native';
 import {Button} from 'react-native-paper';
-import AddGlassPieceModal from './AddGlassPieceModal';
 import WindowsListContext from './context/WindowsListContext';
 import PieceModalProvider from './context/PieceModalProvider';
-import PieceModalContext from './context/PieceModalContext';
 import ModalAuxComponent from './Modal';
 
 const ListaView = () => {

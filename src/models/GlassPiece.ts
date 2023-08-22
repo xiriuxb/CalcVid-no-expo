@@ -62,4 +62,17 @@ export default class GlassPiece {
       this.glassType.meterPriceC && this.individualPriceC() * this.quantity
     );
   }
+
+  editPiece(
+    width: number,
+    height: number,
+    quantity: number,
+    glassType: Vidrio,
+  ) {
+    this.width = width;
+    this.height = height;
+    this.quantity = quantity;
+    this.glassType = glassType;
+    return this;
+  }
 }

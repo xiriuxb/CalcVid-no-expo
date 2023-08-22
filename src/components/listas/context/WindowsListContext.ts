@@ -10,8 +10,8 @@ interface ContextTypes {
   totals: {totalArea: number; totalPieces: number; totalPrice: number};
   removeWindow: (id: string) => void;
   addPieceToWindow: (newGlassPiece: GlassPiece) => void;
-  selectedWindow: string;
-  setSelectedWindow: React.Dispatch<React.SetStateAction<string>> | null;
+  selectedWindow: Ventana | undefined;
+  selectWindow: (id: string) => void;
   listaVidrios: Vidrio[] | [];
   setListaVidrios: React.Dispatch<React.SetStateAction<Vidrio[]>> | null;
 }
@@ -23,8 +23,8 @@ const WindowsListContext = createContext<ContextTypes>({
   totals: {totalArea: 0, totalPieces: 0, totalPrice: 0},
   removeWindow: () => {},
   addPieceToWindow: () => {},
-  selectedWindow: '',
-  setSelectedWindow: null,
+  selectedWindow: undefined,
+  selectWindow: () => {},
   listaVidrios: [],
   setListaVidrios: null,
 });

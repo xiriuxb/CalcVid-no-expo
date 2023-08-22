@@ -1,4 +1,5 @@
 import GlassPiece from './GlassPiece';
+import Vidrio from './Vidrio';
 import generateUniqueId from './generateUniqueId';
 
 export default class Ventana {
@@ -48,5 +49,27 @@ export default class Ventana {
       (acc, currentElement) => acc + currentElement.totalPriceC(),
       0,
     );
+  }
+
+  getPiece(id: string) {
+    return this.glassPieces.find((piece: GlassPiece) => piece.id === id);
+  }
+
+  //return the list because it needs to be updated
+  editGlassPiece(
+    pieceId: string,
+    width: number,
+    height: number,
+    quantity: number,
+    glassType: Vidrio,
+  ) {
+    const updatedList = this.glassPieces.map((piece: GlassPiece) => {
+      if (piece.id === pieceId) {
+        return piece.editPiece(width, height, quantity, glassType);
+      }
+      return piece;
+    });
+    this.setGlassPieces(updatedList);
+    return this;
   }
 }

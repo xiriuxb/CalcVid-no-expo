@@ -1,4 +1,4 @@
-import {useRef, useState, useContext} from 'react';
+import {useRef, useState, useContext, useEffect} from 'react';
 import {View, StyleSheet, Modal, Text} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
@@ -9,6 +9,7 @@ import WindowsListContext from './context/WindowsListContext';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
 import SnackBarComponent from '../snack-bar/SnackBar';
 import PieceModalContext from './context/PieceModalContext';
+import Ventana from '../../models/Ventana';
 
 const listForDropdown = (list: Vidrio[]) => {
   return list.map((el: Vidrio) => {
@@ -16,51 +17,100 @@ const listForDropdown = (list: Vidrio[]) => {
   });
 };
 
-const AddGlassPieceModal = () => {
+const createGlassPiece = (
+  width: string,
+  height: string,
+  quantity: string,
+  glass: Vidrio,
+): GlassPiece => {
+  return new GlassPiece(
+    parseFloat(height),
+    parseFloat(width),
+    parseFloat(quantity),
+    glass,
+  );
+};
+
+const GlassPieceModal = () => {
+  //form
   const [quantity, setQuantity] = useState('');
   const [width, setWidth] = useState('');
   const [height, setHeight] = useState('');
+  //input refs
   const quantityRef = useRef(null);
   const widthRef = useRef<null>(null);
   const heightRef = useRef<any | null>(null);
+  //others
   const [tipoVidrio, setTipoVidrio] = useState('');
   const [showDropDown, setShowDropDown] = useState(false);
   const tipoVidrioObject = useRef<Vidrio>();
-  const {addPieceToWindow, listaVidrios} = useContext(WindowsListContext);
+  //contexts
+  const {
+    addPieceToWindow,
+    listaVidrios,
+    selectedWindow,
+    setListaVentanas,
+    listaVentanas,
+  } = useContext(WindowsListContext);
   const {snackMessage, showSnackMessage} = useSnackBar();
-  const {setPieceModalVisible, pieceModalVisible} =
-    useContext(PieceModalContext);
+  const {
+    setPieceModalVisible,
+    pieceModalVisible,
+    editMode,
+    glassPieceId,
+    setEditMode,
+  } = useContext(PieceModalContext);
+
+  useEffect(() => {
+    if (editMode) {
+      const selectedPiece = selectedWindow?.getPiece(glassPieceId);
+      setQuantity(selectedPiece!.quantity.toString());
+      setWidth(selectedPiece!.width.toString());
+      setHeight(selectedPiece!.height.toString());
+      setTipoVidrio(selectedPiece!.glassType.name);
+      setTipoVidrioObject();
+    } else {
+      setQuantity('');
+      setHeight('');
+      setWidth('');
+    }
+  }, []);
 
   const handleNextInput = (nextInputRef: React.MutableRefObject<any>) => {
-    if (nextInputRef && nextInputRef.current) {
+    if (nextInputRef && nextInputRef.current && !editMode) {
       nextInputRef.current.focus();
       nextInputRef.current.clear();
+    } else {
+      nextInputRef.current.focus();
     }
   };
 
   const handleCloseModal = () => {
+    setEditMode(false);
     setPieceModalVisible(false);
   };
 
-  const handleAddPiece = () => {
+  const handleCreateOrUpdate = () => {
     setTipoVidrioObject();
-    if (!width || !height || !tipoVidrio) {
-      showSnackMessage('Faltan datos', 3000);
+    if (!editMode) {
+      handleAddPiece();
       return;
     }
-    if (tipoVidrioObject.current) {
-      const newPiece = new GlassPiece(
-        parseFloat(height),
-        parseFloat(width),
-        parseFloat(quantity),
-        tipoVidrioObject.current,
-      );
-      addPieceToWindow(newPiece);
-      showSnackMessage('Agregado', 500);
-      if (widthRef && widthRef.current) {
-        heightRef.current.focus();
-        heightRef.current.clear();
-      }
+    updateproduct();
+  };
+
+  const handleAddPiece = () => {
+    const newPiece = createGlassPiece(
+      width,
+      height,
+      quantity,
+      tipoVidrioObject.current!,
+    );
+    addPieceToWindow(newPiece);
+    showSnackMessage('Agregado', 500);
+    if (widthRef && widthRef.current) {
+      heightRef.current.focus();
+      heightRef.current.clear();
     }
   };
 
@@ -69,11 +119,25 @@ const AddGlassPieceModal = () => {
     tipoVidrioObject.current = vidrio;
   };
 
-  const updateproduct = () => {};
-
-  const atCancel = () => {};
-
-  const addOrUpdate = () => {};
+  const updateproduct = () => {
+    const updatedWindow = selectedWindow!.editGlassPiece(
+      glassPieceId,
+      parseFloat(width),
+      parseFloat(height),
+      parseInt(quantity),
+      tipoVidrioObject.current!,
+    );
+    if (setListaVentanas) {
+      setListaVentanas(
+        listaVentanas.map((window: Ventana) => {
+          if (window.id === selectedWindow!.id) {
+            return updatedWindow;
+          }
+          return window;
+        }),
+      );
+    }
+  };
 
   return (
     <Modal
@@ -92,6 +156,11 @@ const AddGlassPieceModal = () => {
           value={tipoVidrio}
           setValue={setTipoVidrio}
           itemKey="label"
+          onClose={() => {
+            setTimeout(() => {
+              handleNextInput(heightRef);
+            }, 50);
+          }}
           open={showDropDown}
           setOpen={setShowDropDown}></DropDownPicker>
         <TextInput
@@ -131,11 +200,12 @@ const AddGlassPieceModal = () => {
             Cerrar
           </Button>
           <Button
-            onPress={handleAddPiece}
+            onPress={handleCreateOrUpdate}
             mode="outlined"
             textColor="#fff"
-            buttonColor="#007bff">
-            Añadir
+            buttonColor="#007bff"
+            disabled={!width || !height || !tipoVidrio}>
+            {!editMode ? 'Añadir' : 'Guardar'}
           </Button>
         </View>
       </View>
@@ -144,7 +214,7 @@ const AddGlassPieceModal = () => {
   );
 };
 
-export default AddGlassPieceModal;
+export default GlassPieceModal;
 
 const styles = StyleSheet.create({
   container: {

@@ -14,8 +14,12 @@ const WindowsListProvider = ({children}: {children: React.ReactNode}) => {
     totalPieces: 0,
     totalPrice: 0,
   });
-  const [selectedWindow, setSelectedWindow] = useState('');
+  const [selectedWindow, setSelectedWindow] = useState<Ventana | undefined>();
   const [listaVidrios, setListaVidrios] = useState<Vidrio[] | []>([]);
+
+  const selectWindow = (id: string) => {
+    setSelectedWindow(listaVentanas.find((el: Ventana) => el.id === id));
+  };
 
   useEffect(() => {
     totalSums();
@@ -67,7 +71,7 @@ const WindowsListProvider = ({children}: {children: React.ReactNode}) => {
 
   const addPieceToWindow = (newGlassPiece: GlassPiece) => {
     const updated = listaVentanas.map((window: Ventana) => {
-      if (window.id === selectedWindow) {
+      if (window.id === selectedWindow?.id) {
         window.setGlassPieces([...window.glassPieces, newGlassPiece]);
       }
       return window;
@@ -85,7 +89,7 @@ const WindowsListProvider = ({children}: {children: React.ReactNode}) => {
         removeWindow,
         addPieceToWindow,
         selectedWindow,
-        setSelectedWindow,
+        selectWindow,
         listaVidrios,
         setListaVidrios,
       }}>

@@ -1,16 +1,23 @@
-import {useState} from 'react';
-import {
-  Text,
-  TouchableHighlight,
-  TouchableWithoutFeedback,
-  View,
-} from 'react-native';
+import {useState, useContext} from 'react';
+import {Text, TouchableHighlight, View} from 'react-native';
 import GlassPiece from '../../models/GlassPiece';
 import {Button} from 'react-native-paper';
 import globalStyles from '../common/Styles';
+import PieceModalContext from './context/PieceModalContext';
+import WindowsListContext from './context/WindowsListContext';
 
-const GlassPieceDetail = ({glassPiece}: {glassPiece: GlassPiece}) => {
+const GlassPieceDetail = ({
+  glassPiece,
+  selectWindow,
+}: {
+  glassPiece: GlassPiece;
+  selectWindow: () => void;
+}) => {
   const [showPrecio, setShowPrecio] = useState('A');
+  const {setPieceModalVisible, setEditMode, glassPieceId, setGlassPieceId} =
+    useContext(PieceModalContext);
+  const {selectedWindow} = useContext(WindowsListContext);
+
   const changePrice = () => {
     switch (showPrecio) {
       case 'A':
@@ -42,6 +49,13 @@ const GlassPieceDetail = ({glassPiece}: {glassPiece: GlassPiece}) => {
     }
   };
 
+  const openModalToEdit = () => {
+    selectWindow;
+    setEditMode(true);
+    setGlassPieceId(glassPiece.id);
+    setPieceModalVisible(true);
+  };
+
   return (
     <View
       style={{
@@ -52,11 +66,11 @@ const GlassPieceDetail = ({glassPiece}: {glassPiece: GlassPiece}) => {
         borderTopColor: 'black',
       }}>
       <View>
-        <TouchableWithoutFeedback>
+        <TouchableHighlight onPress={openModalToEdit}>
           <Text style={globalStyles.sizedText}>
             {`${glassPiece.width} x ${glassPiece.height} =${glassPiece.quantity} | ${glassPiece.glassType.name}`}
           </Text>
-        </TouchableWithoutFeedback>
+        </TouchableHighlight>
       </View>
       <Text style={{textAlign: 'center'}}>
         {`${glassPiece.individualArea()}\n${glassPiece.totalArea()}`}
@@ -70,12 +84,8 @@ const GlassPieceDetail = ({glassPiece}: {glassPiece: GlassPiece}) => {
       </View>
 
       <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-        <Button
-          style={{width: 10}}
-          mode="text"
-          textColor="red"
-          icon="trash-can">
-          {''}
+        <Button style={{width: 10}} mode="text" textColor="red">
+          {'Del'}
         </Button>
       </View>
     </View>
