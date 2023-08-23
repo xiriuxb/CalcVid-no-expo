@@ -187,7 +187,7 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
             <TextInput
               ref={heightRef}
               onSubmitEditing={() => handleNextInput(widthRef)}
-              style={{...styles.input, ...styles.inputHalf}}
+              style={[styles.input, styles.inputHalf]}
               value={height}
               onChangeText={onChangeHeight}
               keyboardType="number-pad"
@@ -196,7 +196,7 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
             <TextInput
               ref={widthRef}
               onSubmitEditing={() => handleNextInput(totalPricetRef)}
-              style={{...styles.input, ...styles.inputHalf}}
+              style={[styles.input, styles.inputHalf]}
               value={width}
               onChangeText={onChangeWidth}
               keyboardType="numeric"
@@ -217,7 +217,7 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
             <TextInput
               ref={priceBRef}
               onSubmitEditing={() => handleNextInput(priceCRef)}
-              style={{...styles.input, ...styles.inputHalf}}
+              style={[styles.input, styles.inputHalf]}
               value={priceB}
               onChangeText={onChangePriceB}
               keyboardType="numeric"
@@ -225,7 +225,7 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
               label="Precio m² (b)"></TextInput>
             <TextInput
               ref={priceCRef}
-              style={{...styles.input, ...styles.inputHalf}}
+              style={[styles.input, styles.inputHalf]}
               value={priceC}
               onChangeText={onChangePriceC}
               keyboardType="numeric"

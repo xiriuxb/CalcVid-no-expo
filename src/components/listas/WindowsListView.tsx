@@ -25,9 +25,11 @@ const ListaView = () => {
           })}
         </ScrollView>
         <ModalAuxComponent></ModalAuxComponent>
-        <Button mode="contained-tonal" onPress={addVentana}>
-          Nueva Ventana
-        </Button>
+        <View style={{marginVertical: 3, marginHorizontal: 10}}>
+          <Button mode="contained-tonal" onPress={addVentana}>
+            Nueva Ventana
+          </Button>
+        </View>
       </View>
     </PieceModalProvider>
   );

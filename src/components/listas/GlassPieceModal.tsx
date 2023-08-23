@@ -12,7 +12,7 @@ import PieceModalContext from './context/PieceModalContext';
 
 const listForDropdown = (list: Vidrio[]) => {
   return list.map((el: Vidrio) => {
-    return {label: el.name, value: el.name};
+    return {label: el.name, value: el.name, labelStyle: {fontSize: 17}};
   });
 };
 
@@ -36,8 +36,8 @@ const GlassPieceModal = () => {
   const [width, setWidth] = useState('');
   const [height, setHeight] = useState('');
   //input refs
-  const quantityRef = useRef(null);
-  const widthRef = useRef<null>(null);
+  const quantityRef = useRef<any | null>(null);
+  const widthRef = useRef<any | null>(null);
   const heightRef = useRef<any | null>(null);
   //others
   const [tipoVidrio, setTipoVidrio] = useState('');
@@ -128,19 +128,33 @@ const GlassPieceModal = () => {
     setPieceModalVisible(false);
   };
 
+  const handleFocusPicker = () => {
+    if (widthRef.current) {
+      widthRef.current.blur();
+    }
+    if (heightRef.current) {
+      heightRef.current.blur();
+    }
+    if (quantityRef.current) {
+      quantityRef.current.blur();
+    }
+  };
+
   return (
     <Modal visible={pieceModalVisible} animationType="fade" transparent={true}>
       {snackMessage && <SnackBarComponent></SnackBarComponent>}
       <View style={styles.modalContainer}>
         <Text style={styles.modalText}>Nuevo</Text>
         <DropDownPicker
+          onOpen={handleFocusPicker}
           placeholder="Tipo de vidrio"
-          listMode="MODAL"
+          listMode="FLATLIST"
           style={[styles.input, {zIndex: 50, alignSelf: 'center'}]}
           mode="BADGE"
           items={listForDropdown(listaVidrios)}
           value={tipoVidrio}
           setValue={setTipoVidrio}
+          labelProps={{style: {fontSize: 17, color: '#000'}}}
           itemKey="label"
           onClose={() => {
             setTimeout(() => {
@@ -224,6 +238,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     backgroundColor: 'white',
     borderRadius: 5,
+    fontSize: 17,
+  },
+  dropDownItem: {
     fontSize: 17,
   },
 });

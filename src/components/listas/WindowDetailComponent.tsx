@@ -1,5 +1,5 @@
 import {View, Text, StyleSheet} from 'react-native';
-import {Button} from 'react-native-paper';
+import {Button, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import Ventana from '../../models/Ventana';
 import GlassPieceDetail from './GlassPieceDetailComponent';
@@ -26,9 +26,17 @@ const WindowDetailComponent = ({ventana}: props) => {
           flexDirection: 'row',
           justifyContent: 'space-between',
           alignItems: 'center',
+          paddingBottom: 2,
         }}>
-        <Text style={[{fontSize: 18, fontWeight: 'bold'}]}>{ventana.name}</Text>
-        <Button onPress={() => removeWindow(ventana.id)}>Eliminar</Button>
+        <Text
+          style={[
+            {fontSize: 18, fontWeight: 'bold', justifyContent: 'flex-start'},
+          ]}>
+          {ventana.name}
+        </Text>
+        <TouchableRipple onLongPress={() => removeWindow(ventana.id)}>
+          <Text>Eliminar</Text>
+        </TouchableRipple>
       </View>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <View style={{flexDirection: 'row'}}>
