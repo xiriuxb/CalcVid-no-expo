@@ -4,29 +4,29 @@ import GlassPiece from '../../../models/GlassPiece';
 import Vidrio from '../../../models/Vidrio';
 
 interface ContextTypes {
-  listaVentanas: Ventana[];
-  setListaVentanas: React.Dispatch<React.SetStateAction<Ventana[]>> | null;
+  listaVentanas: Map<string, Ventana>;
   addVentana: () => void;
-  totals: {totalArea: number; totalPieces: number; totalPrice: number};
+  addPieceToWindow: (windowId: string, newGlassPiece: GlassPiece) => void;
   removeWindow: (id: string) => void;
-  addPieceToWindow: (newGlassPiece: GlassPiece) => void;
-  selectedWindow: Ventana | undefined;
-  selectWindow: (id: string, callback?: () => void) => void;
+  editPieceInWindow: (
+    windowId: string,
+    glassPieceId: string,
+    editedPiece: GlassPiece,
+  ) => void;
+  deletePiece: (windowId: string, glassPieceId: string) => void;
+  totals: {totalArea: number; totalPieces: number; totalPrice: number};
   listaVidrios: Vidrio[] | [];
-  setListaVidrios: React.Dispatch<React.SetStateAction<Vidrio[]>> | null;
 }
 
 const WindowsListContext = createContext<ContextTypes>({
-  listaVentanas: [new Ventana('Ventana 0', [])],
-  setListaVentanas: null,
+  listaVentanas: new Map(),
   addVentana: () => {},
-  totals: {totalArea: 0, totalPieces: 0, totalPrice: 0},
-  removeWindow: () => {},
   addPieceToWindow: () => {},
-  selectedWindow: undefined,
-  selectWindow: () => {},
+  removeWindow: () => {},
+  editPieceInWindow: () => {},
+  deletePiece: () => {},
+  totals: {totalArea: 0, totalPieces: 0, totalPrice: 0},
   listaVidrios: [],
-  setListaVidrios: null,
 });
 
 export default WindowsListContext;

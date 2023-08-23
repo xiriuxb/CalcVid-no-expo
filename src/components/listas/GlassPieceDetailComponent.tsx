@@ -5,7 +5,6 @@ import {Button} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import PieceModalContext from './context/PieceModalContext';
 import WindowsListContext from './context/WindowsListContext';
-import Ventana from '../../models/Ventana';
 
 const GlassPieceDetail = ({
   glassPiece,
@@ -15,11 +14,9 @@ const GlassPieceDetail = ({
   windowId: string;
 }) => {
   const [showPrecio, setShowPrecio] = useState('A');
-  const {setPieceModalVisible, setEditMode, setGlassPieceId, glassPieceId} =
+  const {setPieceModalVisible, setEditMode, setGlassPieceId} =
     useContext(PieceModalContext);
-
-  const {selectedWindow, selectWindow, setListaVentanas, listaVentanas} =
-    useContext(WindowsListContext);
+  const {deletePiece} = useContext(WindowsListContext);
 
   const changePrice = () => {
     switch (showPrecio) {
@@ -57,36 +54,22 @@ const GlassPieceDetail = ({
       {
         text: 'Cancelar',
         style: 'cancel',
-        onPress: () => console.log(selectedWindow?.name),
+        onPress: () => console.log(windowId),
       },
       {text: 'OK', onPress: () => deleteElement()},
     ]);
 
   const openModalToEdit = () => {
-    selectWindow(windowId);
     setEditMode(true);
     setGlassPieceId(glassPiece.id);
-    setPieceModalVisible(true);
+    setPieceModalVisible(true, windowId);
   };
 
   const handleToDelete = () => {
-    setGlassPieceId(glassPiece.id);
-    selectWindow(windowId, deleteElement);
+    deletePiece(windowId, glassPiece.id);
   };
 
-  const deleteElement = () => {
-    const updatedWindow = selectedWindow!.deleteGlassPiece(glassPieceId);
-    if (setListaVentanas) {
-      setListaVentanas(
-        listaVentanas.map((window: Ventana) => {
-          if (window.id === selectedWindow!.id) {
-            return updatedWindow;
-          }
-          return window;
-        }),
-      );
-    }
-  };
+  const deleteElement = () => {};
 
   return (
     <View

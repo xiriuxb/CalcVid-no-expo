@@ -45,25 +45,21 @@ const GlassPieceModal = () => {
   const [showDropDown, setShowDropDown] = useState(false);
   const tipoVidrioObject = useRef<Vidrio>();
   //contexts
-  const {
-    addPieceToWindow,
-    listaVidrios,
-    selectedWindow,
-    setListaVentanas,
-    listaVentanas,
-  } = useContext(WindowsListContext);
+  const {addPieceToWindow, listaVidrios, listaVentanas, editPieceInWindow} =
+    useContext(WindowsListContext);
   const {snackMessage, showSnackMessage} = useSnackBar();
   const {
     setPieceModalVisible,
     pieceModalVisible,
     editMode,
-    glassPieceId,
+    windowId,
     setEditMode,
+    glassPieceId,
   } = useContext(PieceModalContext);
 
   useEffect(() => {
     if (editMode) {
-      const selectedPiece = selectedWindow?.getPiece(glassPieceId);
+      const selectedPiece = listaVentanas.get(windowId)?.getPiece(glassPieceId);
       setQuantity(selectedPiece!.quantity.toString());
       setWidth(selectedPiece!.width.toString());
       setHeight(selectedPiece!.height.toString());
@@ -105,7 +101,7 @@ const GlassPieceModal = () => {
       quantity,
       tipoVidrioObject.current!,
     );
-    addPieceToWindow(newPiece);
+    addPieceToWindow(windowId, newPiece);
     showSnackMessage('Agregado', 500);
     if (widthRef && widthRef.current) {
       heightRef.current.focus();
@@ -119,23 +115,13 @@ const GlassPieceModal = () => {
   };
 
   const updateproduct = () => {
-    const updatedWindow = selectedWindow!.editGlassPiece(
-      glassPieceId,
-      parseFloat(width),
-      parseFloat(height),
-      parseInt(quantity),
+    const newPiece = createGlassPiece(
+      width,
+      height,
+      quantity,
       tipoVidrioObject.current!,
     );
-    if (setListaVentanas) {
-      setListaVentanas(
-        listaVentanas.map((window: Ventana) => {
-          if (window.id === selectedWindow!.id) {
-            return updatedWindow;
-          }
-          return window;
-        }),
-      );
-    }
+    editPieceInWindow(windowId, glassPieceId, newPiece);
   };
 
   return (

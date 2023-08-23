@@ -3,7 +3,7 @@ import {Button} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import Ventana from '../../models/Ventana';
 import GlassPieceDetail from './GlassPieceDetailComponent';
-import {useContext, useEffect} from 'react';
+import {useContext} from 'react';
 import WindowsListContext from './context/WindowsListContext';
 import PieceModalContext from './context/PieceModalContext';
 
@@ -12,13 +12,11 @@ interface props {
 }
 
 const WindowDetailComponent = ({ventana}: props) => {
-  const {selectWindow, removeWindow} = useContext(WindowsListContext);
+  const {removeWindow} = useContext(WindowsListContext);
   const {setPieceModalVisible} = useContext(PieceModalContext);
 
   const changeCurrentWindow = () => {
-    selectWindow(ventana.id);
-
-    if (setPieceModalVisible) setPieceModalVisible(true);
+    if (setPieceModalVisible) setPieceModalVisible(true, ventana.id);
   };
 
   return (

@@ -6,15 +6,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Vidrio from '../../../models/Vidrio';
 
 const WindowsListProvider = ({children}: {children: React.ReactNode}) => {
-  const [listaVentanas, setListaVentanas] = useState([
-    new Ventana('Ventana 1', []),
-  ]);
+  const [listaVentanas, setListaVentanas] = useState<Map<string, Ventana>>(
+    new Map(),
+  );
   const [totals, setTotals] = useState({
     totalArea: 0,
     totalPieces: 0,
     totalPrice: 0,
   });
-  const [selectedWindow, setSelectedWindow] = useState<Ventana | undefined>();
   const [listaVidrios, setListaVidrios] = useState<Vidrio[] | []>([]);
 
   useEffect(() => {
@@ -24,14 +23,6 @@ const WindowsListProvider = ({children}: {children: React.ReactNode}) => {
   useEffect(() => {
     loadListaVidrios();
   }, []);
-
-  const selectWindow = (id: string, callback?: () => void) => {
-    setSelectedWindow(listaVentanas.find((el: Ventana) => el.id === id));
-    console.log(`Selected window ${selectedWindow?.name}`);
-    if (callback) {
-      callback();
-    }
-  };
 
   const loadListaVidrios = async () => {
     try {
@@ -45,15 +36,16 @@ const WindowsListProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const addVentana = () => {
-    setListaVentanas([
-      ...listaVentanas,
-      new Ventana(`Ventana ${listaVentanas.length + 1}`, []),
-    ]);
+    const newMap = new Map(listaVentanas);
+    const newVentana = new Ventana(`Ventana ${listaVentanas.size + 1}`, []);
+    newMap.set(newVentana.id, newVentana);
+    setListaVentanas(newMap);
   };
 
   const removeWindow = (id: string) => {
-    const removed = listaVentanas.filter((window: Ventana) => window.id != id);
-    setListaVentanas(removed);
+    const newMap = new Map(listaVentanas);
+    newMap.delete(id);
+    setListaVentanas(newMap);
   };
 
   const totalSums = () => {
@@ -72,29 +64,51 @@ const WindowsListProvider = ({children}: {children: React.ReactNode}) => {
     });
   };
 
-  const addPieceToWindow = (newGlassPiece: GlassPiece) => {
-    const updated = listaVentanas.map((window: Ventana) => {
-      if (window.id === selectedWindow?.id) {
-        window.setGlassPieces([...window.glassPieces, newGlassPiece]);
-      }
-      return window;
-    });
-    setListaVentanas(updated);
+  const addPieceToWindow = (windowId: string, newGlassPiece: GlassPiece) => {
+    const window = listaVentanas.get(windowId);
+    window?.setGlassPieces([...window.glassPieces, newGlassPiece]);
+    const newMap = new Map(listaVentanas);
+    newMap.set(windowId, window!);
+    setListaVentanas(newMap);
+  };
+
+  const editPieceInWindow = (
+    windowId: string,
+    glassPieceId: string,
+    editedPiece: GlassPiece,
+  ) => {
+    const window = listaVentanas.get(windowId);
+    const newWindow = window!.editGlassPiece(
+      glassPieceId,
+      editedPiece.width,
+      editedPiece.height,
+      editedPiece.quantity,
+      editedPiece.glassType,
+    );
+    const newMap = new Map(listaVentanas);
+    newMap.set(windowId, newWindow);
+    setListaVentanas(newMap);
+  };
+
+  const deletePiece = (windowId: string, glassPieceId: string) => {
+    const window = listaVentanas.get(windowId);
+    const newWindow = window!.deleteGlassPiece(glassPieceId);
+    const newMap = new Map(listaVentanas);
+    newMap.set(windowId, newWindow);
+    setListaVentanas(newMap);
   };
 
   return (
     <WindowsListContext.Provider
       value={{
         listaVentanas,
-        setListaVentanas,
         addVentana,
-        totals,
         removeWindow,
+        totals,
         addPieceToWindow,
-        selectedWindow,
-        selectWindow,
+        editPieceInWindow,
+        deletePiece,
         listaVidrios,
-        setListaVidrios,
       }}>
       {children}
     </WindowsListContext.Provider>

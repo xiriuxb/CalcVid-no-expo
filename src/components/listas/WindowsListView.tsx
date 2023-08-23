@@ -6,6 +6,7 @@ import {Button} from 'react-native-paper';
 import WindowsListContext from './context/WindowsListContext';
 import PieceModalProvider from './context/PieceModalProvider';
 import ModalAuxComponent from './Modal';
+import Ventana from '../../models/Ventana';
 
 const ListaView = () => {
   const {listaVentanas, addVentana} = useContext(WindowsListContext);
@@ -19,7 +20,7 @@ const ListaView = () => {
       <View style={{flex: 1}}>
         <TopStatus></TopStatus>
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
-          {listaVentanas.map(ventana => {
+          {Array.from(listaVentanas.values()).map((ventana: Ventana) => {
             return (
               <WindowDetailComponent
                 ventana={ventana}

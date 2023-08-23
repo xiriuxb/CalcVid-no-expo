@@ -5,9 +5,11 @@ const PieceModalProvider = ({children}: {children: React.ReactElement}) => {
   const [pieceModalVisible, setPieceModalVisible] = useState(false);
   const editMode = useRef(false);
   const glassPieceId = useRef('');
+  const windowId = useRef('');
 
-  const changeVisible = (visible: boolean) => {
+  const changeVisible = (visible: boolean, currentWindowId?: string) => {
     setPieceModalVisible(visible);
+    windowId.current = currentWindowId ? currentWindowId : '';
   };
 
   const setEditMode = (value: boolean) => {
@@ -27,6 +29,7 @@ const PieceModalProvider = ({children}: {children: React.ReactElement}) => {
         setEditMode,
         glassPieceId: glassPieceId.current,
         setGlassPieceId,
+        windowId: windowId.current,
       }}>
       {children}
     </PieceModalContext.Provider>

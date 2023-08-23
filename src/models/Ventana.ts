@@ -78,7 +78,6 @@ export default class Ventana {
       (piece: GlassPiece) => piece.id != pieceId,
     );
     this.setGlassPieces(updatedList);
-    console.log(`Ventana method ${this.name}`);
     return this;
   }
 }
