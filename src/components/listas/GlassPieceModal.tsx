@@ -9,7 +9,6 @@ import WindowsListContext from './context/WindowsListContext';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
 import SnackBarComponent from '../snack-bar/SnackBar';
 import PieceModalContext from './context/PieceModalContext';
-import Ventana from '../../models/Ventana';
 
 const listForDropdown = (list: Vidrio[]) => {
   return list.map((el: Vidrio) => {

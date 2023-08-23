@@ -11,10 +11,6 @@ import Ventana from '../../models/Ventana';
 const ListaView = () => {
   const {listaVentanas, addVentana} = useContext(WindowsListContext);
 
-  useEffect(() => {
-    console.log('List Dibujada');
-  }, []);
-
   return (
     <PieceModalProvider>
       <View style={{flex: 1}}>

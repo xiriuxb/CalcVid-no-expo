@@ -1,30 +1,34 @@
 import React from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {Link, Outlet} from 'react-router-native';
+import {Link, Outlet, useLocation, useOutletContext} from 'react-router-native';
 
 const AppBarTab = ({
-  active,
   children,
   to,
+  active,
 }: {
-  active: boolean;
   children: any;
   to: string;
+  active?: boolean;
 }) => {
   return (
-    <Link to={to}>
+    <Link
+      to={to}
+      style={active ? {...style.link, ...style.active} : style.link}>
       <Text style={style.text}>{children}</Text>
     </Link>
   );
 };
 
 export const AppBar = () => {
+  const location = useLocation();
+
   return (
     <View style={style.appBar}>
-      <AppBarTab active to="/">
+      <AppBarTab active={location.pathname == '/'} to="/">
         Listas
       </AppBarTab>
-      <AppBarTab active to="/vidrios">
+      <AppBarTab active={location.pathname == '/vidrios'} to="/vidrios">
         Vidrios
       </AppBarTab>
       <Outlet />
@@ -35,14 +39,23 @@ export const AppBar = () => {
 const style = StyleSheet.create({
   appBar: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 10,
     backgroundColor: '#6200ee',
+    height: 50,
   },
   text: {
     color: '#fff',
-    width: 100,
     fontWeight: 'bold',
     fontSize: 20,
+  },
+  link: {
+    display: 'flex',
+    flex: 1,
+    height: 50,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  active: {
+    borderBottomWidth: 2,
+    borderBottomColor: '#fff',
   },
 });

@@ -1,4 +1,4 @@
-import {useState, useContext, useEffect} from 'react';
+import {useState, useContext} from 'react';
 import {Alert, Text, TouchableHighlight, View} from 'react-native';
 import GlassPiece from '../../models/GlassPiece';
 import {Button} from 'react-native-paper';
