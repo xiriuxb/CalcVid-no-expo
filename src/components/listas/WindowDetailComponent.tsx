@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, Alert} from 'react-native';
 import {Button, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import Ventana from '../../models/Ventana';
@@ -19,6 +19,19 @@ const WindowDetailComponent = ({ventana}: props) => {
     if (setPieceModalVisible) setPieceModalVisible(true, ventana.id);
   };
 
+  const handleDeleteWindow = () => {
+    Alert.alert('Eliminar', '¿Desea eliminar el listado?', [
+      {text: 'Cancelar', style: 'cancel'},
+      {
+        text: 'OK',
+        style: 'default',
+        onPress: () => {
+          removeWindow(ventana.id);
+        },
+      },
+    ]);
+  };
+
   return (
     <View style={styles.ventana}>
       <View
@@ -34,8 +47,10 @@ const WindowDetailComponent = ({ventana}: props) => {
           ]}>
           {ventana.name}
         </Text>
-        <TouchableRipple onLongPress={() => removeWindow(ventana.id)}>
-          <Text>Eliminar</Text>
+        <TouchableRipple onPress={handleDeleteWindow}>
+          <Text style={[globalStyles.boldText, globalStyles.errorText]}>
+            Eliminar
+          </Text>
         </TouchableRipple>
       </View>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
@@ -56,9 +71,19 @@ const WindowDetailComponent = ({ventana}: props) => {
           </Text>
         </View>
       </View>
-      <Text style={[globalStyles.sizedText]}>
-        Alto x Ancho = Cant | m² (c/u) | m² | $ c/u | $
-      </Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+          borderTopWidth: 1,
+          borderTopColor: 'black',
+        }}>
+        <Text>Alto x Ancho = Cant</Text>
+        <Text>Área</Text>
+        <Text>Precios</Text>
+        <Text>Accion</Text>
+      </View>
       {ventana.glassPieces.map(el => {
         return (
           <GlassPieceDetail
@@ -68,7 +93,7 @@ const WindowDetailComponent = ({ventana}: props) => {
         );
       })}
       <Button mode="contained-tonal" onPress={changeCurrentWindow}>
-        Add
+        Añadir
       </Button>
     </View>
   );

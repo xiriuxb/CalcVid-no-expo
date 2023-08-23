@@ -14,6 +14,10 @@ const globalStyles = StyleSheet.create({
   sizedText: {
     fontSize: 16,
   },
+  errorText: {
+    color: 'red',
+    fontSize: 14,
+  },
 });
 
 export default globalStyles;

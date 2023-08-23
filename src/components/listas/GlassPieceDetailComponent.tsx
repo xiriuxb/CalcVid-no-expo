@@ -1,7 +1,7 @@
 import {useState, useContext} from 'react';
 import {Alert, Text, TouchableHighlight, View} from 'react-native';
 import GlassPiece from '../../models/GlassPiece';
-import {Button} from 'react-native-paper';
+import {Button, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import PieceModalContext from './context/PieceModalContext';
 import WindowsListContext from './context/WindowsListContext';
@@ -50,13 +50,12 @@ const GlassPieceDetail = ({
   };
 
   const createTwoButtonAlert = () =>
-    Alert.alert('Eliminar', 'Quiere eliminar el producto', [
+    Alert.alert('Eliminar', '¿Quiere eliminar?', [
       {
         text: 'Cancelar',
         style: 'cancel',
-        onPress: () => console.log(windowId),
       },
-      {text: 'OK', onPress: () => deleteElement()},
+      {text: 'OK', onPress: () => deletePiece(windowId, glassPiece.id)},
     ]);
 
   const openModalToEdit = () => {
@@ -64,12 +63,6 @@ const GlassPieceDetail = ({
     setGlassPieceId(glassPiece.id);
     setPieceModalVisible(true, windowId);
   };
-
-  const handleToDelete = () => {
-    deletePiece(windowId, glassPiece.id);
-  };
-
-  const deleteElement = () => {};
 
   return (
     <View
@@ -100,15 +93,11 @@ const GlassPieceDetail = ({
         </TouchableHighlight>
       </View>
 
-      <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-        <Button
-          style={{width: 10}}
-          mode="text"
-          textColor="red"
-          onPress={handleToDelete}>
-          {'Del'}
-        </Button>
-      </View>
+      <TouchableRipple onPress={createTwoButtonAlert}>
+        <Text style={[globalStyles.boldText, globalStyles.errorText]}>
+          Eliminar
+        </Text>
+      </TouchableRipple>
     </View>
   );
 };
