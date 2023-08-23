@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState, useContext} from 'react';
 import {View, StyleSheet, Modal, Text} from 'react-native';
 import Vidrio from '../../models/Vidrio';
-import {Button, TextInput} from 'react-native-paper';
+import {Button, TextInput, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import WindowsListContext from '../listas/context/WindowsListContext';
 import SnackBarComponent from '../snack-bar/SnackBar';
@@ -31,6 +31,8 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
   const editMode = useRef(false);
   const {listaVidrios, setListaVidrios} = useContext(WindowsListContext);
   const {snackMessage, showSnackMessage} = useSnackBar();
+  const [showOptional, setShowOptional] = useState(false);
+  const showOptionalBtnMessage = useRef('Más...');
 
   useEffect(() => {
     if (editProduct) {
@@ -52,6 +54,11 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
     if (nextInputRef && nextInputRef.current) {
       nextInputRef.current.focus();
     }
+  };
+
+  const handleOpenOptionalInputs = () => {
+    showOptionalBtnMessage.current = showOptional ? 'Más...' : 'Menos...';
+    setShowOptional(!showOptional);
   };
 
   const addVidrioToList = () => {
@@ -138,7 +145,6 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
   };
 
   const addOrUpdate = () => {
-    console.log('trfyghu');
     if (editMode.current) {
       updateproduct();
     } else {
@@ -153,7 +159,7 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
         <Text style={styles.modalText}>Nuevo vidrio</Text>
         <TextInput
           ref={nameRef}
-          onSubmitEditing={() => handleNextInput(heightRef)}
+          onSubmitEditing={() => handleNextInput(priceARef)}
           style={styles.input}
           label="Nombre*"
           value={name}
@@ -161,58 +167,72 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
           returnKeyType="next"
           error={!name}></TextInput>
         <TextInput
-          ref={heightRef}
-          onSubmitEditing={() => handleNextInput(widthRef)}
-          style={styles.input}
-          value={height}
-          onChangeText={onChangeHeight}
-          keyboardType="number-pad"
-          label="Alto"
-          returnKeyType="next"></TextInput>
-        <TextInput
-          ref={widthRef}
-          onSubmitEditing={() => handleNextInput(totalPricetRef)}
-          style={styles.input}
-          value={width}
-          onChangeText={onChangeWidth}
-          keyboardType="numeric"
-          returnKeyType="next"
-          label="Ancho"></TextInput>
-        <TextInput
-          ref={totalPricetRef}
-          onSubmitEditing={() => handleNextInput(priceARef)}
-          style={styles.input}
-          value={totalPrice}
-          onChangeText={onChangeTotalPrice}
-          keyboardType="numeric"
-          returnKeyType="next"
-          label="Precio Lámina"></TextInput>
-        <TextInput
           returnKeyType="next"
           ref={priceARef}
-          onSubmitEditing={() => handleNextInput(priceBRef)}
           style={styles.input}
           value={priceA}
           onChangeText={onChangePriceA}
           keyboardType="numeric"
           label="Precio m² (a)*"
           error={!priceA}></TextInput>
-        <TextInput
-          ref={priceBRef}
-          onSubmitEditing={() => handleNextInput(priceCRef)}
-          style={styles.input}
-          value={priceB}
-          onChangeText={onChangePriceB}
-          keyboardType="numeric"
-          returnKeyType="next"
-          label="Precio m² (b)"></TextInput>
-        <TextInput
-          ref={priceCRef}
-          style={styles.input}
-          value={priceC}
-          onChangeText={onChangePriceC}
-          keyboardType="numeric"
-          label="Precio m² (c)"></TextInput>
+        <TouchableRipple
+          onPress={handleOpenOptionalInputs}
+          style={{padding: 15}}>
+          <Text style={{color: '#fff', textDecorationLine: 'underline'}}>
+            {showOptionalBtnMessage.current}
+          </Text>
+        </TouchableRipple>
+        <View style={showOptional ? styles.formContainer : {display: 'none'}}>
+          <View style={{flexDirection: 'row'}}>
+            <TextInput
+              ref={heightRef}
+              onSubmitEditing={() => handleNextInput(widthRef)}
+              style={{...styles.input, ...styles.inputHalf}}
+              value={height}
+              onChangeText={onChangeHeight}
+              keyboardType="number-pad"
+              label="Alto(cm)"
+              returnKeyType="next"></TextInput>
+            <TextInput
+              ref={widthRef}
+              onSubmitEditing={() => handleNextInput(totalPricetRef)}
+              style={{...styles.input, ...styles.inputHalf}}
+              value={width}
+              onChangeText={onChangeWidth}
+              keyboardType="numeric"
+              returnKeyType="next"
+              label="Ancho(cm)"></TextInput>
+          </View>
+
+          <TextInput
+            ref={totalPricetRef}
+            onSubmitEditing={() => handleNextInput(priceBRef)}
+            style={styles.input}
+            value={totalPrice}
+            onChangeText={onChangeTotalPrice}
+            keyboardType="numeric"
+            returnKeyType="next"
+            label="Precio Lámina"></TextInput>
+          <View style={{flexDirection: 'row'}}>
+            <TextInput
+              ref={priceBRef}
+              onSubmitEditing={() => handleNextInput(priceCRef)}
+              style={{...styles.input, ...styles.inputHalf}}
+              value={priceB}
+              onChangeText={onChangePriceB}
+              keyboardType="numeric"
+              returnKeyType="next"
+              label="Precio m² (b)"></TextInput>
+            <TextInput
+              ref={priceCRef}
+              style={{...styles.input, ...styles.inputHalf}}
+              value={priceC}
+              onChangeText={onChangePriceC}
+              keyboardType="numeric"
+              label="Precio m² (c)"></TextInput>
+          </View>
+        </View>
+
         <View style={[globalStyles.buttonGroup, globalStyles.centered]}>
           <Button
             onPress={atCancel}
@@ -223,6 +243,7 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
           </Button>
           <Button
             onPress={addOrUpdate}
+            disabled={!name || !priceA}
             mode="outlined"
             textColor="#fff"
             buttonColor="#007bff">
@@ -239,8 +260,6 @@ export default AddVidrioModal;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   modalContainer: {
     flex: 1,
@@ -255,10 +274,17 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   input: {
-    width: 200,
+    width: 300,
     borderWidth: 1,
     backgroundColor: 'white',
     borderRadius: 5,
     fontSize: 17,
+  },
+  inputHalf: {
+    width: 150,
+  },
+  formContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });
