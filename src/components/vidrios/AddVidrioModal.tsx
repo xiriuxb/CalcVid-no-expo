@@ -148,6 +148,7 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
 
   return (
     <Modal visible={modalVisible} animationType="fade" transparent={true}>
+      {snackMessage && <SnackBarComponent></SnackBarComponent>}
       <View style={styles.modalContainer}>
         <Text style={styles.modalText}>Nuevo vidrio</Text>
         <TextInput
@@ -229,7 +230,6 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
           </Button>
         </View>
       </View>
-      {snackMessage && <SnackBarComponent></SnackBarComponent>}
     </Modal>
   );
 };

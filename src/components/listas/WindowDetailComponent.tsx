@@ -13,18 +13,13 @@ interface props {
 
 const WindowDetailComponent = ({ventana}: props) => {
   const {selectWindow, removeWindow} = useContext(WindowsListContext);
-  const {setPieceModalVisible, pieceModalVisible} =
-    useContext(PieceModalContext);
+  const {setPieceModalVisible} = useContext(PieceModalContext);
 
   const changeCurrentWindow = () => {
     selectWindow(ventana.id);
 
     if (setPieceModalVisible) setPieceModalVisible(true);
   };
-
-  useEffect(() => {
-    console.log('Me dibujé');
-  }, []);
 
   return (
     <View style={styles.ventana}>
@@ -63,9 +58,7 @@ const WindowDetailComponent = ({ventana}: props) => {
           <GlassPieceDetail
             glassPiece={el}
             key={el.id}
-            selectWindow={() => {
-              selectWindow(ventana.id);
-            }}></GlassPieceDetail>
+            windowId={ventana.id}></GlassPieceDetail>
         );
       })}
       <Button mode="contained-tonal" onPress={changeCurrentWindow}>

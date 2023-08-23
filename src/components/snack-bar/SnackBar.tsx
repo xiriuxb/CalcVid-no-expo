@@ -6,7 +6,7 @@ const SnackBarComponent = () => {
   const {snackMessage, hideSnackMessage, snackDuration} = useSnackBar();
   return (
     <View
-      style={{position: 'absolute', bottom: 0, left: 0, right: 0, zIndex: 100}}>
+      style={{position: 'absolute', top: 0, left: 0, right: 0, zIndex: 100}}>
       <Snackbar
         visible={!!snackMessage}
         duration={snackDuration}

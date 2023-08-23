@@ -17,18 +17,21 @@ const WindowsListProvider = ({children}: {children: React.ReactNode}) => {
   const [selectedWindow, setSelectedWindow] = useState<Ventana | undefined>();
   const [listaVidrios, setListaVidrios] = useState<Vidrio[] | []>([]);
 
-  const selectWindow = (id: string) => {
-    setSelectedWindow(listaVentanas.find((el: Ventana) => el.id === id));
-  };
-
   useEffect(() => {
     totalSums();
   }, [listaVentanas]);
 
   useEffect(() => {
-    console.log('List de vidrios cargada');
     loadListaVidrios();
   }, []);
+
+  const selectWindow = (id: string, callback?: () => void) => {
+    setSelectedWindow(listaVentanas.find((el: Ventana) => el.id === id));
+    console.log(`Selected window ${selectedWindow?.name}`);
+    if (callback) {
+      callback();
+    }
+  };
 
   const loadListaVidrios = async () => {
     try {

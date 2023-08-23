@@ -72,4 +72,13 @@ export default class Ventana {
     this.setGlassPieces(updatedList);
     return this;
   }
+
+  deleteGlassPiece(pieceId: string) {
+    const updatedList = this.glassPieces.filter(
+      (piece: GlassPiece) => piece.id != pieceId,
+    );
+    this.setGlassPieces(updatedList);
+    console.log(`Ventana method ${this.name}`);
+    return this;
+  }
 }

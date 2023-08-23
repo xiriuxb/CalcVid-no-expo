@@ -1,22 +1,25 @@
-import {useState, useContext} from 'react';
-import {Text, TouchableHighlight, View} from 'react-native';
+import {useState, useContext, useEffect} from 'react';
+import {Alert, Text, TouchableHighlight, View} from 'react-native';
 import GlassPiece from '../../models/GlassPiece';
 import {Button} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import PieceModalContext from './context/PieceModalContext';
 import WindowsListContext from './context/WindowsListContext';
+import Ventana from '../../models/Ventana';
 
 const GlassPieceDetail = ({
   glassPiece,
-  selectWindow,
+  windowId,
 }: {
   glassPiece: GlassPiece;
-  selectWindow: () => void;
+  windowId: string;
 }) => {
   const [showPrecio, setShowPrecio] = useState('A');
-  const {setPieceModalVisible, setEditMode, glassPieceId, setGlassPieceId} =
+  const {setPieceModalVisible, setEditMode, setGlassPieceId, glassPieceId} =
     useContext(PieceModalContext);
-  const {selectedWindow} = useContext(WindowsListContext);
+
+  const {selectedWindow, selectWindow, setListaVentanas, listaVentanas} =
+    useContext(WindowsListContext);
 
   const changePrice = () => {
     switch (showPrecio) {
@@ -49,11 +52,40 @@ const GlassPieceDetail = ({
     }
   };
 
+  const createTwoButtonAlert = () =>
+    Alert.alert('Eliminar', 'Quiere eliminar el producto', [
+      {
+        text: 'Cancelar',
+        style: 'cancel',
+        onPress: () => console.log(selectedWindow?.name),
+      },
+      {text: 'OK', onPress: () => deleteElement()},
+    ]);
+
   const openModalToEdit = () => {
-    selectWindow;
+    selectWindow(windowId);
     setEditMode(true);
     setGlassPieceId(glassPiece.id);
     setPieceModalVisible(true);
+  };
+
+  const handleToDelete = () => {
+    setGlassPieceId(glassPiece.id);
+    selectWindow(windowId, deleteElement);
+  };
+
+  const deleteElement = () => {
+    const updatedWindow = selectedWindow!.deleteGlassPiece(glassPieceId);
+    if (setListaVentanas) {
+      setListaVentanas(
+        listaVentanas.map((window: Ventana) => {
+          if (window.id === selectedWindow!.id) {
+            return updatedWindow;
+          }
+          return window;
+        }),
+      );
+    }
   };
 
   return (
@@ -73,7 +105,9 @@ const GlassPieceDetail = ({
         </TouchableHighlight>
       </View>
       <Text style={{textAlign: 'center'}}>
-        {`${glassPiece.individualArea()}\n${glassPiece.totalArea()}`}
+        {`${glassPiece.individualArea().toFixed(2)}\n${glassPiece
+          .totalArea()
+          .toFixed(2)}`}
       </Text>
 
       <View style={{flexDirection: 'row'}}>
@@ -84,7 +118,11 @@ const GlassPieceDetail = ({
       </View>
 
       <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-        <Button style={{width: 10}} mode="text" textColor="red">
+        <Button
+          style={{width: 10}}
+          mode="text"
+          textColor="red"
+          onPress={handleToDelete}>
           {'Del'}
         </Button>
       </View>

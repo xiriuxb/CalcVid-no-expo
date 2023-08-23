@@ -11,7 +11,7 @@ interface ContextTypes {
   removeWindow: (id: string) => void;
   addPieceToWindow: (newGlassPiece: GlassPiece) => void;
   selectedWindow: Ventana | undefined;
-  selectWindow: (id: string) => void;
+  selectWindow: (id: string, callback?: () => void) => void;
   listaVidrios: Vidrio[] | [];
   setListaVidrios: React.Dispatch<React.SetStateAction<Vidrio[]>> | null;
 }

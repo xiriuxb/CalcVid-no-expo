@@ -74,12 +74,11 @@ const GlassPieceModal = () => {
       setHeight('');
       setWidth('');
     }
-  }, []);
+  }, [listaVentanas]);
 
   const handleNextInput = (nextInputRef: React.MutableRefObject<any>) => {
     if (nextInputRef && nextInputRef.current && !editMode) {
       nextInputRef.current.focus();
-      nextInputRef.current.clear();
     } else {
       nextInputRef.current.focus();
     }
@@ -145,6 +144,7 @@ const GlassPieceModal = () => {
       animationType="fade"
       transparent={true}
       style={{zIndex: 50}}>
+      {snackMessage && <SnackBarComponent></SnackBarComponent>}
       <View style={styles.modalContainer}>
         <Text style={styles.modalText}>Nuevo</Text>
         <DropDownPicker
@@ -209,7 +209,6 @@ const GlassPieceModal = () => {
           </Button>
         </View>
       </View>
-      {snackMessage && <SnackBarComponent></SnackBarComponent>}
     </Modal>
   );
 };
