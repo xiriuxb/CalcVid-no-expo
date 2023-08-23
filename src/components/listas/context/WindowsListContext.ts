@@ -16,6 +16,7 @@ interface ContextTypes {
   deletePiece: (windowId: string, glassPieceId: string) => void;
   totals: {totalArea: number; totalPieces: number; totalPrice: number};
   listaVidrios: Vidrio[] | [];
+  setListaVidrios: React.Dispatch<React.SetStateAction<Vidrio[]>> | null;
 }
 
 const WindowsListContext = createContext<ContextTypes>({
@@ -27,6 +28,7 @@ const WindowsListContext = createContext<ContextTypes>({
   deletePiece: () => {},
   totals: {totalArea: 0, totalPieces: 0, totalPrice: 0},
   listaVidrios: [],
+  setListaVidrios: null,
 });
 
 export default WindowsListContext;

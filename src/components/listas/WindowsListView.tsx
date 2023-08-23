@@ -1,4 +1,4 @@
-import {useState, useEffect, useContext} from 'react';
+import {useContext} from 'react';
 import {TopStatus} from './TopStatus';
 import WindowDetailComponent from './WindowDetailComponent';
 import {ScrollView, View} from 'react-native';

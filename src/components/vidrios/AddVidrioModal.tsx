@@ -1,7 +1,7 @@
 import {useEffect, useRef, useState, useContext} from 'react';
 import {View, StyleSheet, Modal, Text} from 'react-native';
 import Vidrio from '../../models/Vidrio';
-import {Button, Snackbar, TextInput} from 'react-native-paper';
+import {Button, TextInput} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import WindowsListContext from '../listas/context/WindowsListContext';
 import SnackBarComponent from '../snack-bar/SnackBar';

@@ -109,6 +109,7 @@ const WindowsListProvider = ({children}: {children: React.ReactNode}) => {
         editPieceInWindow,
         deletePiece,
         listaVidrios,
+        setListaVidrios,
       }}>
       {children}
     </WindowsListContext.Provider>
