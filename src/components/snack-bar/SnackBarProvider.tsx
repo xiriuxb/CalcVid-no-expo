@@ -5,9 +5,11 @@ export const SnackBarProvider = ({children}: {children: React.ReactNode}) => {
   const [snackMessage, setSnackMessage] = useState('');
   const snackDuration = useRef(3000);
 
-  const showSnackMessage = (newMessage: string, duration: number) => {
+  const showSnackMessage = (newMessage: string, duration?: number) => {
     setSnackMessage(newMessage);
-    snackDuration.current = duration;
+    if (duration) {
+      snackDuration.current = duration;
+    }
   };
 
   const hideSnackMessage = () => {

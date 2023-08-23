@@ -1,8 +1,8 @@
-import {createContext, useContext, useState} from 'react';
+import {createContext, useContext} from 'react';
 
 interface SnackBarContextType {
   snackMessage: string;
-  showSnackMessage: (message: string, duration: number) => void;
+  showSnackMessage: (message: string, duration?: number) => void;
   hideSnackMessage: () => void;
   snackDuration: number;
 }

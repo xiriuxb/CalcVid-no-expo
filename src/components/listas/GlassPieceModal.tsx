@@ -72,6 +72,10 @@ const GlassPieceModal = () => {
     }
   }, [listaVentanas]);
 
+  useEffect(() => {
+    console.log(snackMessage);
+  }, [snackMessage]);
+
   const handleNextInput = (nextInputRef: React.MutableRefObject<any>) => {
     if (nextInputRef && nextInputRef.current && !editMode) {
       nextInputRef.current.focus();
@@ -122,14 +126,11 @@ const GlassPieceModal = () => {
       tipoVidrioObject.current!,
     );
     editPieceInWindow(windowId, glassPieceId, newPiece);
+    setPieceModalVisible(false);
   };
 
   return (
-    <Modal
-      visible={pieceModalVisible}
-      animationType="fade"
-      transparent={true}
-      style={{zIndex: 50}}>
+    <Modal visible={pieceModalVisible} animationType="fade" transparent={true}>
       {snackMessage && <SnackBarComponent></SnackBarComponent>}
       <View style={styles.modalContainer}>
         <Text style={styles.modalText}>Nuevo</Text>
