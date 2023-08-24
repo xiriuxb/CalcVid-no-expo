@@ -1,10 +1,10 @@
 import {createContext} from 'react';
 import Ventana from '../../../models/Ventana';
 import GlassPiece from '../../../models/GlassPiece';
-import Vidrio from '../../../models/Vidrio';
+import GlassTypeList from '../../../models/GlassTypeList';
 
 interface ContextTypes {
-  listaVentanas: Map<string, Ventana>;
+  listaVentanas: Map<string, Ventana> | null;
   addVentana: () => void;
   addPieceToWindow: (windowId: string, newGlassPiece: GlassPiece) => void;
   removeWindow: (id: string) => void;
@@ -15,20 +15,16 @@ interface ContextTypes {
   ) => void;
   deletePiece: (windowId: string, glassPieceId: string) => void;
   totals: {totalArea: number; totalPieces: number; totalPrice: number};
-  listaVidrios: Vidrio[] | [];
-  setListaVidrios: React.Dispatch<React.SetStateAction<Vidrio[]>> | null;
 }
 
 const WindowsListContext = createContext<ContextTypes>({
-  listaVentanas: new Map(),
+  listaVentanas: null,
   addVentana: () => {},
   addPieceToWindow: () => {},
   removeWindow: () => {},
   editPieceInWindow: () => {},
   deletePiece: () => {},
   totals: {totalArea: 0, totalPieces: 0, totalPrice: 0},
-  listaVidrios: [],
-  setListaVidrios: null,
 });
 
 export default WindowsListContext;

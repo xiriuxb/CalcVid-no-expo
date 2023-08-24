@@ -16,7 +16,7 @@ const ListaView = () => {
       <View style={{flex: 1}}>
         <TopStatus></TopStatus>
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
-          {Array.from(listaVentanas.values()).map((ventana: Ventana) => {
+          {Array.from(listaVentanas!.values()).map((ventana: Ventana) => {
             return (
               <WindowDetailComponent
                 ventana={ventana}

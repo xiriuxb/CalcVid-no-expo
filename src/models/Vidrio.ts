@@ -28,4 +28,23 @@ export default class Vidrio {
     this.meterPriceB = meterPriceB ? meterPriceB : 0;
     this.meterPriceC = meterPriceC ? meterPriceC : 0;
   }
+
+  editGlass(
+    name: string,
+    height: number,
+    width: number,
+    totalPrice: number,
+    meterPriceA: number,
+    meterPriceB: number,
+    meterPriceC: number,
+  ) {
+    this.name = name;
+    this.height = height;
+    this.width = width;
+    this.totalPrice = totalPrice;
+    this.meterPriceA = meterPriceA;
+    this.meterPriceB = meterPriceB;
+    this.meterPriceC = meterPriceC;
+    return this;
+  }
 }

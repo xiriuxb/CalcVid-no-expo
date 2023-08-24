@@ -3,17 +3,18 @@ import {View, StyleSheet, Modal, Text} from 'react-native';
 import Vidrio from '../../models/Vidrio';
 import {Button, TextInput, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
-import WindowsListContext from '../listas/context/WindowsListContext';
 import SnackBarComponent from '../snack-bar/SnackBar';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
+import GlassTypesContext from './context/GlassTypesContext';
 
 interface props {
   modalVisible: boolean;
   closeModal: () => void;
-  editProduct: Vidrio | null;
+  editProductId: string;
 }
 
-const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
+const AddVidrioModal = ({modalVisible, closeModal, editProductId}: props) => {
+  // form
   const [name, onChangeName] = useState('');
   const [width, onChangeWidth] = useState('');
   const [height, onChangeHeight] = useState('');
@@ -21,6 +22,7 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
   const [priceA, onChangePriceA] = useState('');
   const [priceB, onChangePriceB] = useState('');
   const [priceC, onChangePriceC] = useState('');
+  //Textinput Refs
   const nameRef = useRef(null);
   const heightRef = useRef(null);
   const widthRef = useRef(null);
@@ -29,26 +31,34 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
   const priceBRef = useRef(null);
   const priceCRef = useRef(null);
   const editMode = useRef(false);
-  const {listaVidrios, setListaVidrios} = useContext(WindowsListContext);
+  // optional form
   const {snackMessage, showSnackMessage} = useSnackBar();
   const [showOptional, setShowOptional] = useState(false);
   const showOptionalBtnMessage = useRef('Más...');
+  //contexts
+  const glassTypeContext = useContext(GlassTypesContext);
+  const listaVidrios = glassTypeContext!.listaVidrios;
+  const addGlassType = glassTypeContext!.addGlassType;
+  const updateGlassType = glassTypeContext!.updateGlassType;
 
   useEffect(() => {
-    if (editProduct) {
+    if (editProductId) {
       editMode.current = true;
-      onChangeName(`${editProduct.name}`);
-      onChangeHeight(`${editProduct.height}`);
-      onChangeWidth(`${editProduct.width}`);
-      onChangeTotalPrice(`${editProduct.totalPrice}`);
-      onChangePriceA(`${editProduct.meterPriceA}`);
-      onChangePriceB(`${editProduct.meterPriceB}`);
-      onChangePriceC(`${editProduct.meterPriceC}`);
+      const editProduct = listaVidrios!.getGlassType(editProductId);
+      if (editProduct) {
+        onChangeName(`${editProduct.name}`);
+        onChangeHeight(`${editProduct.height}`);
+        onChangeWidth(`${editProduct.width}`);
+        onChangeTotalPrice(`${editProduct.totalPrice}`);
+        onChangePriceA(`${editProduct.meterPriceA}`);
+        onChangePriceB(`${editProduct.meterPriceB}`);
+        onChangePriceC(`${editProduct.meterPriceC}`);
+      }
       return () => {
-        editProduct = null;
+        editProductId = '';
       };
     }
-  }, [editProduct]);
+  }, [editProductId]);
 
   const handleNextInput = (nextInputRef: React.MutableRefObject<any>) => {
     if (nextInputRef && nextInputRef.current) {
@@ -61,18 +71,18 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
     setShowOptional(!showOptional);
   };
 
-  const addVidrioToList = () => {
+  const handleAddGlassType = () => {
     if (!priceA || !name) {
       showSnackMessage('Faltan datos', 3000);
       return;
     } else {
-      const elementExists = listaVidrios.find(el => el.name === name);
+      const elementExists = listaVidrios!.glassExistByName(name.trim());
       if (elementExists) {
         showSnackMessage('Ya existe', 3000);
         return;
       } else {
         const vidrio = new Vidrio(
-          name,
+          name.trim(),
           parseInt(height),
           parseInt(width),
           parseFloat(totalPrice),
@@ -80,11 +90,8 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
           parseFloat(priceB),
           parseFloat(priceC),
         );
-        const a = [...listaVidrios, vidrio];
-        if (setListaVidrios) {
-          setListaVidrios(a);
-          showSnackMessage('Guardado', 500);
-        }
+        addGlassType(vidrio);
+        showSnackMessage('Guardado', 500);
         cleanInputs();
         closeModal();
       }
@@ -93,34 +100,24 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
 
   const updateproduct = () => {
     if (priceA === '' || name === '') {
-      showSnackMessage('Faltan datos', 3000);
+      showSnackMessage('Faltan datos', 2000);
     } else {
-      if (editProduct && editMode) {
-        const mismoNombre = listaVidrios.filter(
-          el => el.name === name && el.id != editProduct?.id,
-        );
-        if (mismoNombre.length > 0) {
-          showSnackMessage('Ya existe ese nombre', 3000);
+      if (editProductId && editMode) {
+        const mismoNombre = listaVidrios?.glassExistByName(name.trim());
+        if (mismoNombre) {
+          showSnackMessage('Ya existe ese nombre', 2000);
         } else {
-          const updatedList: Vidrio[] = listaVidrios.map(el => {
-            if (el.id === editProduct?.id) {
-              return {
-                ...editProduct,
-                name: name,
-                width: parseFloat(width),
-                height: parseFloat(height),
-                totalPrice: parseFloat(totalPrice),
-                meterPriceA: parseFloat(priceA),
-                meterPriceB: parseFloat(priceB),
-                meterPriceC: parseFloat(priceC),
-              };
-            }
-            return el;
-          });
-          if (setListaVidrios) {
-            setListaVidrios(updatedList);
-            showSnackMessage('Actualizado', 500);
-          }
+          const newVidrio = new Vidrio(
+            name,
+            parseFloat(height),
+            parseFloat(width),
+            parseFloat(totalPrice),
+            parseFloat(priceA),
+            parseFloat(priceB),
+            parseFloat(priceC),
+          );
+          updateGlassType(editProductId, newVidrio);
+          showSnackMessage('Actualizado', 500);
           cleanInputs();
           closeModal();
         }
@@ -148,7 +145,7 @@ const AddVidrioModal = ({modalVisible, closeModal, editProduct}: props) => {
     if (editMode.current) {
       updateproduct();
     } else {
-      addVidrioToList();
+      handleAddGlassType();
     }
   };
 

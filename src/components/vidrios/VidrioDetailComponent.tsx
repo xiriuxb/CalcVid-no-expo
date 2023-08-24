@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import {useState, useContext} from 'react';
 import {Button} from 'react-native-paper';
 import {
   View,
@@ -9,15 +9,18 @@ import {
 } from 'react-native';
 import globalStyles from '../common/Styles';
 import Vidrio from '../../models/Vidrio';
+import GlassTypesContext from './context/GlassTypesContext';
 
 interface props {
   vidrio: Vidrio;
-  deleteElement: (nombreVidrio: string) => void;
   toEdit: (nombreVidrio: string) => void;
 }
 
-const VidrioDetailComponent = ({vidrio, deleteElement, toEdit}: props) => {
+const VidrioDetailComponent = ({vidrio, toEdit}: props) => {
   const [showDetails, setShowDetails] = useState(false);
+
+  const glassTypeContext = useContext(GlassTypesContext);
+  const deleteGlassType = glassTypeContext!.deleteGlassType;
 
   const onTouch = () => {
     setShowDetails(!showDetails);
@@ -29,7 +32,7 @@ const VidrioDetailComponent = ({vidrio, deleteElement, toEdit}: props) => {
         text: 'Cancelar',
         style: 'cancel',
       },
-      {text: 'OK', onPress: () => deleteElement(vidrio.name)},
+      {text: 'OK', onPress: () => deleteGlassType(vidrio.id)},
     ]);
 
   return (
@@ -62,7 +65,7 @@ const VidrioDetailComponent = ({vidrio, deleteElement, toEdit}: props) => {
             <Button
               textColor="white"
               buttonColor="#007bff"
-              onPress={() => toEdit(vidrio.name)}>
+              onPress={() => toEdit(vidrio.id)}>
               {' '}
               Editar
             </Button>

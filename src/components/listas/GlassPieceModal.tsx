@@ -9,10 +9,11 @@ import WindowsListContext from './context/WindowsListContext';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
 import SnackBarComponent from '../snack-bar/SnackBar';
 import PieceModalContext from './context/PieceModalContext';
+import GlassTypesContext from '../vidrios/context/GlassTypesContext';
 
 const listForDropdown = (list: Vidrio[]) => {
   return list.map((el: Vidrio) => {
-    return {label: el.name, value: el.name, labelStyle: {fontSize: 17}};
+    return {label: el.name, value: el.id, labelStyle: {fontSize: 17}};
   });
 };
 
@@ -44,8 +45,10 @@ const GlassPieceModal = () => {
   const [showDropDown, setShowDropDown] = useState(false);
   const tipoVidrioObject = useRef<Vidrio>();
   //contexts
-  const {addPieceToWindow, listaVidrios, listaVentanas, editPieceInWindow} =
+  const {addPieceToWindow, listaVentanas, editPieceInWindow} =
     useContext(WindowsListContext);
+  const glassTypesContext = useContext(GlassTypesContext);
+  const listaVidrios = glassTypesContext!.listaVidrios;
   const {snackMessage, showSnackMessage} = useSnackBar();
   const {
     setPieceModalVisible,
@@ -58,7 +61,9 @@ const GlassPieceModal = () => {
 
   useEffect(() => {
     if (editMode) {
-      const selectedPiece = listaVentanas.get(windowId)?.getPiece(glassPieceId);
+      const selectedPiece = listaVentanas!
+        .get(windowId)
+        ?.getPiece(glassPieceId);
       setQuantity(selectedPiece!.quantity.toString());
       setWidth(selectedPiece!.width.toString());
       setHeight(selectedPiece!.height.toString());
@@ -70,10 +75,6 @@ const GlassPieceModal = () => {
       setWidth('');
     }
   }, [listaVentanas]);
-
-  useEffect(() => {
-    console.log(snackMessage);
-  }, [snackMessage]);
 
   const handleNextInput = (nextInputRef: React.MutableRefObject<any>) => {
     if (nextInputRef && nextInputRef.current && !editMode) {
@@ -113,8 +114,12 @@ const GlassPieceModal = () => {
   };
 
   const setTipoVidrioObject = () => {
-    const vidrio = listaVidrios.find(el => el.name == tipoVidrio);
-    tipoVidrioObject.current = vidrio;
+    const vidrio = listaVidrios!.getGlassType(tipoVidrio);
+    if (tipoVidrio) {
+      tipoVidrioObject.current = vidrio;
+    } else {
+      showSnackMessage('Ocurrió un error');
+    }
   };
 
   const updateproduct = () => {
@@ -151,7 +156,7 @@ const GlassPieceModal = () => {
           listMode="FLATLIST"
           style={[styles.input, {zIndex: 50, alignSelf: 'center'}]}
           mode="BADGE"
-          items={listForDropdown(listaVidrios)}
+          items={listForDropdown(listaVidrios!.getGlassTypesArray())}
           value={tipoVidrio}
           setValue={setTipoVidrio}
           labelProps={{style: {fontSize: 17, color: '#000'}}}

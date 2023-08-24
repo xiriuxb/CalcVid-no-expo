@@ -2,8 +2,6 @@ import {useState, useEffect} from 'react';
 import Ventana from '../../../models/Ventana';
 import WindowsListContext from './WindowsListContext';
 import GlassPiece from '../../../models/GlassPiece';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import Vidrio from '../../../models/Vidrio';
 
 const WindowsListProvider = ({children}: {children: React.ReactNode}) => {
   const [listaVentanas, setListaVentanas] = useState<Map<string, Ventana>>(
@@ -14,26 +12,10 @@ const WindowsListProvider = ({children}: {children: React.ReactNode}) => {
     totalPieces: 0,
     totalPrice: 0,
   });
-  const [listaVidrios, setListaVidrios] = useState<Vidrio[] | []>([]);
 
   useEffect(() => {
     totalSums();
   }, [listaVentanas]);
-
-  useEffect(() => {
-    loadListaVidrios();
-  }, []);
-
-  const loadListaVidrios = async () => {
-    try {
-      const storedProducts = await AsyncStorage.getItem('products');
-      if (storedProducts) {
-        setListaVidrios(JSON.parse(storedProducts));
-      }
-    } catch (error) {
-      console.error('Error loading products:', error);
-    }
-  };
 
   const addVentana = () => {
     const newMap = new Map(listaVentanas);
@@ -108,8 +90,6 @@ const WindowsListProvider = ({children}: {children: React.ReactNode}) => {
         addPieceToWindow,
         editPieceInWindow,
         deletePiece,
-        listaVidrios,
-        setListaVidrios,
       }}>
       {children}
     </WindowsListContext.Provider>
