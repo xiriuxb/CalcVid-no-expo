@@ -1,6 +1,6 @@
 import {useEffect, useRef, useState, useContext} from 'react';
 import {View, StyleSheet, Modal, Text} from 'react-native';
-import Vidrio from '../../models/Vidrio';
+import Vidrio from '../../models/Product';
 import {Button, TextInput, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import SnackBarComponent from '../snack-bar/SnackBar';

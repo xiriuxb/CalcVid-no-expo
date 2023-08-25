@@ -1,4 +1,4 @@
-import Ventana from './Ventana';
+import Ventana from './ItemsToSell';
 import generateUniqueId from './generateUniqueId';
 
 export default class WindowsList {

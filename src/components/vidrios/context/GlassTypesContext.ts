@@ -1,6 +1,6 @@
 import {createContext} from 'react';
-import GlassTypeList from '../../../models/GlassTypeList';
-import Vidrio from '../../../models/Vidrio';
+import GlassTypeList from '../../../models/ProductsList';
+import Vidrio from '../../../models/Product';
 
 export interface ContextTypes {
   listaVidrios: GlassTypeList | null;

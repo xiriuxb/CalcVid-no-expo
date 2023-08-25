@@ -1,8 +1,8 @@
 import {useState, useEffect, useRef} from 'react';
 import GlassTypesContext from './GlassTypesContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Vidrio from '../../../models/Vidrio';
-import GlassTypeList from '../../../models/GlassTypeList';
+import Vidrio from '../../../models/Product';
+import GlassTypeList from '../../../models/ProductsList';
 
 const GlassTypesProvider = ({children}: {children: React.ReactNode}) => {
   const [listaVidrios, setListaVidrios] = useState<Map<string, Vidrio>>(

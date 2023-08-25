@@ -1,6 +1,6 @@
 import {useState, useContext} from 'react';
 import {Alert, Text, TouchableHighlight, View} from 'react-native';
-import GlassPiece from '../../models/GlassPiece';
+import GlassPiece from '../../models/Item';
 import {Button, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import PieceModalContext from './context/PieceModalContext';

@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
-import Ventana from '../../../models/Ventana';
+import Ventana from '../../../models/ItemsToSell';
 import WindowsListContext from './WindowsListContext';
-import GlassPiece from '../../../models/GlassPiece';
+import GlassPiece from '../../../models/Item';
 
 const WindowsListProvider = ({children}: {children: React.ReactNode}) => {
   const [listaVentanas, setListaVentanas] = useState<Map<string, Ventana>>(

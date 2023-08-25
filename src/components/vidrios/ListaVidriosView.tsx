@@ -3,7 +3,7 @@ import {ScrollView, View} from 'react-native';
 import AddVidrioModal from './AddVidrioModal';
 import VidrioDetailComponent from './VidrioDetailComponent';
 import {Button} from 'react-native-paper';
-import Vidrio from '../../models/Vidrio';
+import Vidrio from '../../models/Product';
 import GlassTypesContext from './context/GlassTypesContext';
 
 const ListaVidriosView = () => {

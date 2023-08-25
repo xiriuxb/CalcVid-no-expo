@@ -1,7 +1,7 @@
 import {createContext} from 'react';
-import Ventana from '../../../models/Ventana';
-import GlassPiece from '../../../models/GlassPiece';
-import GlassTypeList from '../../../models/GlassTypeList';
+import Ventana from '../../../models/ItemsToSell';
+import GlassPiece from '../../../models/Item';
+import GlassTypeList from '../../../models/ProductsList';
 
 interface ContextTypes {
   listaVentanas: Map<string, Ventana> | null;

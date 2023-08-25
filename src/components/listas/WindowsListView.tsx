@@ -6,7 +6,7 @@ import {Button} from 'react-native-paper';
 import WindowsListContext from './context/WindowsListContext';
 import PieceModalProvider from './context/PieceModalProvider';
 import ModalAuxComponent from './Modal';
-import Ventana from '../../models/Ventana';
+import Ventana from '../../models/ItemsToSell';
 
 const ListaView = () => {
   const {listaVentanas, addVentana} = useContext(WindowsListContext);

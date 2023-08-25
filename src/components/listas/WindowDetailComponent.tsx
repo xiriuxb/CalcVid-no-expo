@@ -1,7 +1,7 @@
 import {View, Text, StyleSheet, Alert} from 'react-native';
 import {Button, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
-import Ventana from '../../models/Ventana';
+import Ventana from '../../models/ItemsToSell';
 import GlassPieceDetail from './GlassPieceDetailComponent';
 import {useContext} from 'react';
 import WindowsListContext from './context/WindowsListContext';

@@ -8,7 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import globalStyles from '../common/Styles';
-import Vidrio from '../../models/Vidrio';
+import Vidrio from '../../models/Product';
 import GlassTypesContext from './context/GlassTypesContext';
 
 interface props {
