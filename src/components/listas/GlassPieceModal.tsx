@@ -7,13 +7,20 @@ import Vidrio from '../../models/Vidrio';
 import globalStyles from '../common/Styles';
 import WindowsListContext from './context/WindowsListContext';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
-import SnackBarComponent from '../snack-bar/SnackBar';
 import PieceModalContext from './context/PieceModalContext';
 import GlassTypesContext from '../vidrios/context/GlassTypesContext';
 
 const listForDropdown = (list: Vidrio[]) => {
   return list.map((el: Vidrio) => {
-    return {label: el.name, value: el.id, labelStyle: {fontSize: 17}};
+    return {
+      label: el.name,
+      value: el.id,
+      labelStyle: {
+        fontSize: 20,
+        borderColor: 'black',
+        borderBottomWidth: 1,
+      },
+    };
   });
 };
 
@@ -49,15 +56,9 @@ const GlassPieceModal = () => {
     useContext(WindowsListContext);
   const glassTypesContext = useContext(GlassTypesContext);
   const listaVidrios = glassTypesContext!.listaVidrios;
-  const {snackMessage, showSnackMessage} = useSnackBar();
-  const {
-    setPieceModalVisible,
-    pieceModalVisible,
-    editMode,
-    windowId,
-    setEditMode,
-    glassPieceId,
-  } = useContext(PieceModalContext);
+  const {showSnackMessage} = useSnackBar();
+  const {setPieceModalVisible, editMode, windowId, setEditMode, glassPieceId} =
+    useContext(PieceModalContext);
 
   useEffect(() => {
     if (editMode) {
@@ -146,15 +147,15 @@ const GlassPieceModal = () => {
   };
 
   return (
-    <Modal visible={pieceModalVisible} animationType="fade" transparent={true}>
-      {snackMessage && <SnackBarComponent></SnackBarComponent>}
+    <Modal animationType="fade" transparent={true}>
       <View style={styles.modalContainer}>
         <Text style={styles.modalText}>Nuevo</Text>
         <DropDownPicker
           onOpen={handleFocusPicker}
+          containerProps={{style: {width: 300}}}
           placeholder="Tipo de vidrio"
           listMode="FLATLIST"
-          style={[styles.input, {zIndex: 50, alignSelf: 'center'}]}
+          style={[styles.input, {alignSelf: 'center'}]}
           mode="BADGE"
           items={listForDropdown(listaVidrios!.getGlassTypesArray())}
           value={tipoVidrio}

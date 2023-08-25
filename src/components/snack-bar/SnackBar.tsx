@@ -4,18 +4,18 @@ import {useSnackBar} from './SnackBarContext';
 
 const SnackBarComponent = () => {
   const {snackMessage, hideSnackMessage, snackDuration} = useSnackBar();
+
   return (
     <View
       style={{
-        position: 'absolute',
-        left: 0,
-        right: 0,
-        zIndex: 100,
+        position: 'relative',
+        height: 60,
       }}>
       <Snackbar
         visible={!!snackMessage}
         duration={snackDuration}
         onDismiss={hideSnackMessage}
+        style={{top: 0}}
         action={{
           label: 'Ocultar',
           onPress: hideSnackMessage,
