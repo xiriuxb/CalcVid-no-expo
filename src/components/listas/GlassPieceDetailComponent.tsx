@@ -1,7 +1,7 @@
-import {useState, useContext} from 'react';
-import {Alert, Text, TouchableHighlight, View} from 'react-native';
+import {useContext, useMemo} from 'react';
+import {Alert, Text, TouchableOpacity, View} from 'react-native';
 import GlassPiece from '../../models/Item';
-import {Button, TouchableRipple} from 'react-native-paper';
+import {TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import PieceModalContext from './context/PieceModalContext';
 import WindowsListContext from './context/WindowsListContext';
@@ -13,56 +13,36 @@ const GlassPieceDetail = ({
   glassPiece: GlassPiece;
   windowId: string;
 }) => {
-  const [showPrecio, setShowPrecio] = useState('A');
   const {setPieceModalVisible, setEditMode, setGlassPieceId} =
     useContext(PieceModalContext);
-  const {deletePiece} = useContext(WindowsListContext);
+  const {deletePiece, reloadTotals} = useContext(WindowsListContext);
 
-  const changePrice = () => {
-    switch (showPrecio) {
-      case 'A':
-        setShowPrecio('B');
-        break;
-      case 'B':
-        setShowPrecio('C');
-        break;
-      default:
-        setShowPrecio('A');
-        break;
-    }
-  };
+  const changePrice = useMemo(() => {
+    return () => {
+      glassPiece.autoSetSelectedPrice();
+      reloadTotals();
+    };
+  }, []);
 
-  const showDifPrice = (el: GlassPiece) => {
-    switch (showPrecio) {
-      case 'A':
-        return `${el.individualPriceA().toFixed(2)}\n${el
-          .totalPriceA()
-          .toFixed(2)}`;
-      case 'B':
-        return `${el.individualPriceB().toFixed(2)}\n${el
-          .totalPriceB()
-          .toFixed(2)}`;
-      default:
-        return `${el.individualPriceC().toFixed(2)}\n${el
-          .totalPriceC()
-          .toFixed(2)}`;
-    }
-  };
+  const createTwoButtonAlert = useMemo(() => {
+    return () => {
+      Alert.alert('Eliminar', '¿Quiere eliminar?', [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {text: 'OK', onPress: () => deletePiece(windowId, glassPiece.id)},
+      ]);
+    };
+  }, []);
 
-  const createTwoButtonAlert = () =>
-    Alert.alert('Eliminar', '¿Quiere eliminar?', [
-      {
-        text: 'Cancelar',
-        style: 'cancel',
-      },
-      {text: 'OK', onPress: () => deletePiece(windowId, glassPiece.id)},
-    ]);
-
-  const openModalToEdit = () => {
-    setEditMode(true);
-    setGlassPieceId(glassPiece.id);
-    setPieceModalVisible(true, windowId);
-  };
+  const openModalToEdit = useMemo(() => {
+    return () => {
+      setEditMode(true);
+      setGlassPieceId(glassPiece.id);
+      setPieceModalVisible(true, windowId);
+    };
+  }, []);
 
   return (
     <View
@@ -74,23 +54,30 @@ const GlassPieceDetail = ({
         borderTopColor: 'black',
       }}>
       <View>
-        <TouchableHighlight onPress={openModalToEdit}>
+        <TouchableOpacity onPress={openModalToEdit}>
           <Text style={globalStyles.sizedText}>
-            {`${glassPiece.width} x ${glassPiece.height} =${glassPiece.quantity} | ${glassPiece.glassType.name}`}
+            {`${glassPiece.width} x ${glassPiece.height} =${glassPiece.quantity} | ${glassPiece.product.name}`}
           </Text>
-        </TouchableHighlight>
+        </TouchableOpacity>
       </View>
       <Text style={{textAlign: 'center'}}>
-        {`${glassPiece.individualArea().toFixed(2)}\n${glassPiece
-          .totalArea()
-          .toFixed(2)}`}
+        {`${glassPiece.individualArea.toFixed(
+          2,
+        )}\n${glassPiece.totalArea.toFixed(2)}`}
       </Text>
 
       <View style={{flexDirection: 'row'}}>
-        <Text style={{alignSelf: 'center'}}>{showPrecio} </Text>
-        <TouchableHighlight onPress={changePrice}>
-          <Text style={globalStyles.sizedText}>{showDifPrice(glassPiece)}</Text>
-        </TouchableHighlight>
+        <Text style={{alignSelf: 'center'}}>{glassPiece.selectedPrice} </Text>
+        <TouchableOpacity onPress={changePrice}>
+          <View>
+            <Text style={globalStyles.sizedText}>
+              {glassPiece.individualPrice().toFixed(2)}
+            </Text>
+            <Text style={globalStyles.sizedText}>
+              {glassPiece.totalPrice.toFixed(2)}
+            </Text>
+          </View>
+        </TouchableOpacity>
       </View>
 
       <TouchableRipple onPress={createTwoButtonAlert}>

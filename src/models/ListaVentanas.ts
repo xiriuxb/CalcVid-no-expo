@@ -28,7 +28,7 @@ export default class WindowsList {
   addWindow(): void {
     this.list = [
       ...this.list,
-      new Ventana(`Ventana ${this.list.length + 1}`, []),
+      new Ventana(`Ventana ${this.list.length + 1}`, new Map()),
     ];
   }
 

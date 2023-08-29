@@ -1,14 +1,14 @@
 import {View, Text, StyleSheet, Alert} from 'react-native';
 import {Button, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
-import Ventana from '../../models/ItemsToSell';
+import ItemsToSell from '../../models/ItemsToSell';
 import GlassPieceDetail from './GlassPieceDetailComponent';
 import {useContext} from 'react';
 import WindowsListContext from './context/WindowsListContext';
 import PieceModalContext from './context/PieceModalContext';
 
 interface props {
-  ventana: Ventana;
+  ventana: ItemsToSell;
 }
 
 const WindowDetailComponent = ({ventana}: props) => {
@@ -62,12 +62,12 @@ const WindowDetailComponent = ({ventana}: props) => {
         </View>
         <View style={{flexDirection: 'row'}}>
           <Text style={globalStyles.boldText}>TotalVidrios: </Text>
-          <Text style={globalStyles.sizedText}>{ventana.totalGlasses()} </Text>
+          <Text style={globalStyles.sizedText}>{ventana.totalItems()} </Text>
         </View>
         <View style={{flexDirection: 'row'}}>
           <Text style={globalStyles.boldText}>PrecioTotal: </Text>
           <Text style={globalStyles.sizedText}>
-            {ventana.totalPriceA().toFixed(2)}{' '}
+            {ventana.totalPrice().toFixed(2)}{' '}
           </Text>
         </View>
       </View>
@@ -84,7 +84,7 @@ const WindowDetailComponent = ({ventana}: props) => {
         <Text>Precios</Text>
         <Text>Accion</Text>
       </View>
-      {ventana.glassPieces.map(el => {
+      {Array.from(ventana.items.values()).map(el => {
         return (
           <GlassPieceDetail
             glassPiece={el}

@@ -1,4 +1,4 @@
-import {View, Text} from 'react-native';
+import {View} from 'react-native';
 import {AppBar} from './components/AppBar';
 import GlassTypesProvider from './components/vidrios/context/GlassTypesProvider';
 import MainRoutesComponent from './components/routes/MainRoutesComponent';

@@ -47,16 +47,20 @@ const VidrioDetailComponent = ({vidrio, toEdit}: props) => {
             {vidrio.id}
           </Text> */}
           <Text style={globalStyles.sizedText}>
+            <Text style={[globalStyles.boldText]}>Tipo: </Text>
+            {vidrio.type}
+          </Text>
+          <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Precio (m²) A: </Text>
-            {vidrio.meterPriceA}
+            {vidrio.unityPrices.priceA}
           </Text>
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Precio (m²) B: </Text>
-            {vidrio.meterPriceB}
+            {vidrio.unityPrices.priceB}
           </Text>
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Precio (m²) C: </Text>
-            {vidrio.meterPriceC}
+            {vidrio.unityPrices.priceC}
           </Text>
           <View style={[globalStyles.buttonGroup, globalStyles.centered]}>
             <Button textColor={'#d15656'} onPress={createTwoButtonAlert}>

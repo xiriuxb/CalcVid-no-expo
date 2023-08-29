@@ -1,17 +1,17 @@
-import {useRef, useState, useContext, useEffect} from 'react';
+import {useRef, useState, useContext, useEffect, useMemo} from 'react';
 import {View, StyleSheet, Modal, Text} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
-import GlassPiece from '../../models/Item';
-import Vidrio from '../../models/Product';
+import Item from '../../models/Item';
+import Product from '../../models/Product';
 import globalStyles from '../common/Styles';
 import WindowsListContext from './context/WindowsListContext';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
 import PieceModalContext from './context/PieceModalContext';
 import GlassTypesContext from '../vidrios/context/GlassTypesContext';
 
-const listForDropdown = (list: Vidrio[]) => {
-  return list.map((el: Vidrio) => {
+const listForDropdown = (list: Product[]) => {
+  return list.map((el: Product) => {
     return {
       label: el.name,
       value: el.id,
@@ -28,14 +28,25 @@ const createGlassPiece = (
   width: string,
   height: string,
   quantity: string,
-  glass: Vidrio,
-): GlassPiece => {
-  return new GlassPiece(
+  glass: Product,
+): Item => {
+  return new Item(
+    glass,
+    parseFloat(quantity),
     parseFloat(height),
     parseFloat(width),
-    parseFloat(quantity),
-    glass,
   );
+};
+
+const handleNextInput = (
+  nextInputRef: React.MutableRefObject<any>,
+  isEdit: boolean,
+) => {
+  if (nextInputRef && nextInputRef.current && !isEdit) {
+    nextInputRef.current.focus();
+  } else {
+    nextInputRef.current.focus();
+  }
 };
 
 const GlassPieceModal = () => {
@@ -48,9 +59,8 @@ const GlassPieceModal = () => {
   const widthRef = useRef<any | null>(null);
   const heightRef = useRef<any | null>(null);
   //others
-  const [tipoVidrio, setTipoVidrio] = useState('');
+  const [tipoVidrioId, setTipoVidrioId] = useState('');
   const [showDropDown, setShowDropDown] = useState(false);
-  const tipoVidrioObject = useRef<Vidrio>();
   //contexts
   const {addPieceToWindow, listaVentanas, editPieceInWindow} =
     useContext(WindowsListContext);
@@ -62,26 +72,24 @@ const GlassPieceModal = () => {
 
   useEffect(() => {
     if (editMode) {
-      const selectedPiece = listaVentanas!
-        .get(windowId)
-        ?.getPiece(glassPieceId);
+      const selectedPiece = listaVentanas!.get(windowId)?.getItem(glassPieceId);
       setQuantity(selectedPiece!.quantity.toString());
       setWidth(selectedPiece!.width.toString());
       setHeight(selectedPiece!.height.toString());
-      setTipoVidrio(selectedPiece!.glassType.name);
-      setTipoVidrioObject();
+      setTipoVidrioId(selectedPiece!.product.id);
     } else {
       setQuantity('');
       setHeight('');
       setWidth('');
     }
-  }, [listaVentanas]);
+  }, [editMode]);
 
-  const handleNextInput = (nextInputRef: React.MutableRefObject<any>) => {
-    if (nextInputRef && nextInputRef.current && !editMode) {
-      nextInputRef.current.focus();
+  const getTipoVidrioObject = (prodId: string) => {
+    const vidrio = listaVidrios!.getProduct(prodId);
+    if (vidrio) {
+      return vidrio;
     } else {
-      nextInputRef.current.focus();
+      showSnackMessage('Producto no encontrado', 600);
     }
   };
 
@@ -91,7 +99,6 @@ const GlassPieceModal = () => {
   };
 
   const handleCreateOrUpdate = () => {
-    setTipoVidrioObject();
     if (!editMode) {
       handleAddPiece();
       return;
@@ -100,51 +107,40 @@ const GlassPieceModal = () => {
   };
 
   const handleAddPiece = () => {
-    const newPiece = createGlassPiece(
-      width,
-      height,
-      quantity,
-      tipoVidrioObject.current!,
-    );
-    addPieceToWindow(windowId, newPiece);
-    showSnackMessage('Agregado', 500);
+    const product = getTipoVidrioObject(tipoVidrioId);
+    if (product) {
+      const newPiece = createGlassPiece(width, height, quantity, product);
+      addPieceToWindow(windowId, newPiece);
+      showSnackMessage('Agregado', 500);
+    }
     if (widthRef && widthRef.current) {
       heightRef.current.focus();
       heightRef.current.clear();
     }
   };
 
-  const setTipoVidrioObject = () => {
-    const vidrio = listaVidrios!.getGlassType(tipoVidrio);
-    if (tipoVidrio) {
-      tipoVidrioObject.current = vidrio;
-    } else {
-      showSnackMessage('Ocurrió un error');
-    }
-  };
-
   const updateproduct = () => {
-    const newPiece = createGlassPiece(
-      width,
-      height,
-      quantity,
-      tipoVidrioObject.current!,
-    );
-    editPieceInWindow(windowId, glassPieceId, newPiece);
-    setPieceModalVisible(false);
+    const product = getTipoVidrioObject(tipoVidrioId);
+    if (product) {
+      const newPiece = createGlassPiece(width, height, quantity, product);
+      editPieceInWindow(windowId, glassPieceId, newPiece);
+      setPieceModalVisible(false);
+    }
   };
 
-  const handleFocusPicker = () => {
-    if (widthRef.current) {
-      widthRef.current.blur();
-    }
-    if (heightRef.current) {
-      heightRef.current.blur();
-    }
-    if (quantityRef.current) {
-      quantityRef.current.blur();
-    }
-  };
+  const handleFocusPicker = useMemo(() => {
+    return () => {
+      if (widthRef.current) {
+        widthRef.current.blur();
+      }
+      if (heightRef.current) {
+        heightRef.current.blur();
+      }
+      if (quantityRef.current) {
+        quantityRef.current.blur();
+      }
+    };
+  }, []);
 
   return (
     <Modal animationType="fade" transparent={true}>
@@ -157,21 +153,21 @@ const GlassPieceModal = () => {
           listMode="FLATLIST"
           style={[styles.input, {alignSelf: 'center'}]}
           mode="BADGE"
-          items={listForDropdown(listaVidrios!.getGlassTypesArray())}
-          value={tipoVidrio}
-          setValue={setTipoVidrio}
+          items={listForDropdown(listaVidrios!.getProductsArray())}
+          value={tipoVidrioId}
+          setValue={setTipoVidrioId}
           labelProps={{style: {fontSize: 17, color: '#000'}}}
           itemKey="label"
           onClose={() => {
             setTimeout(() => {
-              handleNextInput(heightRef);
-            }, 50);
+              handleNextInput(heightRef, editMode);
+            }, 0);
           }}
           open={showDropDown}
           setOpen={setShowDropDown}></DropDownPicker>
         <TextInput
           ref={heightRef}
-          onSubmitEditing={() => handleNextInput(widthRef)}
+          onSubmitEditing={() => handleNextInput(widthRef, editMode)}
           style={styles.input}
           value={height}
           onChangeText={setHeight}
@@ -181,7 +177,7 @@ const GlassPieceModal = () => {
           error={!height}></TextInput>
         <TextInput
           ref={widthRef}
-          onSubmitEditing={() => handleNextInput(quantityRef)}
+          onSubmitEditing={() => handleNextInput(quantityRef, editMode)}
           style={styles.input}
           value={width}
           onChangeText={setWidth}
@@ -210,7 +206,7 @@ const GlassPieceModal = () => {
             mode="outlined"
             textColor="#fff"
             buttonColor="#007bff"
-            disabled={!width || !height || !tipoVidrio}>
+            disabled={!width || !height || !tipoVidrioId}>
             {!editMode ? 'Añadir' : 'Guardar'}
           </Button>
         </View>

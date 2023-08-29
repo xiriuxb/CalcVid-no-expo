@@ -11,14 +11,14 @@ export default class Item {
 
   constructor(
     product: Product,
-    quantity: number = 1,
+    quantity: number,
     height: number,
     width: number,
   ) {
     this.selectedPrice = 'A';
     this.id = generateUniqueId();
     this.product = product;
-    this.quantity = quantity;
+    this.quantity = quantity ? quantity : 1;
     if (product.type == 'calculated') {
       this.height = height;
       this.width = width;
@@ -44,6 +44,20 @@ export default class Item {
 
   setSelectedPrice(price: 'A' | 'B' | 'C') {
     this.selectedPrice = price;
+  }
+
+  autoSetSelectedPrice() {
+    switch (this.selectedPrice) {
+      case 'A':
+        this.selectedPrice = 'B';
+        break;
+      case 'B':
+        this.selectedPrice = 'C';
+        break;
+      default:
+        this.selectedPrice = 'A';
+        break;
+    }
   }
 
   individualPrice() {

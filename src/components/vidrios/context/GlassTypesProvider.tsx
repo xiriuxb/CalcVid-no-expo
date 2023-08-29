@@ -13,7 +13,7 @@ const GlassTypesProvider = ({children}: {children: React.ReactNode}) => {
 
   useEffect(() => {
     loadListaVidrios();
-  }, [listaVidrios]);
+  }, []);
 
   const loadListaVidrios = async () => {
     try {
@@ -39,19 +39,19 @@ const GlassTypesProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const addGlassType = (newGlassType: Vidrio) => {
-    const updatedList = listaClass.current.addGlassType(newGlassType);
+    const updatedList = listaClass.current.addProduct(newGlassType);
     setListaVidrios(updatedList);
     storeProducts(updatedList);
   };
 
   const updateGlassType = (id: string, newGlassType: Vidrio) => {
-    const updatedList = listaClass.current.updateGlassType(id, newGlassType);
+    const updatedList = listaClass.current.updateProduct(id, newGlassType);
     setListaVidrios(updatedList);
     storeProducts(updatedList);
   };
 
   const deleteGlassType = (id: string) => {
-    const updatedList = listaClass.current.deleteGlassType(id);
+    const updatedList = listaClass.current.deleteProduct(id);
     setListaVidrios(updatedList);
     storeProducts(updatedList);
   };

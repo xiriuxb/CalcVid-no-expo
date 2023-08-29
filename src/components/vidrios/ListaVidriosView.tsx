@@ -1,4 +1,4 @@
-import {useState, useEffect, useContext} from 'react';
+import {useState, useContext} from 'react';
 import {ScrollView, View} from 'react-native';
 import AddVidrioModal from './AddVidrioModal';
 import VidrioDetailComponent from './VidrioDetailComponent';
@@ -12,7 +12,6 @@ const ListaVidriosView = () => {
   const glassTypeContext = useContext(GlassTypesContext);
 
   const listaVidrios = glassTypeContext!.listaVidrios;
-  const updateGlassType = glassTypeContext!.updateGlassType;
 
   const openModal = () => {
     setModalVisible(true);
@@ -40,7 +39,7 @@ const ListaVidriosView = () => {
             closeModal={closeModal}
             editProductId={productToEdit}></AddVidrioModal>
         )}
-        {listaVidrios!.getGlassTypesArray().map((vid: Vidrio) => {
+        {listaVidrios!.getProductsArray().map((vid: Vidrio) => {
           return (
             <VidrioDetailComponent
               vidrio={vid}

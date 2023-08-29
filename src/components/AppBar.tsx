@@ -1,5 +1,5 @@
 import {useRef} from 'react';
-import {View, Text, StyleSheet, Animated} from 'react-native';
+import {View, StyleSheet, Animated} from 'react-native';
 import {Link, Outlet, useLocation} from 'react-router-native';
 
 const AppBarTab = ({

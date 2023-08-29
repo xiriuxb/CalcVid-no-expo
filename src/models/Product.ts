@@ -1,6 +1,6 @@
 import generateUniqueId from './generateUniqueId';
 
-interface UnityPricesType {
+export interface UnityPricesType {
   priceA: number;
   priceB?: number;
   priceC?: number;

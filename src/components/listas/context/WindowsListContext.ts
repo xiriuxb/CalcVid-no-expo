@@ -1,7 +1,6 @@
 import {createContext} from 'react';
 import Ventana from '../../../models/ItemsToSell';
 import GlassPiece from '../../../models/Item';
-import GlassTypeList from '../../../models/ProductsList';
 
 interface ContextTypes {
   listaVentanas: Map<string, Ventana> | null;
@@ -15,6 +14,7 @@ interface ContextTypes {
   ) => void;
   deletePiece: (windowId: string, glassPieceId: string) => void;
   totals: {totalArea: number; totalPieces: number; totalPrice: number};
+  reloadTotals: () => void;
 }
 
 const WindowsListContext = createContext<ContextTypes>({
@@ -25,6 +25,7 @@ const WindowsListContext = createContext<ContextTypes>({
   editPieceInWindow: () => {},
   deletePiece: () => {},
   totals: {totalArea: 0, totalPieces: 0, totalPrice: 0},
+  reloadTotals: () => {},
 });
 
 export default WindowsListContext;
