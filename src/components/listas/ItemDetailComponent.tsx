@@ -3,8 +3,8 @@ import {Alert, Text, TouchableOpacity, View} from 'react-native';
 import Item from '../../models/Item';
 import {TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
-import ItemModalContext from './context/PieceModalContext';
-import ItemsToSellListContext from './context/WindowsListContext';
+import ItemModalContext from './context/modal-context/ItemModalContext';
+import ItemsToSellListContext from './context/items-to-sell-context/ItemsToSellContext';
 
 const ItemDetailComponent = ({
   item,

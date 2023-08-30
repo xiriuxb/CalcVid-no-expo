@@ -5,10 +5,10 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import Item from '../../models/Item';
 import Product from '../../models/Product';
 import globalStyles from '../common/Styles';
-import ItemsToSellListContext from './context/WindowsListContext';
+import ItemsToSellListContext from './context/items-to-sell-context/ItemsToSellContext';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
-import PieceModalContext from './context/PieceModalContext';
-import ProductsContext from '../vidrios/context/GlassTypesContext';
+import ProductsContext from '../vidrios/context/ProductsContext';
+import ItemModalContext from './context/modal-context/ItemModalContext';
 
 const listForDropdown = (list: Product[]) => {
   return list.map((el: Product) => {
@@ -68,7 +68,7 @@ const ItemModal = () => {
   const productsList = productsContext!.productsList;
   const {showSnackMessage} = useSnackBar();
   const {setItemModalVisible, editMode, itemsToSellId, setEditMode, itemId} =
-    useContext(PieceModalContext);
+    useContext(ItemModalContext);
 
   useEffect(() => {
     if (editMode) {

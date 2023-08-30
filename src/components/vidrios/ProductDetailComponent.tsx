@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import globalStyles from '../common/Styles';
 import Product from '../../models/Product';
-import ProductsContext from './context/GlassTypesContext';
+import ProductsContext from './context/ProductsContext';
 
 interface props {
   product: Product;

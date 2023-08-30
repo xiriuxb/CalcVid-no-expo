@@ -1,7 +1,7 @@
 import {useContext} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import globalStyles from '../common/Styles';
-import WindowsListContext from './context/WindowsListContext';
+import WindowsListContext from './context/items-to-sell-context/ItemsToSellContext';
 
 export const TopStatus = () => {
   const context = useContext(WindowsListContext);

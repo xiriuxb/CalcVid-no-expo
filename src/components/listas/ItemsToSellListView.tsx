@@ -2,17 +2,17 @@ import {useContext} from 'react';
 import {TopStatus} from './TopStatus';
 import {ScrollView, View} from 'react-native';
 import {Button} from 'react-native-paper';
-import PieceModalProvider from './context/PieceModalProvider';
 import ModalAuxComponent from './Modal';
-import ItemsToSellListContext from './context/WindowsListContext';
+import ItemsToSellListContext from './context/items-to-sell-context/ItemsToSellContext';
 import ItemsToSell from '../../models/ItemsToSell';
-import ItemsToSellDetailComponent from './WindowDetailComponent';
+import ItemsToSellDetailComponent from './ItemsToSellDetailComponent';
+import ItemModalProvider from './context/modal-context/ItemModalProvider';
 
 const ListaView = () => {
   const {itemsToSellList, addItemsToSell} = useContext(ItemsToSellListContext);
 
   return (
-    <PieceModalProvider>
+    <ItemModalProvider>
       <View style={{flex: 1}}>
         <TopStatus></TopStatus>
         <ScrollView contentContainerStyle={{flexGrow: 1}}>
@@ -33,7 +33,7 @@ const ListaView = () => {
           </Button>
         </View>
       </View>
-    </PieceModalProvider>
+    </ItemModalProvider>
   );
 };
 

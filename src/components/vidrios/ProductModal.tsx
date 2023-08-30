@@ -5,7 +5,7 @@ import {Button, TextInput, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import SnackBarComponent from '../snack-bar/SnackBar';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
-import ProductsContext from './context/GlassTypesContext';
+import ProductsContext from './context/ProductsContext';
 
 interface props {
   modalVisible: boolean;
@@ -19,7 +19,7 @@ const handleNextInput = (nextInputRef: React.MutableRefObject<any>) => {
   }
 };
 
-const AddProductModal = ({modalVisible, closeModal, editProductId}: props) => {
+const ProductModal = ({modalVisible, closeModal, editProductId}: props) => {
   // form
   const [name, onChangeName] = useState('');
   const [width, onChangeWidth] = useState('');
@@ -259,7 +259,7 @@ const AddProductModal = ({modalVisible, closeModal, editProductId}: props) => {
   );
 };
 
-export default AddProductModal;
+export default ProductModal;
 
 const styles = StyleSheet.create({
   container: {

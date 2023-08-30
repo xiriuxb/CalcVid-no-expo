@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react';
-import ItemsToSell from '../../../models/ItemsToSell';
-import ItemsToSellContext from './WindowsListContext';
-import Item from '../../../models/Item';
+import ItemsToSell from '../../../../models/ItemsToSell';
+import ItemsToSellContext from './ItemsToSellContext';
+import Item from '../../../../models/Item';
 
 const ItemsToSellListProvider = ({children}: {children: React.ReactNode}) => {
   const [itemsToSellList, setItemsToSellList] = useState<

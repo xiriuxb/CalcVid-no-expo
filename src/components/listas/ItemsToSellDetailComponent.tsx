@@ -3,9 +3,9 @@ import {Button, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import ItemsToSell from '../../models/ItemsToSell';
 import {useContext} from 'react';
-import ItemsToSellListContext from './context/WindowsListContext';
-import ItemModalContext from './context/PieceModalContext';
-import ItemDetailComponent from './GlassPieceDetailComponent';
+import ItemsToSellListContext from './context/items-to-sell-context/ItemsToSellContext';
+import ItemDetailComponent from './ItemDetailComponent';
+import ItemModalContext from './context/modal-context/ItemModalContext';
 
 interface props {
   itemsToSell: ItemsToSell;
