@@ -1,31 +1,31 @@
 import {createContext} from 'react';
-import Ventana from '../../../models/ItemsToSell';
-import GlassPiece from '../../../models/Item';
+import ItemsToSell from '../../../models/ItemsToSell';
+import Item from '../../../models/Item';
 
 interface ContextTypes {
-  listaVentanas: Map<string, Ventana> | null;
-  addVentana: () => void;
-  addPieceToWindow: (windowId: string, newGlassPiece: GlassPiece) => void;
-  removeWindow: (id: string) => void;
-  editPieceInWindow: (
-    windowId: string,
-    glassPieceId: string,
-    editedPiece: GlassPiece,
+  itemsToSellList: Map<string, ItemsToSell> | null;
+  addItemsToSell: () => void;
+  addItemToItemsToSell: (windowId: string, newGlassPiece: Item) => void;
+  removeItemsToSell: (id: string) => void;
+  editItemInItemsToSell: (
+    itemsToSellId: string,
+    itemId: string,
+    editedItem: Item,
   ) => void;
-  deletePiece: (windowId: string, glassPieceId: string) => void;
-  totals: {totalArea: number; totalPieces: number; totalPrice: number};
+  deleteItem: (itemsToSellId: string, itemId: string) => void;
+  totals: {totalArea: number; totalItems: number; totalPrice: number};
   reloadTotals: () => void;
 }
 
-const WindowsListContext = createContext<ContextTypes>({
-  listaVentanas: null,
-  addVentana: () => {},
-  addPieceToWindow: () => {},
-  removeWindow: () => {},
-  editPieceInWindow: () => {},
-  deletePiece: () => {},
-  totals: {totalArea: 0, totalPieces: 0, totalPrice: 0},
+const ItemsToSellListContext = createContext<ContextTypes>({
+  itemsToSellList: null,
+  addItemsToSell: () => {},
+  addItemToItemsToSell: () => {},
+  removeItemsToSell: () => {},
+  editItemInItemsToSell: () => {},
+  deleteItem: () => {},
+  totals: {totalArea: 0, totalItems: 0, totalPrice: 0},
   reloadTotals: () => {},
 });
 
-export default WindowsListContext;
+export default ItemsToSellListContext;

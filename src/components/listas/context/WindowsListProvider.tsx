@@ -1,102 +1,101 @@
 import {useState, useEffect} from 'react';
 import ItemsToSell from '../../../models/ItemsToSell';
-import WindowsListContext from './WindowsListContext';
+import ItemsToSellContext from './WindowsListContext';
 import Item from '../../../models/Item';
 
-const WindowsListProvider = ({children}: {children: React.ReactNode}) => {
-  const [listaVentanas, setListaVentanas] = useState<Map<string, ItemsToSell>>(
-    new Map(),
-  );
+const ItemsToSellListProvider = ({children}: {children: React.ReactNode}) => {
+  const [itemsToSellList, setItemsToSellList] = useState<
+    Map<string, ItemsToSell>
+  >(new Map());
   const [totals, setTotals] = useState({
     totalArea: 0,
-    totalPieces: 0,
+    totalItems: 0,
     totalPrice: 0,
   });
 
   useEffect(() => {
-    console.log('totals');
     totalSums();
-  }, [listaVentanas]);
+  }, [itemsToSellList]);
 
-  const addVentana = () => {
-    const newMap = new Map(listaVentanas);
-    const newVentana = new ItemsToSell(
-      `Ventana ${listaVentanas.size + 1}`,
+  const addItemsToSell = () => {
+    const newMap = new Map(itemsToSellList);
+    const newItemsToSell = new ItemsToSell(
+      `Ventana ${itemsToSellList.size + 1}`,
       new Map(),
     );
-    newMap.set(newVentana.id, newVentana);
-    setListaVentanas(newMap);
+    newMap.set(newItemsToSell.id, newItemsToSell);
+    setItemsToSellList(newMap);
   };
 
-  const removeWindow = (id: string) => {
-    const newMap = new Map(listaVentanas);
+  const removeItemsToSell = (id: string) => {
+    const newMap = new Map(itemsToSellList);
     newMap.delete(id);
-    setListaVentanas(newMap);
+    setItemsToSellList(newMap);
   };
 
   const totalSums = () => {
-    const itemsInList = Array.from(listaVentanas.values());
+    const itemsInList = Array.from(itemsToSellList.values());
     const totals = itemsInList.reduce(
       (totals, vent) => {
         totals.totalArea += vent.totalArea();
-        totals.totalPieces += vent.totalItems();
+        totals.totalItems += vent.totalItems();
         totals.totalPrice += vent.totalPrice();
         return totals;
       },
-      {totalArea: 0, totalPieces: 0, totalPrice: 0},
+      {totalArea: 0, totalItems: 0, totalPrice: 0},
     );
     setTotals(totals);
   };
 
-  const addPieceToWindow = (windowId: string, newGlassPiece: Item) => {
-    const window = listaVentanas.get(windowId);
-    window?.setItemsToSell(window.items.set(newGlassPiece.id, newGlassPiece));
-    const newMap = new Map(listaVentanas);
-    newMap.set(windowId, window!);
-    setListaVentanas(newMap);
+  const addItemToItemsToSell = (itemsToSellId: string, newItem: Item) => {
+    const itemsToSell = itemsToSellList.get(itemsToSellId);
+    itemsToSell?.setItemsToSell(itemsToSell.items.set(newItem.id, newItem));
+    const newMap = new Map(itemsToSellList);
+    newMap.set(itemsToSellId, itemsToSell!);
+    setItemsToSellList(newMap);
   };
 
-  const editPieceInWindow = (
-    windowId: string,
-    glassPieceId: string,
-    editedPiece: Item,
+  const editItemInItemsToSell = (
+    itemsToSellId: string,
+    itemId: string,
+    editedItem: Item,
   ) => {
-    const window = listaVentanas.get(windowId);
-    const newWindow = window!.editItem(
-      glassPieceId,
-      editedPiece.width,
-      editedPiece.height,
-      editedPiece.quantity,
-      editedPiece.product,
+    const itemsToSell = itemsToSellList.get(itemsToSellId);
+    const newItemsToSell = itemsToSell!.editItem(
+      itemId,
+      editedItem.width,
+      editedItem.height,
+      editedItem.quantity,
+      editedItem.product,
     );
-    const newMap = new Map(listaVentanas);
-    newMap.set(windowId, newWindow);
-    setListaVentanas(newMap);
+    const newMap = new Map(itemsToSellList);
+    newMap.set(itemsToSellId, newItemsToSell);
+    setItemsToSellList(newMap);
   };
 
-  const deletePiece = (windowId: string, glassPieceId: string) => {
-    const window = listaVentanas.get(windowId);
-    const newWindow = window!.deleteItem(glassPieceId);
-    const newMap = new Map(listaVentanas);
-    newMap.set(windowId, newWindow);
-    setListaVentanas(newMap);
+  const deleteItem = (itemsToSellId: string, glassPieceId: string) => {
+    const itemsToSell = itemsToSellList.get(itemsToSellId);
+    const newItemsToSell = itemsToSell!.deleteItem(glassPieceId);
+    const newMap = new Map(itemsToSellList);
+    newMap.set(itemsToSellId, newItemsToSell);
+    setItemsToSellList(newMap);
   };
 
   return (
-    <WindowsListContext.Provider
+    <ItemsToSellContext.Provider
       value={{
-        listaVentanas,
-        addVentana,
-        removeWindow,
+        itemsToSellList,
+        addItemsToSell,
+        removeItemsToSell,
         totals,
         reloadTotals: totalSums,
-        addPieceToWindow,
-        editPieceInWindow,
-        deletePiece,
+        addItemToItemsToSell,
+        editItemInItemsToSell,
+        deleteItem,
       }}>
       {children}
-    </WindowsListContext.Provider>
+    </ItemsToSellContext.Provider>
   );
 };
 
-export default WindowsListProvider;
+export default ItemsToSellListProvider;

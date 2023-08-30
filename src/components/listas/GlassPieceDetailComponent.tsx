@@ -1,25 +1,25 @@
 import {useContext, useMemo} from 'react';
 import {Alert, Text, TouchableOpacity, View} from 'react-native';
-import GlassPiece from '../../models/Item';
+import Item from '../../models/Item';
 import {TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
-import PieceModalContext from './context/PieceModalContext';
-import WindowsListContext from './context/WindowsListContext';
+import ItemModalContext from './context/PieceModalContext';
+import ItemsToSellListContext from './context/WindowsListContext';
 
-const GlassPieceDetail = ({
-  glassPiece,
-  windowId,
+const ItemDetailComponent = ({
+  item,
+  itemsToSellId,
 }: {
-  glassPiece: GlassPiece;
-  windowId: string;
+  item: Item;
+  itemsToSellId: string;
 }) => {
-  const {setPieceModalVisible, setEditMode, setGlassPieceId} =
-    useContext(PieceModalContext);
-  const {deletePiece, reloadTotals} = useContext(WindowsListContext);
+  const {setItemModalVisible, setEditMode, setItemId} =
+    useContext(ItemModalContext);
+  const {deleteItem, reloadTotals} = useContext(ItemsToSellListContext);
 
   const changePrice = useMemo(() => {
     return () => {
-      glassPiece.autoSetSelectedPrice();
+      item.autoSetSelectedPrice();
       reloadTotals();
     };
   }, []);
@@ -31,7 +31,7 @@ const GlassPieceDetail = ({
           text: 'Cancelar',
           style: 'cancel',
         },
-        {text: 'OK', onPress: () => deletePiece(windowId, glassPiece.id)},
+        {text: 'OK', onPress: () => deleteItem(itemsToSellId, item.id)},
       ]);
     };
   }, []);
@@ -39,8 +39,8 @@ const GlassPieceDetail = ({
   const openModalToEdit = useMemo(() => {
     return () => {
       setEditMode(true);
-      setGlassPieceId(glassPiece.id);
-      setPieceModalVisible(true, windowId);
+      setItemId(item.id);
+      setItemModalVisible(true, itemsToSellId);
     };
   }, []);
 
@@ -56,25 +56,23 @@ const GlassPieceDetail = ({
       <View>
         <TouchableOpacity onPress={openModalToEdit}>
           <Text style={globalStyles.sizedText}>
-            {`${glassPiece.width} x ${glassPiece.height} =${glassPiece.quantity} | ${glassPiece.product.name}`}
+            {`${item.width} x ${item.height} =${item.quantity} | ${item.product.name}`}
           </Text>
         </TouchableOpacity>
       </View>
       <Text style={{textAlign: 'center'}}>
-        {`${glassPiece.individualArea.toFixed(
-          2,
-        )}\n${glassPiece.totalArea.toFixed(2)}`}
+        {`${item.individualArea.toFixed(2)}\n${item.totalArea.toFixed(2)}`}
       </Text>
 
       <View style={{flexDirection: 'row'}}>
-        <Text style={{alignSelf: 'center'}}>{glassPiece.selectedPrice} </Text>
+        <Text style={{alignSelf: 'center'}}>{item.selectedPrice} </Text>
         <TouchableOpacity onPress={changePrice}>
           <View>
             <Text style={globalStyles.sizedText}>
-              {glassPiece.individualPrice().toFixed(2)}
+              {item.individualPrice().toFixed(2)}
             </Text>
             <Text style={globalStyles.sizedText}>
-              {glassPiece.totalPrice.toFixed(2)}
+              {item.totalPrice.toFixed(2)}
             </Text>
           </View>
         </TouchableOpacity>
@@ -89,4 +87,4 @@ const GlassPieceDetail = ({
   );
 };
 
-export default GlassPieceDetail;
+export default ItemDetailComponent;

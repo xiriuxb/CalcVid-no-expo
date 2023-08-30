@@ -49,7 +49,7 @@ const handleNextInput = (
   }
 };
 
-const GlassPieceModal = () => {
+const ItemModal = () => {
   //form
   const [quantity, setQuantity] = useState('');
   const [width, setWidth] = useState('');
@@ -62,17 +62,19 @@ const GlassPieceModal = () => {
   const [tipoVidrioId, setTipoVidrioId] = useState('');
   const [showDropDown, setShowDropDown] = useState(false);
   //contexts
-  const {addPieceToWindow, listaVentanas, editPieceInWindow} =
+  const {addItemToItemsToSell, itemsToSellList, editItemInItemsToSell} =
     useContext(WindowsListContext);
   const glassTypesContext = useContext(GlassTypesContext);
   const listaVidrios = glassTypesContext!.listaVidrios;
   const {showSnackMessage} = useSnackBar();
-  const {setPieceModalVisible, editMode, windowId, setEditMode, glassPieceId} =
+  const {setItemModalVisible, editMode, itemsToSellId, setEditMode, itemId} =
     useContext(PieceModalContext);
 
   useEffect(() => {
     if (editMode) {
-      const selectedPiece = listaVentanas!.get(windowId)?.getItem(glassPieceId);
+      const selectedPiece = itemsToSellList!
+        .get(itemsToSellId)
+        ?.getItem(itemId);
       setQuantity(selectedPiece!.quantity.toString());
       setWidth(selectedPiece!.width.toString());
       setHeight(selectedPiece!.height.toString());
@@ -95,7 +97,7 @@ const GlassPieceModal = () => {
 
   const handleCloseModal = () => {
     setEditMode(false);
-    setPieceModalVisible(false);
+    setItemModalVisible(false);
   };
 
   const handleCreateOrUpdate = () => {
@@ -110,7 +112,7 @@ const GlassPieceModal = () => {
     const product = getTipoVidrioObject(tipoVidrioId);
     if (product) {
       const newPiece = createGlassPiece(width, height, quantity, product);
-      addPieceToWindow(windowId, newPiece);
+      addItemToItemsToSell(itemsToSellId, newPiece);
       showSnackMessage('Agregado', 500);
     }
     if (widthRef && widthRef.current) {
@@ -123,8 +125,8 @@ const GlassPieceModal = () => {
     const product = getTipoVidrioObject(tipoVidrioId);
     if (product) {
       const newPiece = createGlassPiece(width, height, quantity, product);
-      editPieceInWindow(windowId, glassPieceId, newPiece);
-      setPieceModalVisible(false);
+      editItemInItemsToSell(itemsToSellId, itemId, newPiece);
+      setItemModalVisible(false);
     }
   };
 
@@ -215,7 +217,7 @@ const GlassPieceModal = () => {
   );
 };
 
-export default GlassPieceModal;
+export default ItemModal;
 
 const styles = StyleSheet.create({
   container: {

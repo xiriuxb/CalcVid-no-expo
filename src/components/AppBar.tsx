@@ -1,30 +1,29 @@
-import {useRef} from 'react';
 import {View, StyleSheet, Animated} from 'react-native';
 import {Link, Outlet, useLocation} from 'react-router-native';
 
+const anVal = new Animated.Value(1);
+
+const handleShowUnderlay = Animated.spring(anVal, {
+  toValue: 0.9,
+  useNativeDriver: false,
+});
+const animatedSequence = () => {
+  Animated.sequence([handleShowUnderlay, handleHideUnderlay]).start();
+};
+
+const handleHideUnderlay = Animated.spring(anVal, {
+  toValue: 1,
+  useNativeDriver: false,
+});
 const AppBarTab = ({
   children,
   to,
   active,
 }: {
-  children: any;
+  children: React.ReactNode;
   to: string;
   active?: boolean;
 }) => {
-  const anVal = useRef(new Animated.Value(1)).current;
-  const handleShowUnderlay = Animated.spring(anVal, {
-    toValue: 0.9,
-    useNativeDriver: false,
-  });
-  const animatedSequence = () => {
-    Animated.sequence([handleShowUnderlay, handleHideUnderlay]).start();
-  };
-
-  const handleHideUnderlay = Animated.spring(anVal, {
-    toValue: 1,
-    useNativeDriver: false,
-  });
-
   return (
     <Link
       underlayColor={'#0004'}
@@ -46,8 +45,8 @@ export const AppBar = () => {
       <AppBarTab active={location.pathname == '/'} to="/">
         Listas
       </AppBarTab>
-      <AppBarTab active={location.pathname == '/vidrios'} to="/vidrios">
-        Vidrios
+      <AppBarTab active={location.pathname == '/products'} to="/products">
+        Productos
       </AppBarTab>
       <Outlet />
     </View>

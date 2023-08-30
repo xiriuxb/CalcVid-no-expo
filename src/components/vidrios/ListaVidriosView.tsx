@@ -1,17 +1,17 @@
 import {useState, useContext} from 'react';
 import {ScrollView, View} from 'react-native';
-import AddVidrioModal from './AddVidrioModal';
-import VidrioDetailComponent from './VidrioDetailComponent';
 import {Button} from 'react-native-paper';
-import Vidrio from '../../models/Product';
 import GlassTypesContext from './context/GlassTypesContext';
+import AddProductModal from './AddVidrioModal';
+import Product from '../../models/Product';
+import ProductDetailComponent from './VidrioDetailComponent';
 
-const ListaVidriosView = () => {
+const ProductsView = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [productToEdit, setProductToEdit] = useState<string>('');
   const glassTypeContext = useContext(GlassTypesContext);
 
-  const listaVidrios = glassTypeContext!.listaVidrios;
+  const productsList = glassTypeContext!.productsList;
 
   const openModal = () => {
     setModalVisible(true);
@@ -34,17 +34,17 @@ const ListaVidriosView = () => {
       </Button>
       <ScrollView contentContainerStyle={{flexGrow: 1}}>
         {modalVisible && (
-          <AddVidrioModal
+          <AddProductModal
             modalVisible={modalVisible}
             closeModal={closeModal}
-            editProductId={productToEdit}></AddVidrioModal>
+            editProductId={productToEdit}></AddProductModal>
         )}
-        {listaVidrios!.getProductsArray().map((vid: Vidrio) => {
+        {productsList!.getProductsArray().map((product: Product) => {
           return (
-            <VidrioDetailComponent
-              vidrio={vid}
+            <ProductDetailComponent
+              product={product}
               toEdit={openModalToEdit}
-              key={vid.id}></VidrioDetailComponent>
+              key={product.id}></ProductDetailComponent>
           );
         })}
       </ScrollView>
@@ -52,4 +52,4 @@ const ListaVidriosView = () => {
   );
 };
 
-export default ListaVidriosView;
+export default ProductsView;

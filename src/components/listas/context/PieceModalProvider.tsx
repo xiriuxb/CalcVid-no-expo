@@ -1,51 +1,51 @@
 import React, {useState, useRef, useMemo} from 'react';
-import PieceModalContext from './PieceModalContext';
+import ItemModalContext from './PieceModalContext';
 
 const PieceModalProvider = React.memo(
   ({children}: {children: React.ReactElement}) => {
-    const [pieceModalVisible, setPieceModalVisible] = useState(false);
+    const [itemModalVisible, setItemModalVisible] = useState(false);
     const editMode = useRef(false);
-    const glassPieceId = useRef('');
-    const windowId = useRef('');
+    const itemId = useRef('');
+    const itemsToSellId = useRef('');
 
-    const changeVisible = (visible: boolean, currentWindowId?: string) => {
-      setPieceModalVisible(visible);
-      windowId.current = currentWindowId ? currentWindowId : '';
+    const changeVisible = (visible: boolean, currentItemId?: string) => {
+      setItemModalVisible(visible);
+      itemsToSellId.current = currentItemId ? currentItemId : '';
     };
 
     const setEditMode = (value: boolean) => {
       editMode.current = value;
     };
 
-    const setGlassPieceId = (id: string) => {
-      glassPieceId.current = id;
+    const setItemId = (id: string) => {
+      itemId.current = id;
     };
 
     const contextValue = useMemo(
       () => ({
-        pieceModalVisible,
-        setPieceModalVisible: changeVisible,
+        itemModalVisible,
+        setItemModalVisible: changeVisible,
         editMode: editMode.current,
         setEditMode,
-        glassPieceId: glassPieceId.current,
-        setGlassPieceId,
-        windowId: windowId.current,
+        itemId: itemId.current,
+        setItemId,
+        itemsToSellId: itemsToSellId.current,
       }),
       [
-        pieceModalVisible,
+        itemModalVisible,
         changeVisible,
         editMode.current,
         setEditMode,
-        glassPieceId.current,
-        setGlassPieceId,
-        windowId.current,
+        itemId.current,
+        setItemId,
+        itemsToSellId.current,
       ],
     );
 
     return (
-      <PieceModalContext.Provider value={contextValue}>
+      <ItemModalContext.Provider value={contextValue}>
         {children}
-      </PieceModalContext.Provider>
+      </ItemModalContext.Provider>
     );
   },
 );

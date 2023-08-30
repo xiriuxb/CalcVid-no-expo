@@ -1,23 +1,23 @@
 import {createContext} from 'react';
 
 interface ContextTypes {
-  pieceModalVisible: boolean;
-  setPieceModalVisible: (visible: boolean, currentWindowId?: string) => void;
+  itemModalVisible: boolean;
+  setItemModalVisible: (visible: boolean, currentWindowId?: string) => void;
   editMode: boolean;
   setEditMode: (value: boolean) => void;
-  glassPieceId: string;
-  setGlassPieceId: (id: string) => void;
-  windowId: string;
+  itemId: string;
+  setItemId: (id: string) => void;
+  itemsToSellId: string;
 }
 
-const PieceModalContext = createContext<ContextTypes>({
-  pieceModalVisible: false,
-  setPieceModalVisible: () => {},
+const ItemModalContext = createContext<ContextTypes>({
+  itemModalVisible: false,
+  setItemModalVisible: () => {},
   editMode: false,
   setEditMode: () => {},
-  glassPieceId: '',
-  setGlassPieceId: () => {},
-  windowId: '',
+  itemId: '',
+  setItemId: () => {},
+  itemsToSellId: '',
 });
 
-export default PieceModalContext;
+export default ItemModalContext;

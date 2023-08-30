@@ -2,21 +2,21 @@ import {View, Text, StyleSheet, Alert} from 'react-native';
 import {Button, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import ItemsToSell from '../../models/ItemsToSell';
-import GlassPieceDetail from './GlassPieceDetailComponent';
 import {useContext} from 'react';
-import WindowsListContext from './context/WindowsListContext';
-import PieceModalContext from './context/PieceModalContext';
+import ItemsToSellListContext from './context/WindowsListContext';
+import ItemModalContext from './context/PieceModalContext';
+import ItemDetailComponent from './GlassPieceDetailComponent';
 
 interface props {
-  ventana: ItemsToSell;
+  itemsToSell: ItemsToSell;
 }
 
-const WindowDetailComponent = ({ventana}: props) => {
-  const {removeWindow} = useContext(WindowsListContext);
-  const {setPieceModalVisible} = useContext(PieceModalContext);
+const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
+  const {removeItemsToSell} = useContext(ItemsToSellListContext);
+  const {setItemModalVisible} = useContext(ItemModalContext);
 
   const changeCurrentWindow = () => {
-    if (setPieceModalVisible) setPieceModalVisible(true, ventana.id);
+    setItemModalVisible(true, itemsToSell.id);
   };
 
   const handleDeleteWindow = () => {
@@ -26,7 +26,7 @@ const WindowDetailComponent = ({ventana}: props) => {
         text: 'OK',
         style: 'default',
         onPress: () => {
-          removeWindow(ventana.id);
+          removeItemsToSell(itemsToSell.id);
         },
       },
     ]);
@@ -45,7 +45,7 @@ const WindowDetailComponent = ({ventana}: props) => {
           style={[
             {fontSize: 18, fontWeight: 'bold', justifyContent: 'flex-start'},
           ]}>
-          {ventana.name}
+          {itemsToSell.name}
         </Text>
         <TouchableRipple onPress={handleDeleteWindow}>
           <Text style={[globalStyles.boldText, globalStyles.errorText]}>
@@ -57,17 +57,19 @@ const WindowDetailComponent = ({ventana}: props) => {
         <View style={{flexDirection: 'row'}}>
           <Text style={globalStyles.boldText}>M²: </Text>
           <Text style={globalStyles.sizedText}>
-            {`${ventana.totalArea().toFixed(2)}`}
+            {`${itemsToSell.totalArea().toFixed(2)}`}
           </Text>
         </View>
         <View style={{flexDirection: 'row'}}>
           <Text style={globalStyles.boldText}>TotalVidrios: </Text>
-          <Text style={globalStyles.sizedText}>{ventana.totalItems()} </Text>
+          <Text style={globalStyles.sizedText}>
+            {itemsToSell.totalItems()}{' '}
+          </Text>
         </View>
         <View style={{flexDirection: 'row'}}>
           <Text style={globalStyles.boldText}>PrecioTotal: </Text>
           <Text style={globalStyles.sizedText}>
-            {ventana.totalPrice().toFixed(2)}{' '}
+            {itemsToSell.totalPrice().toFixed(2)}{' '}
           </Text>
         </View>
       </View>
@@ -84,12 +86,12 @@ const WindowDetailComponent = ({ventana}: props) => {
         <Text>Precios</Text>
         <Text>Accion</Text>
       </View>
-      {Array.from(ventana.items.values()).map(el => {
+      {Array.from(itemsToSell.items.values()).map(el => {
         return (
-          <GlassPieceDetail
-            glassPiece={el}
+          <ItemDetailComponent
+            item={el}
             key={el.id}
-            windowId={ventana.id}></GlassPieceDetail>
+            itemsToSellId={itemsToSell.id}></ItemDetailComponent>
         );
       })}
       <Button mode="contained-tonal" onPress={changeCurrentWindow}>
@@ -114,4 +116,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default WindowDetailComponent;
+export default ItemsToSellDetailComponent;

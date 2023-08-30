@@ -13,7 +13,7 @@ export const TopStatus = () => {
       </Text>
       <Text style={globalStyles.sizedText}>
         <Text style={globalStyles.boldText}>Vidrios:</Text>
-        {context.totals.totalPieces}
+        {context.totals.totalItems}
       </Text>
       <Text style={globalStyles.sizedText}>
         <Text style={globalStyles.boldText}>Precio:</Text>{' '}

@@ -8,7 +8,7 @@ const MainRoutesComponent = () => {
     <WindowsListProvider>
       <Routes>
         <Route path="/" Component={ListaView} />
-        <Route path="/vidrios" Component={ListaVidriosView} />
+        <Route path="/products" Component={ListaVidriosView} />
       </Routes>
     </WindowsListProvider>
   );

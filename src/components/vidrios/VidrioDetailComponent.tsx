@@ -8,19 +8,19 @@ import {
   Alert,
 } from 'react-native';
 import globalStyles from '../common/Styles';
-import Vidrio from '../../models/Product';
-import GlassTypesContext from './context/GlassTypesContext';
+import Product from '../../models/Product';
+import ProductsContext from './context/GlassTypesContext';
 
 interface props {
-  vidrio: Vidrio;
-  toEdit: (nombreVidrio: string) => void;
+  product: Product;
+  toEdit: (productName: string) => void;
 }
 
-const VidrioDetailComponent = ({vidrio, toEdit}: props) => {
+const ProductDetailComponent = ({product, toEdit}: props) => {
   const [showDetails, setShowDetails] = useState(false);
 
-  const glassTypeContext = useContext(GlassTypesContext);
-  const deleteGlassType = glassTypeContext!.deleteGlassType;
+  const glassTypeContext = useContext(ProductsContext);
+  const deleteProduct = glassTypeContext!.deleteProduct;
 
   const onTouch = () => {
     setShowDetails(!showDetails);
@@ -32,35 +32,35 @@ const VidrioDetailComponent = ({vidrio, toEdit}: props) => {
         text: 'Cancelar',
         style: 'cancel',
       },
-      {text: 'OK', onPress: () => deleteGlassType(vidrio.id)},
+      {text: 'OK', onPress: () => deleteProduct(product.id)},
     ]);
 
   return (
     <View style={styles.ventana}>
       <TouchableNativeFeedback onPress={onTouch}>
-        <Text style={styles.name}>{vidrio.name}</Text>
+        <Text style={styles.name}>{product.name}</Text>
       </TouchableNativeFeedback>
       {showDetails && (
         <View style={styles.ventana}>
           {/* <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>UUID </Text>
-            {vidrio.id}
+            {product.id}
           </Text> */}
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Tipo: </Text>
-            {vidrio.type}
+            {product.type}
           </Text>
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Precio (m²) A: </Text>
-            {vidrio.unityPrices.priceA}
+            {product.unityPrices.priceA}
           </Text>
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Precio (m²) B: </Text>
-            {vidrio.unityPrices.priceB}
+            {product.unityPrices.priceB}
           </Text>
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Precio (m²) C: </Text>
-            {vidrio.unityPrices.priceC}
+            {product.unityPrices.priceC}
           </Text>
           <View style={[globalStyles.buttonGroup, globalStyles.centered]}>
             <Button textColor={'#d15656'} onPress={createTwoButtonAlert}>
@@ -69,7 +69,7 @@ const VidrioDetailComponent = ({vidrio, toEdit}: props) => {
             <Button
               textColor="white"
               buttonColor="#007bff"
-              onPress={() => toEdit(vidrio.id)}>
+              onPress={() => toEdit(product.id)}>
               {' '}
               Editar
             </Button>
@@ -97,4 +97,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VidrioDetailComponent;
+export default ProductDetailComponent;

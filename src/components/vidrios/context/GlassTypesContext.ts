@@ -1,14 +1,14 @@
 import {createContext} from 'react';
-import GlassTypeList from '../../../models/ProductsList';
-import Vidrio from '../../../models/Product';
+import Product from '../../../models/Product';
+import ProductList from '../../../models/ProductsList';
 
 export interface ContextTypes {
-  listaVidrios: GlassTypeList | null;
-  addGlassType: (newGlass: Vidrio) => void;
-  updateGlassType: (glassId: string, newGlass: Vidrio) => void;
-  deleteGlassType: (glassId: string) => void;
+  productsList: ProductList | null;
+  addProduct: (newProduct: Product) => void;
+  updateProduct: (productId: string, newProduct: Product) => void;
+  deleteProduct: (productId: string) => void;
 }
 
-const GlassTypesContext = createContext<ContextTypes | null>(null);
+const ProductsContext = createContext<ContextTypes | null>(null);
 
-export default GlassTypesContext;
+export default ProductsContext;

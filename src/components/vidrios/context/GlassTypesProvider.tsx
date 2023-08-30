@@ -1,72 +1,75 @@
 import {useState, useEffect, useRef} from 'react';
-import GlassTypesContext from './GlassTypesContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Vidrio from '../../../models/Product';
-import GlassTypeList from '../../../models/ProductsList';
+import Product from '../../../models/Product';
+import ProductsList from '../../../models/ProductsList';
+import ProductsContext from './GlassTypesContext';
+import {useSnackBar} from '../../snack-bar/SnackBarContext';
 
-const GlassTypesProvider = ({children}: {children: React.ReactNode}) => {
-  const [listaVidrios, setListaVidrios] = useState<Map<string, Vidrio>>(
+const ProductsProvider = ({children}: {children: React.ReactNode}) => {
+  const [productsList, setProductsList] = useState<Map<string, Product>>(
     new Map(),
   );
 
-  const listaClass = useRef(new GlassTypeList(listaVidrios));
+  const listaClass = useRef(new ProductsList(productsList));
+
+  const {showSnackMessage} = useSnackBar();
 
   useEffect(() => {
-    loadListaVidrios();
+    loadProductsList();
   }, []);
 
-  const loadListaVidrios = async () => {
+  const loadProductsList = async () => {
     try {
       const storedProducts = await AsyncStorage.getItem('products');
       if (storedProducts) {
         const deserializedArray = JSON.parse(storedProducts);
-        const reconstructedMap = new Map<string, Vidrio>(deserializedArray);
-        listaClass.current = new GlassTypeList(reconstructedMap);
-        setListaVidrios(reconstructedMap);
+        const reconstructedMap = new Map<string, Product>(deserializedArray);
+        listaClass.current = new ProductsList(reconstructedMap);
+        setProductsList(reconstructedMap);
       }
     } catch (error) {
-      console.error('Error loading products:', error);
+      showSnackMessage('Error loading products: ' + error);
     }
   };
 
-  const storeProducts = async (map: Map<string, Vidrio>) => {
+  const storeProducts = async (map: Map<string, Product>) => {
     const mapAsArray = Array.from(map.entries());
     try {
       await AsyncStorage.setItem('products', JSON.stringify(mapAsArray));
     } catch (error) {
-      console.error('Error loading products:', error);
+      showSnackMessage('Error storing products: ' + error);
     }
   };
 
-  const addGlassType = (newGlassType: Vidrio) => {
-    const updatedList = listaClass.current.addProduct(newGlassType);
-    setListaVidrios(updatedList);
+  const addProduct = (newProduct: Product) => {
+    listaClass.current.addProduct(newProduct);
+    setProductsList(listaClass.current.productsMap);
+    storeProducts(listaClass.current.productsMap);
+  };
+
+  const updateProduct = (id: string, newProduct: Product) => {
+    const updatedList = listaClass.current.updateProduct(id, newProduct);
+    setProductsList(updatedList);
     storeProducts(updatedList);
   };
 
-  const updateGlassType = (id: string, newGlassType: Vidrio) => {
-    const updatedList = listaClass.current.updateProduct(id, newGlassType);
-    setListaVidrios(updatedList);
-    storeProducts(updatedList);
-  };
-
-  const deleteGlassType = (id: string) => {
+  const deleteProduct = (id: string) => {
     const updatedList = listaClass.current.deleteProduct(id);
-    setListaVidrios(updatedList);
+    setProductsList(updatedList);
     storeProducts(updatedList);
   };
 
   return (
-    <GlassTypesContext.Provider
+    <ProductsContext.Provider
       value={{
-        listaVidrios: listaClass.current,
-        addGlassType,
-        updateGlassType,
-        deleteGlassType,
+        productsList: listaClass.current,
+        addProduct,
+        updateProduct,
+        deleteProduct,
       }}>
       {children}
-    </GlassTypesContext.Provider>
+    </ProductsContext.Provider>
   );
 };
 
-export default GlassTypesProvider;
+export default ProductsProvider;

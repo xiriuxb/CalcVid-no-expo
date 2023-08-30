@@ -1,12 +1,10 @@
 import {useContext} from 'react';
 import {View} from 'react-native';
-import GlassPieceModal from './GlassPieceModal';
-import PieceModalContext from './context/PieceModalContext';
+import ItemModalContext from './context/PieceModalContext';
+import ItemModal from './GlassPieceModal';
 const ModalAuxComponent = () => {
-  const {pieceModalVisible} = useContext(PieceModalContext);
-  return (
-    <View>{pieceModalVisible && <GlassPieceModal></GlassPieceModal>}</View>
-  );
+  const {itemModalVisible} = useContext(ItemModalContext);
+  return <View>{itemModalVisible && <ItemModal></ItemModal>}</View>;
 };
 
 export default ModalAuxComponent;
