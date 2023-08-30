@@ -65,7 +65,7 @@ const ItemModal = () => {
   const {addItemToItemsToSell, itemsToSellList, editItemInItemsToSell} =
     useContext(WindowsListContext);
   const glassTypesContext = useContext(GlassTypesContext);
-  const listaVidrios = glassTypesContext!.listaVidrios;
+  const listaVidrios = glassTypesContext!.productsList;
   const {showSnackMessage} = useSnackBar();
   const {setItemModalVisible, editMode, itemsToSellId, setEditMode, itemId} =
     useContext(PieceModalContext);
