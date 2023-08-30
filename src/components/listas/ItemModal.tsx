@@ -1,14 +1,12 @@
-import {useRef, useState, useContext, useEffect, useMemo} from 'react';
+import {useRef, useState, useEffect, useMemo} from 'react';
 import {View, StyleSheet, Modal, Text} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
-import Item from '../../models/Item';
-import Product from '../../models/Product';
+import {Item, Product} from '../../models';
 import globalStyles from '../common/Styles';
-import ItemsToSellListContext from './context/items-to-sell-context/ItemsToSellContext';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
-import ProductsContext from '../vidrios/context/ProductsContext';
-import ItemModalContext from './context/modal-context/ItemModalContext';
+import {useItemModalContext, useItemsToSellContext} from './context';
+import {useProductsContext} from '../vidrios/context';
 
 const listForDropdown = (list: Product[]) => {
   return list.map((el: Product) => {
@@ -63,12 +61,11 @@ const ItemModal = () => {
   const [showDropDown, setShowDropDown] = useState(false);
   //contexts
   const {addItemToItemsToSell, itemsToSellList, editItemInItemsToSell} =
-    useContext(ItemsToSellListContext);
-  const productsContext = useContext(ProductsContext);
-  const productsList = productsContext!.productsList;
+    useItemsToSellContext();
+  const {productsList} = useProductsContext();
   const {showSnackMessage} = useSnackBar();
   const {setItemModalVisible, editMode, itemsToSellId, setEditMode, itemId} =
-    useContext(ItemModalContext);
+    useItemModalContext();
 
   useEffect(() => {
     if (editMode) {

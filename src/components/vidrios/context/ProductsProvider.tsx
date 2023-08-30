@@ -1,11 +1,10 @@
 import {useState, useEffect, useRef} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import Product from '../../../models/Product';
-import ProductsList from '../../../models/ProductsList';
-import ProductsContext from './ProductsContext';
+import {Product, ProductsList} from '../../../models';
 import {useSnackBar} from '../../snack-bar/SnackBarContext';
+import {ProductsContext} from './ProductsContext';
 
-const ProductsProvider = ({children}: {children: React.ReactNode}) => {
+export const ProductsProvider = ({children}: {children: React.ReactNode}) => {
   const [productsList, setProductsList] = useState<Map<string, Product>>(
     new Map(),
   );
@@ -71,5 +70,3 @@ const ProductsProvider = ({children}: {children: React.ReactNode}) => {
     </ProductsContext.Provider>
   );
 };
-
-export default ProductsProvider;

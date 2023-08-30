@@ -1,19 +1,19 @@
-import Ventana from './ItemsToSell';
+import {ItemsToSell} from './ItemsToSell';
 import generateUniqueId from './generateUniqueId';
 
-export default class WindowsList {
+export class WindowsList {
   id: string;
-  list: Ventana[];
+  list: ItemsToSell[];
   constructor() {
     this.id = generateUniqueId();
-    this.list = [new Ventana('Ventana 1', [])];
+    this.list = [new ItemsToSell('Ventana 1', [])];
   }
 
   totalValues(): {totalArea: number; totalCost: number; totalPieces: number} {
     let totalCost = 0;
     let totalArea = 0;
     let totalPieces = 0;
-    this.list.forEach((window: Ventana) => {
+    this.list.forEach((window: ItemsToSell) => {
       totalCost += window.totalPriceA();
       totalArea += window.totalArea();
       totalPieces += window.totalGlasses();

@@ -1,17 +1,16 @@
-import {useState, useContext} from 'react';
+import {useState} from 'react';
 import {ScrollView, View} from 'react-native';
 import {Button} from 'react-native-paper';
 import AddProductModal from './ProductModal';
-import Product from '../../models/Product';
+import {Product} from '../../models';
 import ProductDetailComponent from './ProductDetailComponent';
-import ProductsContext from './context/ProductsContext';
+import {useProductsContext} from './context';
 
 const ProductsView = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [productToEdit, setProductToEdit] = useState<string>('');
-  const productsContext = useContext(ProductsContext);
 
-  const productsList = productsContext!.productsList;
+  const {productsList} = useProductsContext();
 
   const openModal = () => {
     setModalVisible(true);

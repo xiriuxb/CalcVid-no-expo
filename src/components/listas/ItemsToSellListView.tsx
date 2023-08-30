@@ -1,15 +1,13 @@
-import {useContext} from 'react';
 import {TopStatus} from './TopStatus';
 import {ScrollView, View} from 'react-native';
 import {Button} from 'react-native-paper';
 import ModalAuxComponent from './Modal';
-import ItemsToSellListContext from './context/items-to-sell-context/ItemsToSellContext';
-import ItemsToSell from '../../models/ItemsToSell';
+import {ItemsToSell} from '../../models';
 import ItemsToSellDetailComponent from './ItemsToSellDetailComponent';
-import ItemModalProvider from './context/modal-context/ItemModalProvider';
+import {useItemsToSellContext, ItemModalProvider} from './context';
 
 const ListaView = () => {
-  const {itemsToSellList, addItemsToSell} = useContext(ItemsToSellListContext);
+  const {itemsToSellList, addItemsToSell} = useItemsToSellContext();
 
   return (
     <ItemModalProvider>

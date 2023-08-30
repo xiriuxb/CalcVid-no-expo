@@ -1,23 +1,22 @@
-import {useContext} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
 import globalStyles from '../common/Styles';
-import WindowsListContext from './context/items-to-sell-context/ItemsToSellContext';
+import {useItemsToSellContext} from './context';
 
 export const TopStatus = () => {
-  const context = useContext(WindowsListContext);
+  const {totals} = useItemsToSellContext();
   return (
     <View style={styles.container}>
       <Text style={globalStyles.sizedText}>
         <Text style={globalStyles.boldText}>Metros(m²):</Text>
-        {context.totals.totalArea.toFixed(2)}
+        {totals.totalArea.toFixed(2)}
       </Text>
       <Text style={globalStyles.sizedText}>
         <Text style={globalStyles.boldText}>Vidrios:</Text>
-        {context.totals.totalItems}
+        {totals.totalItems}
       </Text>
       <Text style={globalStyles.sizedText}>
         <Text style={globalStyles.boldText}>Precio:</Text>{' '}
-        {context.totals.totalPrice.toFixed(2)}
+        {totals.totalPrice.toFixed(2)}
       </Text>
     </View>
   );

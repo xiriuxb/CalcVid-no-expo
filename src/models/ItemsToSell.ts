@@ -1,8 +1,8 @@
-import Item from './Item';
-import Product from './Product';
+import {Item} from './Item';
+import {Product} from './Product';
 import generateUniqueId from './generateUniqueId';
 
-export default class ItemsToSell {
+export class ItemsToSell {
   private _id: string;
   private _name: string;
   private _items: Map<string, Item>;

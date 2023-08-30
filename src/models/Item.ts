@@ -1,7 +1,7 @@
-import Product from './Product';
+import {Product} from './Product';
 import generateUniqueId from './generateUniqueId';
 
-export default class Item {
+export class Item {
   id: string;
   height: number;
   width: number;

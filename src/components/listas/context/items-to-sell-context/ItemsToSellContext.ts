@@ -1,6 +1,5 @@
 import {createContext} from 'react';
-import ItemsToSell from '../../../../models/ItemsToSell';
-import Item from '../../../../models/Item';
+import {Item, ItemsToSell} from '../../../../models';
 
 interface ContextTypes {
   itemsToSellList: Map<string, ItemsToSell> | null;
@@ -17,7 +16,7 @@ interface ContextTypes {
   reloadTotals: () => void;
 }
 
-const ItemsToSellContext = createContext<ContextTypes>({
+export const ItemsToSellContext = createContext<ContextTypes>({
   itemsToSellList: null,
   addItemsToSell: () => {},
   addItemToItemsToSell: () => {},
@@ -27,5 +26,3 @@ const ItemsToSellContext = createContext<ContextTypes>({
   totals: {totalArea: 0, totalItems: 0, totalPrice: 0},
   reloadTotals: () => {},
 });
-
-export default ItemsToSellContext;

@@ -1,9 +1,8 @@
-import {useContext} from 'react';
 import {View} from 'react-native';
 import ItemModal from './ItemModal';
-import ItemModalContext from './context/modal-context/ItemModalContext';
+import {useItemModalContext} from './context';
 const ModalAuxComponent = () => {
-  const {itemModalVisible} = useContext(ItemModalContext);
+  const {itemModalVisible} = useItemModalContext();
   return <View>{itemModalVisible && <ItemModal></ItemModal>}</View>;
 };
 

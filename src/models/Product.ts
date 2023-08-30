@@ -6,7 +6,7 @@ export interface UnityPricesType {
   priceC?: number;
 }
 
-export default class Product {
+export class Product {
   id: string;
   type: 'unique' | 'calculated';
   name: string;

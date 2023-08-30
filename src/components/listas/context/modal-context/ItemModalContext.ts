@@ -10,7 +10,7 @@ interface ContextTypes {
   itemsToSellId: string;
 }
 
-const ItemModalContext = createContext<ContextTypes>({
+export const ItemModalContext = createContext<ContextTypes>({
   itemModalVisible: false,
   setItemModalVisible: () => {},
   editMode: false,
@@ -19,5 +19,3 @@ const ItemModalContext = createContext<ContextTypes>({
   setItemId: () => {},
   itemsToSellId: '',
 });
-
-export default ItemModalContext;

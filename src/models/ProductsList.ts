@@ -1,6 +1,6 @@
-import Product from './Product';
+import {Product} from './Product';
 
-export default class ProductsList {
+export class ProductsList {
   productsMap: Map<string, Product>;
 
   constructor(productMap: Map<string, Product>) {

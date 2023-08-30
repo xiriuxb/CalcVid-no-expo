@@ -1,14 +1,11 @@
 import {createContext} from 'react';
-import Product from '../../../models/Product';
-import ProductList from '../../../models/ProductsList';
+import {Product, ProductsList} from '../../../models';
 
 export interface ContextTypes {
-  productsList: ProductList | null;
+  productsList: ProductsList | null;
   addProduct: (newProduct: Product) => void;
   updateProduct: (productId: string, newProduct: Product) => void;
   deleteProduct: (productId: string) => void;
 }
 
-const ProductsContext = createContext<ContextTypes | null>(null);
-
-export default ProductsContext;
+export const ProductsContext = createContext<ContextTypes | null>(null);

@@ -1,9 +1,12 @@
 import {useState, useEffect} from 'react';
-import ItemsToSell from '../../../../models/ItemsToSell';
-import ItemsToSellContext from './ItemsToSellContext';
-import Item from '../../../../models/Item';
+import {ItemsToSellContext} from './ItemsToSellContext';
+import {Item, ItemsToSell} from '../../../../models';
 
-const ItemsToSellListProvider = ({children}: {children: React.ReactNode}) => {
+export const ItemsToSellListProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [itemsToSellList, setItemsToSellList] = useState<
     Map<string, ItemsToSell>
   >(new Map());
@@ -97,5 +100,3 @@ const ItemsToSellListProvider = ({children}: {children: React.ReactNode}) => {
     </ItemsToSellContext.Provider>
   );
 };
-
-export default ItemsToSellListProvider;

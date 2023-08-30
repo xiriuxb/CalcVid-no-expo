@@ -1,4 +1,4 @@
-import {useState, useContext} from 'react';
+import {useState} from 'react';
 import {Button} from 'react-native-paper';
 import {
   View,
@@ -8,8 +8,8 @@ import {
   Alert,
 } from 'react-native';
 import globalStyles from '../common/Styles';
-import Product from '../../models/Product';
-import ProductsContext from './context/ProductsContext';
+import {Product} from '../../models';
+import {useProductsContext} from './context';
 
 interface props {
   product: Product;
@@ -19,8 +19,7 @@ interface props {
 const ProductDetailComponent = ({product, toEdit}: props) => {
   const [showDetails, setShowDetails] = useState(false);
 
-  const productsContext = useContext(ProductsContext);
-  const deleteProduct = productsContext!.deleteProduct;
+  const {deleteProduct} = useProductsContext();
 
   const onTouch = () => {
     setShowDetails(!showDetails);

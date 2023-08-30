@@ -1,11 +1,11 @@
-import {useEffect, useRef, useState, useContext, useCallback} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {View, StyleSheet, Modal, Text} from 'react-native';
-import Product, {UnityPricesType} from '../../models/Product';
+import {Product, UnityPricesType} from '../../models';
 import {Button, TextInput, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import SnackBarComponent from '../snack-bar/SnackBar';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
-import ProductsContext from './context/ProductsContext';
+import {useProductsContext} from './context';
 
 interface props {
   modalVisible: boolean;
@@ -42,10 +42,7 @@ const ProductModal = ({modalVisible, closeModal, editProductId}: props) => {
   const [showOptional, setShowOptional] = useState(false);
   const showOptionalBtnMessage = useRef('Más...');
   //contexts
-  const productContext = useContext(ProductsContext);
-  const productsList = productContext!.productsList;
-  const addProduct = productContext!.addProduct;
-  const updateProduct = productContext!.updateProduct;
+  const {productsList, addProduct, updateProduct} = useProductsContext();
 
   useEffect(() => {
     console.log('editProd');

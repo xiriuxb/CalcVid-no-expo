@@ -1,7 +1,7 @@
 import React, {useState, useRef, useMemo} from 'react';
-import ItemModalContext from './ItemModalContext';
+import {ItemModalContext} from './ItemModalContext';
 
-const ItemModalProvider = React.memo(
+export const ItemModalProvider = React.memo(
   ({children}: {children: React.ReactElement}) => {
     const [itemModalVisible, setItemModalVisible] = useState(false);
     const editMode = useRef(false);
@@ -49,5 +49,3 @@ const ItemModalProvider = React.memo(
     );
   },
 );
-
-export default ItemModalProvider;

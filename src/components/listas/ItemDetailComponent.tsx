@@ -1,10 +1,9 @@
-import {useContext, useMemo} from 'react';
+import {useMemo} from 'react';
 import {Alert, Text, TouchableOpacity, View} from 'react-native';
-import Item from '../../models/Item';
+import {Item} from '../../models/';
 import {TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
-import ItemModalContext from './context/modal-context/ItemModalContext';
-import ItemsToSellListContext from './context/items-to-sell-context/ItemsToSellContext';
+import {useItemModalContext, useItemsToSellContext} from './context';
 
 const ItemDetailComponent = ({
   item,
@@ -13,9 +12,8 @@ const ItemDetailComponent = ({
   item: Item;
   itemsToSellId: string;
 }) => {
-  const {setItemModalVisible, setEditMode, setItemId} =
-    useContext(ItemModalContext);
-  const {deleteItem, reloadTotals} = useContext(ItemsToSellListContext);
+  const {setItemModalVisible, setEditMode, setItemId} = useItemModalContext();
+  const {deleteItem, reloadTotals} = useItemsToSellContext();
 
   const changePrice = useMemo(() => {
     return () => {

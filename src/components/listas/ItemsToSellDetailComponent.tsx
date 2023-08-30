@@ -1,19 +1,17 @@
 import {View, Text, StyleSheet, Alert} from 'react-native';
 import {Button, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
-import ItemsToSell from '../../models/ItemsToSell';
-import {useContext} from 'react';
-import ItemsToSellListContext from './context/items-to-sell-context/ItemsToSellContext';
+import {ItemsToSell} from '../../models';
 import ItemDetailComponent from './ItemDetailComponent';
-import ItemModalContext from './context/modal-context/ItemModalContext';
+import {useItemModalContext, useItemsToSellContext} from './context';
 
 interface props {
   itemsToSell: ItemsToSell;
 }
 
 const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
-  const {removeItemsToSell} = useContext(ItemsToSellListContext);
-  const {setItemModalVisible} = useContext(ItemModalContext);
+  const {removeItemsToSell} = useItemsToSellContext();
+  const {setItemModalVisible} = useItemModalContext();
 
   const changeCurrentWindow = () => {
     setItemModalVisible(true, itemsToSell.id);
