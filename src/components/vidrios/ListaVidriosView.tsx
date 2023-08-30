@@ -1,17 +1,17 @@
 import {useState, useContext} from 'react';
 import {ScrollView, View} from 'react-native';
 import {Button} from 'react-native-paper';
-import GlassTypesContext from './context/GlassTypesContext';
 import AddProductModal from './AddVidrioModal';
 import Product from '../../models/Product';
 import ProductDetailComponent from './VidrioDetailComponent';
+import ProductsContext from './context/GlassTypesContext';
 
 const ProductsView = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [productToEdit, setProductToEdit] = useState<string>('');
-  const glassTypeContext = useContext(GlassTypesContext);
+  const productsContext = useContext(ProductsContext);
 
-  const productsList = glassTypeContext!.productsList;
+  const productsList = productsContext!.productsList;
 
   const openModal = () => {
     setModalVisible(true);

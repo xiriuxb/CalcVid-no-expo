@@ -73,9 +73,9 @@ const ItemsToSellListProvider = ({children}: {children: React.ReactNode}) => {
     setItemsToSellList(newMap);
   };
 
-  const deleteItem = (itemsToSellId: string, glassPieceId: string) => {
+  const deleteItem = (itemsToSellId: string, itemId: string) => {
     const itemsToSell = itemsToSellList.get(itemsToSellId);
-    const newItemsToSell = itemsToSell!.deleteItem(glassPieceId);
+    const newItemsToSell = itemsToSell!.deleteItem(itemId);
     const newMap = new Map(itemsToSellList);
     newMap.set(itemsToSellId, newItemsToSell);
     setItemsToSellList(newMap);

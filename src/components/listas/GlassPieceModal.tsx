@@ -5,10 +5,10 @@ import DropDownPicker from 'react-native-dropdown-picker';
 import Item from '../../models/Item';
 import Product from '../../models/Product';
 import globalStyles from '../common/Styles';
-import WindowsListContext from './context/WindowsListContext';
+import ItemsToSellListContext from './context/WindowsListContext';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
 import PieceModalContext from './context/PieceModalContext';
-import GlassTypesContext from '../vidrios/context/GlassTypesContext';
+import ProductsContext from '../vidrios/context/GlassTypesContext';
 
 const listForDropdown = (list: Product[]) => {
   return list.map((el: Product) => {
@@ -24,14 +24,14 @@ const listForDropdown = (list: Product[]) => {
   });
 };
 
-const createGlassPiece = (
+const createItem = (
   width: string,
   height: string,
   quantity: string,
-  glass: Product,
+  product: Product,
 ): Item => {
   return new Item(
-    glass,
+    product,
     parseFloat(quantity),
     parseFloat(height),
     parseFloat(width),
@@ -63,9 +63,9 @@ const ItemModal = () => {
   const [showDropDown, setShowDropDown] = useState(false);
   //contexts
   const {addItemToItemsToSell, itemsToSellList, editItemInItemsToSell} =
-    useContext(WindowsListContext);
-  const glassTypesContext = useContext(GlassTypesContext);
-  const listaVidrios = glassTypesContext!.productsList;
+    useContext(ItemsToSellListContext);
+  const productsContext = useContext(ProductsContext);
+  const productsList = productsContext!.productsList;
   const {showSnackMessage} = useSnackBar();
   const {setItemModalVisible, editMode, itemsToSellId, setEditMode, itemId} =
     useContext(PieceModalContext);
@@ -87,7 +87,7 @@ const ItemModal = () => {
   }, [editMode]);
 
   const getTipoVidrioObject = (prodId: string) => {
-    const vidrio = listaVidrios!.getProduct(prodId);
+    const vidrio = productsList!.getProduct(prodId);
     if (vidrio) {
       return vidrio;
     } else {
@@ -111,7 +111,7 @@ const ItemModal = () => {
   const handleAddPiece = () => {
     const product = getTipoVidrioObject(tipoVidrioId);
     if (product) {
-      const newPiece = createGlassPiece(width, height, quantity, product);
+      const newPiece = createItem(width, height, quantity, product);
       addItemToItemsToSell(itemsToSellId, newPiece);
       showSnackMessage('Agregado', 500);
     }
@@ -124,7 +124,7 @@ const ItemModal = () => {
   const updateproduct = () => {
     const product = getTipoVidrioObject(tipoVidrioId);
     if (product) {
-      const newPiece = createGlassPiece(width, height, quantity, product);
+      const newPiece = createItem(width, height, quantity, product);
       editItemInItemsToSell(itemsToSellId, itemId, newPiece);
       setItemModalVisible(false);
     }
@@ -155,7 +155,7 @@ const ItemModal = () => {
           listMode="FLATLIST"
           style={[styles.input, {alignSelf: 'center'}]}
           mode="BADGE"
-          items={listForDropdown(listaVidrios!.getProductsArray())}
+          items={listForDropdown(productsList!.getProductsArray())}
           value={tipoVidrioId}
           setValue={setTipoVidrioId}
           labelProps={{style: {fontSize: 17, color: '#000'}}}

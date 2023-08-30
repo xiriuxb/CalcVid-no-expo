@@ -5,7 +5,7 @@ import Item from '../../../models/Item';
 interface ContextTypes {
   itemsToSellList: Map<string, ItemsToSell> | null;
   addItemsToSell: () => void;
-  addItemToItemsToSell: (windowId: string, newGlassPiece: Item) => void;
+  addItemToItemsToSell: (windowId: string, newItem: Item) => void;
   removeItemsToSell: (id: string) => void;
   editItemInItemsToSell: (
     itemsToSellId: string,

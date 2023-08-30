@@ -27,8 +27,8 @@ export default class ProductsList {
     if (!this.productsMap.has(productId)) {
       throw new Error(`Product with ID ${productId} does not exist.`);
     }
-    const tempGlass = this.productsMap.get(productId);
-    const updatedProduct = tempGlass!.editProduct(
+    const tempProduct = this.productsMap.get(productId);
+    const updatedProduct = tempProduct!.editProduct(
       newProduct.name,
       newProduct.type,
       newProduct.height,

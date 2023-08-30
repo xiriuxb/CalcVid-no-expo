@@ -19,8 +19,8 @@ interface props {
 const ProductDetailComponent = ({product, toEdit}: props) => {
   const [showDetails, setShowDetails] = useState(false);
 
-  const glassTypeContext = useContext(ProductsContext);
-  const deleteProduct = glassTypeContext!.deleteProduct;
+  const productsContext = useContext(ProductsContext);
+  const deleteProduct = productsContext!.deleteProduct;
 
   const onTouch = () => {
     setShowDetails(!showDetails);
