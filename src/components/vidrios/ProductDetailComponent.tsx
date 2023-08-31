@@ -10,34 +10,40 @@ import {
 import globalStyles from '../common/Styles';
 import {Product} from '../../models';
 import {useProductsContext} from './context/products-context';
+import {useProductModalContext} from './context/product-modal-context';
 
 interface props {
   product: Product;
-  toEdit: (productName: string) => void;
 }
 
-const ProductDetailComponent = ({product, toEdit}: props) => {
+const createTwoButtonAlert = (onOkCallback: (id: any) => void) => {
+  Alert.alert('Eliminar', 'Quiere eliminar el producto', [
+    {
+      text: 'Cancelar',
+      style: 'cancel',
+    },
+    {text: 'OK', onPress: onOkCallback},
+  ]);
+};
+
+const ProductDetailComponent = ({product}: props) => {
   const [showDetails, setShowDetails] = useState(false);
 
   const {deleteProduct} = useProductsContext();
+  const {setProductModalVisible, setEditProductId} = useProductModalContext();
 
-  const onTouch = () => {
+  const handleShowDetails = () => {
     setShowDetails(!showDetails);
   };
 
-  const createTwoButtonAlert = () => {
-    Alert.alert('Eliminar', 'Quiere eliminar el producto', [
-      {
-        text: 'Cancelar',
-        style: 'cancel',
-      },
-      {text: 'OK', onPress: () => deleteProduct(product.id)},
-    ]);
+  const handleToEdit = () => {
+    setProductModalVisible(true);
+    setEditProductId(product.id);
   };
 
   return (
     <View style={styles.ventana}>
-      <TouchableNativeFeedback onPress={onTouch}>
+      <TouchableNativeFeedback onPress={handleShowDetails}>
         <Text style={styles.name}>{product.name}</Text>
       </TouchableNativeFeedback>
       {showDetails && (
@@ -63,14 +69,17 @@ const ProductDetailComponent = ({product, toEdit}: props) => {
             {product.unityPrices.priceC}
           </Text>
           <View style={[globalStyles.buttonGroup, globalStyles.centered]}>
-            <Button textColor={'#d15656'} onPress={createTwoButtonAlert}>
+            <Button
+              textColor={'#d15656'}
+              onPress={() =>
+                createTwoButtonAlert(() => deleteProduct(product.id))
+              }>
               Eliminar
             </Button>
             <Button
               textColor="white"
               buttonColor="#007bff"
-              onPress={() => toEdit(product.id)}>
-              {' '}
+              onPress={() => handleToEdit()}>
               Editar
             </Button>
           </View>

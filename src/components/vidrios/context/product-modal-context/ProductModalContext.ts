@@ -1,11 +1,12 @@
 import {createContext} from 'react';
 
-interface ProductModalTypes {
+interface ProdModalContextTypes {
   productModalVisible: boolean;
-  setProductModalVisible: () => void;
+  setProductModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   editProductId: string;
+  setEditProductId: (id: string) => void;
 }
 
-export const ProductModalContext = createContext<ProductModalTypes | null>(
+export const ProductModalContext = createContext<ProdModalContextTypes | null>(
   null,
 );

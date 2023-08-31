@@ -6,12 +6,7 @@ import globalStyles from '../common/Styles';
 import SnackBarComponent from '../snack-bar/SnackBar';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
 import {useProductsContext} from './context/products-context';
-
-interface props {
-  modalVisible: boolean;
-  closeModal: () => void;
-  editProductId: string;
-}
+import {useProductModalContext} from './context/product-modal-context';
 
 const handleNextInput = (nextInputRef: React.MutableRefObject<any>) => {
   if (nextInputRef && nextInputRef.current) {
@@ -19,7 +14,7 @@ const handleNextInput = (nextInputRef: React.MutableRefObject<any>) => {
   }
 };
 
-const ProductModal = ({modalVisible, closeModal, editProductId}: props) => {
+const ProductModal = () => {
   // form
   const [name, onChangeName] = useState('');
   const [width, onChangeWidth] = useState('');
@@ -44,6 +39,8 @@ const ProductModal = ({modalVisible, closeModal, editProductId}: props) => {
   const showOptionalBtnMessage = useRef('Más...');
   //contexts
   const {productsList, addProduct, updateProduct} = useProductsContext();
+  const {editProductId, setProductModalVisible, setEditProductId} =
+    useProductModalContext();
 
   useEffect(() => {
     console.log('editProd');
@@ -60,7 +57,7 @@ const ProductModal = ({modalVisible, closeModal, editProductId}: props) => {
         onChangePriceC(`${editProduct.current.unityPrices.priceC}`);
       }
       return () => {
-        editProductId = '';
+        setEditProductId('');
       };
     }
   }, [editProductId]);
@@ -130,7 +127,7 @@ const ProductModal = ({modalVisible, closeModal, editProductId}: props) => {
 
   const atCancel = () => {
     cleanInputs();
-    closeModal();
+    setProductModalVisible(false);
   };
 
   const cleanInputs = () => {
@@ -153,7 +150,7 @@ const ProductModal = ({modalVisible, closeModal, editProductId}: props) => {
   };
 
   return (
-    <Modal visible={modalVisible} animationType="fade" transparent={true}>
+    <Modal animationType="fade" transparent={true}>
       {snackMessage && <SnackBarComponent></SnackBarComponent>}
       <View style={styles.modalContainer}>
         <Text style={styles.modalText}>Nuevo vidrio</Text>
