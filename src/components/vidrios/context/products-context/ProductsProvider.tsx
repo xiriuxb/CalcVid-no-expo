@@ -45,12 +45,14 @@ export const ProductsProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const addProduct = (newProduct: Product) => {
+    console.log(newProduct);
     listaClass.current.addProduct(newProduct);
     setProductsList(listaClass.current.productsMap);
     storeProducts(listaClass.current.productsMap);
   };
 
   const updateProduct = (id: string, newProduct: Product) => {
+    console.log(newProduct);
     const updatedList = listaClass.current.updateProduct(id, newProduct);
     setProductsList(updatedList);
     storeProducts(updatedList);
