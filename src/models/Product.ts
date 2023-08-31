@@ -23,10 +23,11 @@ export class Product {
     height: number = 0,
     width: number = 0,
   ) {
-    if (!unityPrices.priceB) {
+    if (!unityPrices.priceB || isNaN(unityPrices.priceB)) {
+      console.log(unityPrices.priceB);
       unityPrices.priceB = 0;
     }
-    if (!unityPrices.priceC) {
+    if (!unityPrices.priceC || isNaN(unityPrices.priceC)) {
       unityPrices.priceC = 0;
     }
 

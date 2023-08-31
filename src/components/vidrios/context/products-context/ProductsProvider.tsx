@@ -17,6 +17,10 @@ export const ProductsProvider = ({children}: {children: React.ReactNode}) => {
     loadProductsList();
   }, []);
 
+  useEffect(() => {
+    console.log('lista seteada');
+  }, [productsList]);
+
   const loadProductsList = async () => {
     try {
       const storedProducts = await AsyncStorage.getItem('products');
