@@ -1,7 +1,7 @@
 import {useState, useEffect, useRef} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Product, ProductsList} from '../../../models';
-import {useSnackBar} from '../../snack-bar/SnackBarContext';
+import {Product, ProductsList} from '../../../../models';
+import {useSnackBar} from '../../../snack-bar/SnackBarContext';
 import {ProductsContext} from './ProductsContext';
 
 export const ProductsProvider = ({children}: {children: React.ReactNode}) => {

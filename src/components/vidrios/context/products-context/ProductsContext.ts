@@ -1,5 +1,5 @@
 import {createContext} from 'react';
-import {Product, ProductsList} from '../../../models';
+import {Product, ProductsList} from '../../../../models';
 
 export interface ContextTypes {
   productsList: ProductsList | null;

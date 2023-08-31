@@ -4,7 +4,7 @@ import {Button} from 'react-native-paper';
 import AddProductModal from './ProductModal';
 import {Product} from '../../models';
 import ProductDetailComponent from './ProductDetailComponent';
-import {useProductsContext} from './context';
+import {useProductsContext} from './context/products-context';
 
 const ProductsView = () => {
   const [modalVisible, setModalVisible] = useState(false);

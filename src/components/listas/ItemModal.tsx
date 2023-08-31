@@ -6,7 +6,7 @@ import {Item, Product} from '../../models';
 import globalStyles from '../common/Styles';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
 import {useItemModalContext, useItemsToSellContext} from './context';
-import {useProductsContext} from '../vidrios/context';
+import {useProductsContext} from '../vidrios/context/products-context';
 
 const listForDropdown = (list: Product[]) => {
   return list.map((el: Product) => {

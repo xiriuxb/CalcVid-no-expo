@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import globalStyles from '../common/Styles';
 import {Product} from '../../models';
-import {useProductsContext} from './context';
+import {useProductsContext} from './context/products-context';
 
 interface props {
   product: Product;
@@ -25,7 +25,7 @@ const ProductDetailComponent = ({product, toEdit}: props) => {
     setShowDetails(!showDetails);
   };
 
-  const createTwoButtonAlert = () =>
+  const createTwoButtonAlert = () => {
     Alert.alert('Eliminar', 'Quiere eliminar el producto', [
       {
         text: 'Cancelar',
@@ -33,6 +33,7 @@ const ProductDetailComponent = ({product, toEdit}: props) => {
       },
       {text: 'OK', onPress: () => deleteProduct(product.id)},
     ]);
+  };
 
   return (
     <View style={styles.ventana}>

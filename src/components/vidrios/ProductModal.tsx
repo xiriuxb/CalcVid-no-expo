@@ -5,7 +5,7 @@ import {Button, TextInput, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import SnackBarComponent from '../snack-bar/SnackBar';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
-import {useProductsContext} from './context';
+import {useProductsContext} from './context/products-context';
 
 interface props {
   modalVisible: boolean;
@@ -37,6 +37,7 @@ const ProductModal = ({modalVisible, closeModal, editProductId}: props) => {
   const priceBRef = useRef(null);
   const priceCRef = useRef(null);
   const editMode = useRef(false);
+  const editProduct = useRef<Product | null>(null);
   // optional form
   const {snackMessage, showSnackMessage} = useSnackBar();
   const [showOptional, setShowOptional] = useState(false);
@@ -48,15 +49,15 @@ const ProductModal = ({modalVisible, closeModal, editProductId}: props) => {
     console.log('editProd');
     if (editProductId) {
       editMode.current = true;
-      const editProduct = productsList!.getProduct(editProductId);
+      editProduct.current = productsList!.getProduct(editProductId)!;
       if (editProduct) {
-        onChangeName(`${editProduct.name}`);
-        onChangeHeight(`${editProduct.height}`);
-        onChangeWidth(`${editProduct.width}`);
-        onChangeTotalPrice(`${editProduct.totalPrice}`);
-        onChangePriceA(`${editProduct.unityPrices.priceA}`);
-        onChangePriceB(`${editProduct.unityPrices.priceB}`);
-        onChangePriceC(`${editProduct.unityPrices.priceC}`);
+        onChangeName(`${editProduct.current.name}`);
+        onChangeHeight(`${editProduct.current.height}`);
+        onChangeWidth(`${editProduct.current.width}`);
+        onChangeTotalPrice(`${editProduct.current.totalPrice}`);
+        onChangePriceA(`${editProduct.current.unityPrices.priceA}`);
+        onChangePriceB(`${editProduct.current.unityPrices.priceB}`);
+        onChangePriceC(`${editProduct.current.unityPrices.priceC}`);
       }
       return () => {
         editProductId = '';
@@ -103,28 +104,26 @@ const ProductModal = ({modalVisible, closeModal, editProductId}: props) => {
     if (priceA === '' || name === '') {
       showSnackMessage('Faltan datos', 2000);
     } else {
-      if (editProductId && editMode) {
-        const mismoNombre = productsList?.productExistByName(name.trim());
-        if (mismoNombre) {
-          showSnackMessage('Ya existe ese nombre', 2000);
-        } else {
-          const prices: UnityPricesType = {
-            priceA: parseFloat(priceA),
-            priceB: parseFloat(priceB),
-            priceC: parseFloat(priceC),
-          };
-          const newProduct = new Product(
-            name.trim(),
-            'calculated',
-            prices,
-            parseFloat(totalPrice),
-            parseInt(height),
-            parseInt(width),
-          );
-          updateProduct(editProductId, newProduct);
-          showSnackMessage('Actualizado', 500);
-          atCancel();
-        }
+      const mismoNombre = productsList?.productExistByName(name.trim());
+      if (false) {
+        showSnackMessage('Ya existe ese nombre', 2000);
+      } else {
+        const prices: UnityPricesType = {
+          priceA: parseFloat(priceA),
+          priceB: parseFloat(priceB),
+          priceC: parseFloat(priceC),
+        };
+        const newProduct = new Product(
+          name.trim(),
+          'calculated',
+          prices,
+          parseFloat(totalPrice),
+          parseInt(height),
+          parseInt(width),
+        );
+        updateProduct(editProductId, newProduct);
+        showSnackMessage('Actualizado', 500);
+        atCancel();
       }
     }
   };
@@ -146,7 +145,7 @@ const ProductModal = ({modalVisible, closeModal, editProductId}: props) => {
   };
 
   const addOrUpdate = () => {
-    if (editMode.current) {
+    if (editMode.current && editMode) {
       handleUpdateProduct();
     } else {
       handleAddProduct();
