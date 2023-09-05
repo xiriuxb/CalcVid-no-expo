@@ -20,7 +20,6 @@ export class ProductsList {
       throw new Error(`Product with ID ${productId} does not exist.`);
     }
     this.productsMap.delete(productId);
-    return this.productsMap;
   }
 
   updateProduct(productId: string, newProduct: Product) {
@@ -28,16 +27,17 @@ export class ProductsList {
       throw new Error(`Product with ID ${productId} does not exist.`);
     }
     const tempProduct = this.productsMap.get(productId);
-    const updatedProduct = tempProduct!.editProduct(
-      newProduct.name,
-      newProduct.type,
-      newProduct.height,
-      newProduct.width,
-      newProduct.totalPrice,
-      newProduct.unityPrices,
-    );
-    this.productsMap.set(productId, updatedProduct);
-    return this.productsMap;
+    if (tempProduct){
+      const updatedProduct = tempProduct!.editProduct(
+        newProduct.name,
+        newProduct.type,
+        newProduct.height,
+        newProduct.width,
+        newProduct.totalPrice,
+        newProduct.unityPrices,
+      );
+      this.productsMap.set(productId, updatedProduct);
+    }
   }
 
   addProduct(newProduct: Product) {
@@ -45,7 +45,6 @@ export class ProductsList {
       throw new Error('Duplicated name');
     }
     this.productsMap.set(newProduct.id, newProduct);
-    return this.productsMap;
   }
 
   productExistByName(productName: string) {

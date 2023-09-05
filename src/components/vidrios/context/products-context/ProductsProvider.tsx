@@ -4,10 +4,34 @@ import {Product, ProductsList} from '../../../../models';
 import {useSnackBar} from '../../../snack-bar/SnackBarContext';
 import {ProductsContext} from './ProductsContext';
 
+const storeProducts = async (map: Map<string, Product>, onErrorCallback:()=>void) => {
+  const mapAsArray = Array.from(map.entries());
+  try {
+    await AsyncStorage.setItem('products', JSON.stringify(mapAsArray));
+  } catch (error) {
+    ()=>onErrorCallback()
+  }
+};
+
+const getProductsFromStorage = async (onErrorCallback:()=>void) => {
+  try{
+    const storedProducts = await AsyncStorage.getItem('products');
+    if (storedProducts === null) {
+      onErrorCallback()
+    } else {
+      const deserializedArray = JSON.parse(storedProducts);
+      return new Map<string, Product>(deserializedArray);
+    }
+  } catch (e){
+    onErrorCallback()
+  }
+}
+
 export const ProductsProvider = ({children}: {children: React.ReactNode}) => {
   const [productsList, setProductsList] = useState<Map<string, Product>>(
     new Map(),
   );
+  const [errorAtLoadingProducts,setErrorAtLoadingProducts] = useState(false)
 
   const listaClass = useRef(new ProductsList(productsList));
 
@@ -18,50 +42,47 @@ export const ProductsProvider = ({children}: {children: React.ReactNode}) => {
   }, []);
 
   useEffect(() => {
-    console.log('lista seteada');
+    listaClass.current = new ProductsList(productsList)
   }, [productsList]);
 
-  const loadProductsList = async () => {
-    try {
-      const storedProducts = await AsyncStorage.getItem('products');
-      if (storedProducts) {
-        const deserializedArray = JSON.parse(storedProducts);
-        const reconstructedMap = new Map<string, Product>(deserializedArray);
-        listaClass.current = new ProductsList(reconstructedMap);
-        setProductsList(reconstructedMap);
+  const loadProductsList =async ()=>{
+    const val = await getProductsFromStorage(handleErrorAtListLoad)
+      if(val!=undefined){
+        setProductsList(new Map(val));
+        listaClass.current = new ProductsList(val);
       }
-    } catch (error) {
-      showSnackMessage('Error loading products: ' + error);
-    }
-  };
+  }
 
-  const storeProducts = async (map: Map<string, Product>) => {
-    const mapAsArray = Array.from(map.entries());
-    try {
-      await AsyncStorage.setItem('products', JSON.stringify(mapAsArray));
-    } catch (error) {
-      showSnackMessage('Error storing products: ' + error);
-    }
-  };
+  const handleErrorAtListLoad = ()=>{
+    showSnackMessage('Error al cargar productos');
+    setErrorAtLoadingProducts(true);
+  }
 
   const addProduct = (newProduct: Product) => {
-    console.log(newProduct);
-    listaClass.current.addProduct(newProduct);
-    setProductsList(listaClass.current.productsMap);
-    storeProducts(listaClass.current.productsMap);
+    listaClass.current.addProduct(newProduct)
+    storeProducts(listaClass.current.productsMap,()=> {showSnackMessage('error loading products')})
+    .then(()=>{
+      setProductsList(new Map(listaClass.current.productsMap))
+    });
+    showSnackMessage('Añadido', 1000)
   };
 
   const updateProduct = (id: string, newProduct: Product) => {
-    console.log(newProduct);
-    const updatedList = listaClass.current.updateProduct(id, newProduct);
-    setProductsList(updatedList);
-    storeProducts(updatedList);
+    listaClass.current.updateProduct(id, newProduct);
+    storeProducts(listaClass.current.productsMap,()=> {showSnackMessage('error loading products')})
+    .then(()=>{
+      setProductsList(new Map(listaClass.current.productsMap))
+    });
+    showSnackMessage('Actualizado', 1000)
   };
 
   const deleteProduct = (id: string) => {
-    const updatedList = listaClass.current.deleteProduct(id);
-    setProductsList(updatedList);
-    storeProducts(updatedList);
+    listaClass.current.deleteProduct(id);
+    storeProducts(listaClass.current.productsMap,()=> {showSnackMessage('error loading products')})
+    .then(()=>{
+      setProductsList(new Map(listaClass.current.productsMap))
+    });
+    showSnackMessage('Eliminado', 1000)
   };
 
   return (
@@ -71,6 +92,7 @@ export const ProductsProvider = ({children}: {children: React.ReactNode}) => {
         addProduct,
         updateProduct,
         deleteProduct,
+        errorAtLoadingProducts
       }}>
       {children}
     </ProductsContext.Provider>

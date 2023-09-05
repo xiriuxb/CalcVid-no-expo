@@ -24,7 +24,6 @@ export class Product {
     width: number = 0,
   ) {
     if (!unityPrices.priceB || isNaN(unityPrices.priceB)) {
-      console.log(unityPrices.priceB);
       unityPrices.priceB = 0;
     }
     if (!unityPrices.priceC || isNaN(unityPrices.priceC)) {

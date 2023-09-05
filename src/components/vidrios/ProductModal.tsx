@@ -3,7 +3,6 @@ import {View, StyleSheet, Modal, Text} from 'react-native';
 import {Product, UnityPricesType} from '../../models';
 import {Button, TextInput, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
-import SnackBarComponent from '../snack-bar/SnackBar';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
 import {useProductsContext} from './context/products-context';
 import {useProductModalContext} from './context/product-modal-context';
@@ -34,7 +33,7 @@ const ProductModal = () => {
   const editMode = useRef(false);
   const editProduct = useRef<Product | null>(null);
   // optional form
-  const {snackMessage, showSnackMessage} = useSnackBar();
+  const {showSnackMessage} = useSnackBar();
   const [showOptional, setShowOptional] = useState(false);
   const showOptionalBtnMessage = useRef('Más...');
   //contexts
@@ -43,7 +42,6 @@ const ProductModal = () => {
     useProductModalContext();
 
   useEffect(() => {
-    console.log('editProd');
     if (editProductId) {
       editMode.current = true;
       editProduct.current = productsList!.getProduct(editProductId)!;
@@ -79,19 +77,19 @@ const ProductModal = () => {
       } else {
         const prices: UnityPricesType = {
           priceA: parseFloat(priceA),
-          priceB: parseFloat(priceB),
-          priceC: parseFloat(priceC),
+          priceB: priceB ? parseFloat(priceB) : 0,
+          priceC: priceC ? parseFloat(priceC) : 0,
         };
         const product = new Product(
           name.trim(),
           'calculated',
           prices,
-          parseFloat(totalPrice),
-          parseInt(height),
-          parseInt(width),
+          totalPrice ? parseFloat(totalPrice) : 0,
+          height ? parseFloat(height) : 0,
+          width ? parseFloat(width) : 0,
         );
         addProduct(product);
-        showSnackMessage('Guardado', 500);
+        //showSnackMessage('Guardado', 500);
         atCancel();
       }
     }
@@ -107,16 +105,16 @@ const ProductModal = () => {
       } else {
         const prices: UnityPricesType = {
           priceA: parseFloat(priceA),
-          priceB: parseFloat(priceB),
-          priceC: parseFloat(priceC),
+          priceB: priceB ? parseFloat(priceB) : 0,
+          priceC: priceC ? parseFloat(priceC) : 0,
         };
         const newProduct = new Product(
           name.trim(),
           'calculated',
           prices,
-          parseFloat(totalPrice),
-          parseInt(height),
-          parseInt(width),
+          totalPrice?parseFloat(totalPrice):0,
+          height?parseFloat(height):0,
+          width?parseFloat(width):0,
         );
         updateProduct(editProductId, newProduct);
         showSnackMessage('Actualizado', 500);
@@ -151,7 +149,6 @@ const ProductModal = () => {
 
   return (
     <Modal animationType="fade" transparent={true}>
-      {snackMessage && <SnackBarComponent></SnackBarComponent>}
       <View style={styles.modalContainer}>
         <Text style={styles.modalText}>Nuevo vidrio</Text>
         <TextInput
