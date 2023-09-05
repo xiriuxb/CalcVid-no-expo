@@ -8,8 +8,8 @@ const Main = () => {
   const {snackMessage} = useSnackBar();
   return (
     <View style={{flex: 1}}>
-      <AppBar></AppBar>
       <ProductsProvider>
+      <AppBar></AppBar>
         <MainRoutesComponent></MainRoutesComponent>
       </ProductsProvider>
       {snackMessage && <SnackBarComponent></SnackBarComponent>}

@@ -26,9 +26,10 @@ export class ProductsList {
     if (!this.productsMap.has(productId)) {
       throw new Error(`Product with ID ${productId} does not exist.`);
     }
-    const tempProduct = this.productsMap.get(productId);
+    const tempProduct = this.getProduct(productId);
+
     if (tempProduct){
-      const updatedProduct = tempProduct!.editProduct(
+      tempProduct.editProduct(
         newProduct.name,
         newProduct.type,
         newProduct.height,
@@ -36,7 +37,7 @@ export class ProductsList {
         newProduct.totalPrice,
         newProduct.unityPrices,
       );
-      this.productsMap.set(productId, updatedProduct);
+      this.productsMap.set(productId, tempProduct);
     }
   }
 

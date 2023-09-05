@@ -33,7 +33,7 @@ export const ProductsProvider = ({children}: {children: React.ReactNode}) => {
   );
   const [errorAtLoadingProducts,setErrorAtLoadingProducts] = useState(false)
 
-  const listaClass = useRef(new ProductsList(productsList));
+  const [listaClass,setListaClass] = useState(new ProductsList(productsList))
 
   const {showSnackMessage} = useSnackBar();
 
@@ -42,14 +42,14 @@ export const ProductsProvider = ({children}: {children: React.ReactNode}) => {
   }, []);
 
   useEffect(() => {
-    listaClass.current = new ProductsList(productsList)
+    setListaClass(new ProductsList(productsList))
   }, [productsList]);
 
   const loadProductsList =async ()=>{
     const val = await getProductsFromStorage(handleErrorAtListLoad)
       if(val!=undefined){
         setProductsList(new Map(val));
-        listaClass.current = new ProductsList(val);
+        setListaClass( new ProductsList(new Map(val)));
       }
   }
 
@@ -59,28 +59,28 @@ export const ProductsProvider = ({children}: {children: React.ReactNode}) => {
   }
 
   const addProduct = (newProduct: Product) => {
-    listaClass.current.addProduct(newProduct)
-    storeProducts(listaClass.current.productsMap,()=> {showSnackMessage('error loading products')})
+    listaClass.addProduct(newProduct)
+    storeProducts(listaClass.productsMap,()=> {showSnackMessage('error loading products')})
     .then(()=>{
-      setProductsList(new Map(listaClass.current.productsMap))
+      setProductsList(new Map(listaClass.productsMap))
     });
     showSnackMessage('Añadido', 1000)
   };
 
   const updateProduct = (id: string, newProduct: Product) => {
-    listaClass.current.updateProduct(id, newProduct);
-    storeProducts(listaClass.current.productsMap,()=> {showSnackMessage('error loading products')})
+    listaClass.updateProduct(id, newProduct);
+    storeProducts(listaClass.productsMap,()=> {showSnackMessage('error loading products')})
     .then(()=>{
-      setProductsList(new Map(listaClass.current.productsMap))
+      setProductsList(new Map(listaClass.productsMap))
     });
     showSnackMessage('Actualizado', 1000)
   };
 
   const deleteProduct = (id: string) => {
-    listaClass.current.deleteProduct(id);
-    storeProducts(listaClass.current.productsMap,()=> {showSnackMessage('error loading products')})
+    listaClass.deleteProduct(id);
+    storeProducts(listaClass.productsMap,()=> {showSnackMessage('error loading products')})
     .then(()=>{
-      setProductsList(new Map(listaClass.current.productsMap))
+      setProductsList(new Map(listaClass.productsMap))
     });
     showSnackMessage('Eliminado', 1000)
   };
@@ -88,7 +88,7 @@ export const ProductsProvider = ({children}: {children: React.ReactNode}) => {
   return (
     <ProductsContext.Provider
       value={{
-        productsList: listaClass.current,
+        productsList: listaClass,
         addProduct,
         updateProduct,
         deleteProduct,

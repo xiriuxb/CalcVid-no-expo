@@ -49,10 +49,9 @@ export class Product {
   ) {
     this.name = name;
     this.type = type;
-    this.height = height;
-    this.width = width;
-    this.totalPrice = totalPrice;
+    this.height = isNaN(height) || !height ? 0 : height;
+    this.width = isNaN(width) || !width ? 0 : width;
+    this.totalPrice = isNaN(totalPrice) || !totalPrice ? 0 : totalPrice;
     this.unityPrices = unityPrices;
-    return this;
   }
 }
