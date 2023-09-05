@@ -23,7 +23,7 @@ export const ItemsToSellListProvider = ({
   const addItemsToSell = () => {
     const newMap = new Map(itemsToSellList);
     const newItemsToSell = new ItemsToSell(
-      `Ventana ${itemsToSellList.size + 1}`,
+      `Lista ${itemsToSellList.size + 1}`,
       new Map(),
     );
     newMap.set(newItemsToSell.id, newItemsToSell);

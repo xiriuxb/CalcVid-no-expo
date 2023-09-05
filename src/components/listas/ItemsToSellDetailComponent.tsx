@@ -18,7 +18,7 @@ const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
   };
 
   const handleDeleteWindow = () => {
-    Alert.alert('Eliminar', '¿Desea eliminar el listado?', [
+    Alert.alert('Eliminar', '¿Desea eliminar la lista?', [
       {text: 'Cancelar', style: 'cancel'},
       {
         text: 'OK',
@@ -79,7 +79,7 @@ const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
           borderTopWidth: 1,
           borderTopColor: 'black',
         }}>
-        <Text>Alto x Ancho = Cant</Text>
+        <Text>Medidas = Cant</Text>
         <Text>Área</Text>
         <Text>Precios</Text>
         <Text>Accion</Text>

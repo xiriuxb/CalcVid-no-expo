@@ -27,7 +27,7 @@ const ListaView = () => {
         <ModalAuxComponent></ModalAuxComponent>
         <View style={{marginVertical: 3, marginHorizontal: 10}}>
           <Button mode="contained-tonal" onPress={addItemsToSell}>
-            Nueva Ventana
+            Nueva Lista
           </Button>
         </View>
       </View>

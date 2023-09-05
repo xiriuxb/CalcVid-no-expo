@@ -89,7 +89,7 @@ const ProductModal = () => {
           width ? parseFloat(width) : 0,
         );
         addProduct(product);
-        //showSnackMessage('Guardado', 500);
+        showSnackMessage('Guardado', 500);
         atCancel();
       }
     }
@@ -100,7 +100,7 @@ const ProductModal = () => {
       showSnackMessage('Faltan datos', 2000);
     } else {
       const mismoNombre = productsList?.productExistByName(name.trim());
-      if (false) {
+      if (mismoNombre && editProduct.current?.name != name) {
         showSnackMessage('Ya existe ese nombre', 2000);
       } else {
         const prices: UnityPricesType = {
@@ -150,7 +150,7 @@ const ProductModal = () => {
   return (
     <Modal animationType="fade" transparent={true}>
       <View style={styles.modalContainer}>
-        <Text style={styles.modalText}>Nuevo vidrio</Text>
+        <Text style={styles.modalText}>Nuevo priducto</Text>
         <TextInput
           ref={nameRef}
           onSubmitEditing={() => handleNextInput(priceARef)}
