@@ -1,4 +1,4 @@
-import {useState, useContext} from 'react';
+import {useState} from 'react';
 import {Button} from 'react-native-paper';
 import {
   View,
@@ -8,65 +8,78 @@ import {
   Alert,
 } from 'react-native';
 import globalStyles from '../common/Styles';
-import Vidrio from '../../models/Vidrio';
-import GlassTypesContext from './context/GlassTypesContext';
+import {Product} from '../../models';
+import {useProductsContext} from './context/products-context';
+import {useProductModalContext} from './context/product-modal-context';
 
 interface props {
-  vidrio: Vidrio;
-  toEdit: (nombreVidrio: string) => void;
+  product: Product;
 }
 
-const VidrioDetailComponent = ({vidrio, toEdit}: props) => {
+const createTwoButtonAlert = (onOkCallback: (id: any) => void) => {
+  Alert.alert('Eliminar', 'Quiere eliminar el producto', [
+    {
+      text: 'Cancelar',
+      style: 'cancel',
+    },
+    {text: 'OK', onPress: onOkCallback},
+  ]);
+};
+
+const ProductDetailComponent = ({product}: props) => {
   const [showDetails, setShowDetails] = useState(false);
 
-  const glassTypeContext = useContext(GlassTypesContext);
-  const deleteGlassType = glassTypeContext!.deleteGlassType;
+  const {deleteProduct} = useProductsContext();
+  const {setProductModalVisible, setEditProductId} = useProductModalContext();
 
-  const onTouch = () => {
+  const handleShowDetails = () => {
     setShowDetails(!showDetails);
   };
 
-  const createTwoButtonAlert = () =>
-    Alert.alert('Eliminar', 'Quiere eliminar el producto', [
-      {
-        text: 'Cancelar',
-        style: 'cancel',
-      },
-      {text: 'OK', onPress: () => deleteGlassType(vidrio.id)},
-    ]);
+  const handleToEdit = () => {
+    setProductModalVisible(true);
+    setEditProductId(product.id);
+  };
 
   return (
     <View style={styles.ventana}>
-      <TouchableNativeFeedback onPress={onTouch}>
-        <Text style={styles.name}>{vidrio.name}</Text>
+      <TouchableNativeFeedback onPress={handleShowDetails}>
+        <Text style={styles.name}>{product.name}</Text>
       </TouchableNativeFeedback>
       {showDetails && (
         <View style={styles.ventana}>
           {/* <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>UUID </Text>
-            {vidrio.id}
+            {product.id}
           </Text> */}
           <Text style={globalStyles.sizedText}>
+            <Text style={[globalStyles.boldText]}>Tipo: </Text>
+            {product.type}
+          </Text>
+          <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Precio (m²) A: </Text>
-            {vidrio.meterPriceA}
+            {product.unityPrices.priceA}
           </Text>
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Precio (m²) B: </Text>
-            {vidrio.meterPriceB}
+            {product.unityPrices.priceB}
           </Text>
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Precio (m²) C: </Text>
-            {vidrio.meterPriceC}
+            {product.unityPrices.priceC}
           </Text>
           <View style={[globalStyles.buttonGroup, globalStyles.centered]}>
-            <Button textColor={'#d15656'} onPress={createTwoButtonAlert}>
+            <Button
+              textColor={'#d15656'}
+              onPress={() =>
+                createTwoButtonAlert(() => deleteProduct(product.id))
+              }>
               Eliminar
             </Button>
             <Button
               textColor="white"
               buttonColor="#007bff"
-              onPress={() => toEdit(vidrio.id)}>
-              {' '}
+              onPress={() => handleToEdit()}>
               Editar
             </Button>
           </View>
@@ -93,4 +106,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default VidrioDetailComponent;
+export default ProductDetailComponent;

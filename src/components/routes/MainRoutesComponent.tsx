@@ -1,16 +1,19 @@
 import {Route, Routes} from 'react-router-native';
-import WindowsListProvider from '../listas/context/WindowsListProvider';
-import ListaView from '../listas/WindowsListView';
-import ListaVidriosView from '../vidrios/ListaVidriosView';
+import ProductsView from '../vidrios/ProductsView';
+import ListaView from '../listas/ItemsToSellListView';
+import {ItemsToSellListProvider} from '../listas/context';
+import {ProductModalProvider} from '../vidrios/context/product-modal-context';
 
 const MainRoutesComponent = () => {
   return (
-    <WindowsListProvider>
-      <Routes>
-        <Route path="/" Component={ListaView} />
-        <Route path="/vidrios" Component={ListaVidriosView} />
-      </Routes>
-    </WindowsListProvider>
+    <ItemsToSellListProvider>
+      <ProductModalProvider>
+        <Routes>
+          <Route path="/" Component={ListaView} />
+          <Route path="/products" Component={ProductsView} />
+        </Routes>
+      </ProductModalProvider>
+    </ItemsToSellListProvider>
   );
 };
 
