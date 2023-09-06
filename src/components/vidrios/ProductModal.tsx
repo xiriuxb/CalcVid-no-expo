@@ -1,11 +1,20 @@
 import {useEffect, useRef, useState} from 'react';
-import {View, StyleSheet, Modal, Text} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Modal,
+  Text,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 import {Product, UnityPricesType} from '../../models';
 import {Button, TextInput, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
 import {useProductsContext} from './context/products-context';
 import {useProductModalContext} from './context/product-modal-context';
+import DropDownPicker from 'react-native-dropdown-picker';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const handleNextInput = (nextInputRef: React.MutableRefObject<any>) => {
   if (nextInputRef && nextInputRef.current) {
@@ -13,20 +22,30 @@ const handleNextInput = (nextInputRef: React.MutableRefObject<any>) => {
   }
 };
 
+const productTypes = [
+  {label: 'Calculado', value: 'calculated'},
+  {label: 'No Calculado', value: 'unique'},
+];
+
+const createInfoAlert = () => {
+  Alert.alert(
+    'Información del tipo de producto',
+    'Calculado: Significa que el precio de venta se calcula. Por ejemplo, el precio de un pedazo de vidrio se calcula de acuerdo a sus medidas.\nEl PVP debería ser el precio por metro cuadrado\n\nNo calculado: El precio no se calcula, el precio es por unidad.',
+  );
+};
+
 const ProductModal = () => {
   // form
+  const [productType, setProductType] = useState<'calculated'|'unique'>('calculated');
   const [name, onChangeName] = useState('');
-  const [width, onChangeWidth] = useState('');
-  const [height, onChangeHeight] = useState('');
-  const [totalPrice, onChangeTotalPrice] = useState('');
   const [priceA, onChangePriceA] = useState('');
   const [priceB, onChangePriceB] = useState('');
   const [priceC, onChangePriceC] = useState('');
+  const [extraInfo, onChangeExtraInfo] = useState('');
+  const [showDropDown, setShowDropDown] = useState(false);
   //Textinput Refs
   const nameRef = useRef(null);
-  const heightRef = useRef(null);
-  const widthRef = useRef(null);
-  const totalPricetRef = useRef(null);
+  const extraInfoRef = useRef(null);
   const priceARef = useRef(null);
   const priceBRef = useRef(null);
   const priceCRef = useRef(null);
@@ -47,9 +66,7 @@ const ProductModal = () => {
       editProduct.current = productsList!.getProduct(editProductId)!;
       if (editProduct) {
         onChangeName(`${editProduct.current.name}`);
-        onChangeHeight(`${editProduct.current.height}`);
-        onChangeWidth(`${editProduct.current.width}`);
-        onChangeTotalPrice(`${editProduct.current.totalPrice}`);
+        onChangeExtraInfo(`${editProduct.current.extraInfo}`);
         onChangePriceA(`${editProduct.current.unityPrices.priceA}`);
         onChangePriceB(`${editProduct.current.unityPrices.priceB}`);
         onChangePriceC(`${editProduct.current.unityPrices.priceC}`);
@@ -82,11 +99,9 @@ const ProductModal = () => {
         };
         const product = new Product(
           name.trim(),
-          'calculated',
+          productType,
           prices,
-          totalPrice ? parseFloat(totalPrice) : 0,
-          height ? parseFloat(height) : 0,
-          width ? parseFloat(width) : 0,
+          extraInfo,
         );
         addProduct(product);
         showSnackMessage('Guardado', 500);
@@ -110,11 +125,9 @@ const ProductModal = () => {
         };
         const newProduct = new Product(
           name.trim(),
-          'calculated',
+          productType,
           prices,
-          totalPrice?parseFloat(totalPrice):0,
-          height?parseFloat(height):0,
-          width?parseFloat(width):0,
+          extraInfo,
         );
         updateProduct(editProductId, newProduct);
         showSnackMessage('Actualizado', 500);
@@ -130,9 +143,7 @@ const ProductModal = () => {
 
   const cleanInputs = () => {
     onChangeName('');
-    onChangeHeight('');
-    onChangeWidth('');
-    onChangeTotalPrice('');
+    onChangeExtraInfo('');
     onChangePriceA('');
     onChangePriceB('');
     onChangePriceC('');
@@ -150,7 +161,24 @@ const ProductModal = () => {
   return (
     <Modal animationType="fade" transparent={true}>
       <View style={styles.modalContainer}>
-        <Text style={styles.modalText}>Nuevo priducto</Text>
+        <View style={{alignItems:'center'}}>
+          <Text style={styles.modalText}>Nuevo producto</Text>
+          <TouchableOpacity onPress={() => createInfoAlert()}>
+            <FontAwesome
+              name="info-circle"
+              size={22}
+              color={'white'}
+              style={{paddingTop: 3, paddingHorizontal: 4}}
+            /><Text style={{color:'white'}}>Info</Text>
+          </TouchableOpacity>
+        </View>
+        <DropDownPicker
+          style={[styles.input, {alignSelf: 'center'}]}
+          items={productTypes}
+          value={productType}
+          setValue={setProductType}
+          open={showDropDown}
+          setOpen={setShowDropDown}></DropDownPicker>
         <TextInput
           ref={nameRef}
           onSubmitEditing={() => handleNextInput(priceARef)}
@@ -163,12 +191,14 @@ const ProductModal = () => {
         <TextInput
           returnKeyType="next"
           ref={priceARef}
+          onSubmitEditing={() => {showOptional && handleNextInput(priceBRef)}}
           style={styles.input}
           value={priceA}
           onChangeText={onChangePriceA}
           keyboardType="numeric"
-          label="Precio m² (a)*"
+          label="Precio (A)*"
           error={!priceA}></TextInput>
+
         <TouchableRipple
           onPress={handleOpenOptionalInputs}
           style={{padding: 15}}>
@@ -176,38 +206,9 @@ const ProductModal = () => {
             {showOptionalBtnMessage.current}
           </Text>
         </TouchableRipple>
-        <View style={showOptional ? styles.formContainer : {display: 'none'}}>
-          <View style={{flexDirection: 'row'}}>
-            <TextInput
-              ref={heightRef}
-              onSubmitEditing={() => handleNextInput(widthRef)}
-              style={[styles.input, styles.inputHalf]}
-              value={height}
-              onChangeText={onChangeHeight}
-              keyboardType="number-pad"
-              label="Alto(cm)"
-              returnKeyType="next"></TextInput>
-            <TextInput
-              ref={widthRef}
-              onSubmitEditing={() => handleNextInput(totalPricetRef)}
-              style={[styles.input, styles.inputHalf]}
-              value={width}
-              onChangeText={onChangeWidth}
-              keyboardType="numeric"
-              returnKeyType="next"
-              label="Ancho(cm)"></TextInput>
-          </View>
 
-          <TextInput
-            ref={totalPricetRef}
-            onSubmitEditing={() => handleNextInput(priceBRef)}
-            style={styles.input}
-            value={totalPrice}
-            onChangeText={onChangeTotalPrice}
-            keyboardType="numeric"
-            returnKeyType="next"
-            label="Precio Lámina"></TextInput>
-          <View style={{flexDirection: 'row'}}>
+        <View style={showOptional ? styles.formContainer : {display: 'none'}}>
+        <View style={{flexDirection: 'row'}}>
             <TextInput
               ref={priceBRef}
               onSubmitEditing={() => handleNextInput(priceCRef)}
@@ -216,15 +217,27 @@ const ProductModal = () => {
               onChangeText={onChangePriceB}
               keyboardType="numeric"
               returnKeyType="next"
-              label="Precio m² (b)"></TextInput>
+              label="Precio (B)"></TextInput>
             <TextInput
               ref={priceCRef}
               style={[styles.input, styles.inputHalf]}
+              onSubmitEditing={() => handleNextInput(extraInfoRef)}
               value={priceC}
               onChangeText={onChangePriceC}
               keyboardType="numeric"
-              label="Precio m² (c)"></TextInput>
+              label="Precio (C)"></TextInput>
           </View>
+
+          <TextInput
+            multiline
+            maxLength={100}
+            numberOfLines={4}
+            ref={extraInfoRef}
+            style={styles.input}
+            value={extraInfo}
+            onChangeText={onChangeExtraInfo}
+            returnKeyType="next"
+            label="Información extra"></TextInput>
         </View>
 
         <View style={[globalStyles.buttonGroup, globalStyles.centered]}>

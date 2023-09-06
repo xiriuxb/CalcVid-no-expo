@@ -48,13 +48,9 @@ const ProductDetailComponent = ({product}: props) => {
       </TouchableNativeFeedback>
       {showDetails && (
         <View style={styles.ventana}>
-          {/* <Text style={globalStyles.sizedText}>
-            <Text style={[globalStyles.boldText]}>UUID </Text>
-            {product.id}
-          </Text> */}
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Tipo: </Text>
-            {product.type}
+            {product.type == 'calculated'?'Calculado':'No calculado'}
           </Text>
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Precio (m²) A: </Text>
@@ -67,6 +63,10 @@ const ProductDetailComponent = ({product}: props) => {
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Precio (m²) C: </Text>
             {product.unityPrices.priceC}
+          </Text>
+          <Text style={globalStyles.sizedText}>
+            <Text style={[globalStyles.boldText]}>Información extra: </Text>
+            {product.extraInfo}
           </Text>
           <View style={[globalStyles.buttonGroup, globalStyles.centered]}>
             <Button

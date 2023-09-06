@@ -32,10 +32,8 @@ export class ProductsList {
       tempProduct.editProduct(
         newProduct.name,
         newProduct.type,
-        newProduct.height,
-        newProduct.width,
-        newProduct.totalPrice,
         newProduct.unityPrices,
+        newProduct.extraInfo
       );
       this.productsMap.set(productId, tempProduct);
     }

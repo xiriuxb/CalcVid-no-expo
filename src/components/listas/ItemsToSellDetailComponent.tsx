@@ -1,14 +1,12 @@
 import {View, Text, StyleSheet, Alert, TouchableOpacity} from 'react-native';
-import {Button, IconButton, TouchableRipple} from 'react-native-paper';
+import {Button, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import {ItemsToSell} from '../../models';
 import ItemDetailComponent from './ItemDetailComponent';
 import {useItemModalContext, useItemsToSellContext} from './context';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import {useSnackBar} from '../snack-bar/SnackBarContext';
 import {TextInput} from 'react-native';
 import {useRef, useState} from 'react';
-import {red100} from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 
 interface props {
   itemsToSell: ItemsToSell;
@@ -30,7 +28,6 @@ const handleDeleteWindow = (onOkCallback: () => void) => {
 const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
   const {removeItemsToSell} = useItemsToSellContext();
   const {setItemModalVisible} = useItemModalContext();
-  const {showSnackMessage} = useSnackBar();
 
   const changeCurrentWindow = () => {
     setItemModalVisible(true, itemsToSell.id);
@@ -45,7 +42,6 @@ const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
           alignItems: 'center',
           paddingBottom: 2,
         }}>
-
         <TopInfo title={itemsToSell.name} id={itemsToSell.id}></TopInfo>
 
         <TouchableRipple
@@ -105,27 +101,28 @@ const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
   );
 };
 
-const TopInfo = ({title, id}: {title: string, id:string}) => {
+const TopInfo = ({title, id}: {title: string; id: string}) => {
   const [isEditTitle, setIsEditTitle] = useState(false);
   const [inputValue, setInputValue] = useState(title);
   const inputRef = useRef<any | null>(null);
-  const {updateItemsListName} = useItemsToSellContext()
+  const {updateItemsListName} = useItemsToSellContext();
 
   const handleEditListName = () => {
     setIsEditTitle(!isEditTitle);
-    setTimeout(()=>{inputRef.current?.focus();},10)
-    
+    setTimeout(() => {
+      inputRef.current?.focus();
+    }, 10);
   };
 
-  const handleOnCloseInput = () =>{
-    setInputValue(title)
+  const handleOnCloseInput = () => {
+    setInputValue(title);
     setIsEditTitle(!isEditTitle);
-  }
+  };
 
-  const handleUpdateName = ()=>{
-    updateItemsListName(id,inputValue);
+  const handleUpdateName = () => {
+    updateItemsListName(id, inputValue);
     setIsEditTitle(!isEditTitle);
-  }
+  };
 
   return (
     <View style={{flexDirection: 'row'}}>
@@ -159,9 +156,9 @@ const TopInfo = ({title, id}: {title: string, id:string}) => {
           </TouchableOpacity>
           <TouchableOpacity>
             <FontAwesome
-            onPress={()=>handleUpdateName()}
+              onPress={() => handleUpdateName()}
               name="check"
-              disabled={inputValue.length>16}
+              disabled={inputValue.length > 16}
               size={18}
               style={{paddingTop: 3, paddingHorizontal: 6}}></FontAwesome>
           </TouchableOpacity>

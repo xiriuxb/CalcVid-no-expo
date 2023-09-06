@@ -10,18 +10,14 @@ export class Product {
   id: string;
   type: 'unique' | 'calculated';
   name: string;
-  height: number;
-  width: number;
-  totalPrice: number;
   unityPrices: UnityPricesType;
+  extraInfo: string;
 
   constructor(
     name: string,
     type: 'unique' | 'calculated',
     unityPrices: UnityPricesType,
-    totalPrice: number = 0,
-    height: number = 0,
-    width: number = 0,
+    extraInfo: string,
   ) {
     if (!unityPrices.priceB || isNaN(unityPrices.priceB)) {
       unityPrices.priceB = 0;
@@ -33,25 +29,19 @@ export class Product {
     this.id = generateUniqueId();
     this.type = type;
     this.name = name;
-    this.height = isNaN(height) || !height ? 0 : height;
-    this.width = isNaN(width) || !width ? 0 : width;
-    this.totalPrice = isNaN(totalPrice) || !totalPrice ? 0 : totalPrice;
     this.unityPrices = unityPrices;
+    this.extraInfo = extraInfo;
   }
 
   editProduct(
     name: string,
     type: 'unique' | 'calculated',
-    height: number,
-    width: number,
-    totalPrice: number,
     unityPrices: UnityPricesType,
+    extraInfo: string,
   ) {
     this.name = name;
     this.type = type;
-    this.height = isNaN(height) || !height ? 0 : height;
-    this.width = isNaN(width) || !width ? 0 : width;
-    this.totalPrice = isNaN(totalPrice) || !totalPrice ? 0 : totalPrice;
     this.unityPrices = unityPrices;
+    this.extraInfo = extraInfo;
   }
 }
