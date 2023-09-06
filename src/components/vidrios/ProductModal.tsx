@@ -25,18 +25,21 @@ const handleNextInput = (nextInputRef: React.MutableRefObject<any>) => {
 const productTypes = [
   {label: 'Calculado', value: 'calculated'},
   {label: 'No Calculado', value: 'unique'},
+  {label: 'Calculado Simple', value: 'calculated-simple'},
 ];
 
 const createInfoAlert = () => {
   Alert.alert(
     'Información del tipo de producto',
-    'Calculado: Significa que el precio de venta se calcula. Por ejemplo, el precio de un pedazo de vidrio se calcula de acuerdo a sus medidas.\nEl PVP debería ser el precio por metro cuadrado\n\nNo calculado: El precio no se calcula, el precio es por unidad.',
+    'Calculado: Significa que el precio de venta se calcula con dos medidas (largo y ancho). Por ejemplo, el precio de un pedazo de vidrio.\nEl PVP debería ser el precio por metro cuadrado\n\nNo calculado: El precio no se calcula, el precio es por unidad.\n\nCalculado Simple: EL PVP se calcula con una sola medida. Por ejemplo, un tubo.',
   );
 };
 
 const ProductModal = () => {
   // form
-  const [productType, setProductType] = useState<'calculated'|'unique'>('calculated');
+  const [productType, setProductType] = useState<'unique' | 'calculated-simple' | 'calculated'>(
+    'calculated',
+  );
   const [name, onChangeName] = useState('');
   const [priceA, onChangePriceA] = useState('');
   const [priceB, onChangePriceB] = useState('');
@@ -161,7 +164,7 @@ const ProductModal = () => {
   return (
     <Modal animationType="fade" transparent={true}>
       <View style={styles.modalContainer}>
-        <View style={{alignItems:'center'}}>
+        <View style={{alignItems: 'center'}}>
           <Text style={styles.modalText}>Nuevo producto</Text>
           <TouchableOpacity onPress={() => createInfoAlert()}>
             <FontAwesome
@@ -169,7 +172,8 @@ const ProductModal = () => {
               size={22}
               color={'white'}
               style={{paddingTop: 3, paddingHorizontal: 4}}
-            /><Text style={{color:'white'}}>Info</Text>
+            />
+            <Text style={{color: 'white'}}>Info</Text>
           </TouchableOpacity>
         </View>
         <DropDownPicker
@@ -191,7 +195,9 @@ const ProductModal = () => {
         <TextInput
           returnKeyType="next"
           ref={priceARef}
-          onSubmitEditing={() => {showOptional && handleNextInput(priceBRef)}}
+          onSubmitEditing={() => {
+            showOptional && handleNextInput(priceBRef);
+          }}
           style={styles.input}
           value={priceA}
           onChangeText={onChangePriceA}
@@ -208,7 +214,7 @@ const ProductModal = () => {
         </TouchableRipple>
 
         <View style={showOptional ? styles.formContainer : {display: 'none'}}>
-        <View style={{flexDirection: 'row'}}>
+          <View style={{flexDirection: 'row'}}>
             <TextInput
               ref={priceBRef}
               onSubmitEditing={() => handleNextInput(priceCRef)}

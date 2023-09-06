@@ -8,14 +8,14 @@ export interface UnityPricesType {
 
 export class Product {
   id: string;
-  type: 'unique' | 'calculated';
+  type: 'unique' | 'calculated-simple' | 'calculated';
   name: string;
   unityPrices: UnityPricesType;
   extraInfo: string;
 
   constructor(
     name: string,
-    type: 'unique' | 'calculated',
+    type: 'unique' | 'calculated-simple' | 'calculated',
     unityPrices: UnityPricesType,
     extraInfo: string,
   ) {
@@ -35,7 +35,7 @@ export class Product {
 
   editProduct(
     name: string,
-    type: 'unique' | 'calculated',
+    type: 'unique' | 'calculated-simple' | 'calculated',
     unityPrices: UnityPricesType,
     extraInfo: string,
   ) {

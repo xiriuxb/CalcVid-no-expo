@@ -53,15 +53,15 @@ const ProductDetailComponent = ({product}: props) => {
             {product.type == 'calculated'?'Calculado':'No calculado'}
           </Text>
           <Text style={globalStyles.sizedText}>
-            <Text style={[globalStyles.boldText]}>Precio (m²) A: </Text>
+            <Text style={[globalStyles.boldText]}>Precio A: </Text>
             {product.unityPrices.priceA}
           </Text>
           <Text style={globalStyles.sizedText}>
-            <Text style={[globalStyles.boldText]}>Precio (m²) B: </Text>
+            <Text style={[globalStyles.boldText]}>Precio B: </Text>
             {product.unityPrices.priceB}
           </Text>
           <Text style={globalStyles.sizedText}>
-            <Text style={[globalStyles.boldText]}>Precio (m²) C: </Text>
+            <Text style={[globalStyles.boldText]}>Precio C: </Text>
             {product.unityPrices.priceC}
           </Text>
           <Text style={globalStyles.sizedText}>
