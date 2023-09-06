@@ -18,6 +18,10 @@ const globalStyles = StyleSheet.create({
     color: 'red',
     fontSize: 14,
   },
+  title:{
+    fontSize:18,
+    fontWeight:'bold',
+  },
 });
 
 export default globalStyles;

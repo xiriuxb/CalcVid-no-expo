@@ -14,6 +14,7 @@ interface ContextTypes {
   deleteItem: (itemsToSellId: string, itemId: string) => void;
   totals: {totalArea: number; totalItems: number; totalPrice: number};
   reloadTotals: () => void;
+  updateItemsListName:(itemsToSellId: string, newName: string)=>void;
 }
 
 export const ItemsToSellContext = createContext<ContextTypes>({
@@ -25,4 +26,5 @@ export const ItemsToSellContext = createContext<ContextTypes>({
   deleteItem: () => {},
   totals: {totalArea: 0, totalItems: 0, totalPrice: 0},
   reloadTotals: () => {},
+  updateItemsListName:()=>{}
 });

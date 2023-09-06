@@ -1,33 +1,39 @@
-import {View, Text, StyleSheet, Alert} from 'react-native';
-import {Button, TouchableRipple} from 'react-native-paper';
+import {View, Text, StyleSheet, Alert, TouchableOpacity} from 'react-native';
+import {Button, IconButton, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import {ItemsToSell} from '../../models';
 import ItemDetailComponent from './ItemDetailComponent';
 import {useItemModalContext, useItemsToSellContext} from './context';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import {useSnackBar} from '../snack-bar/SnackBarContext';
+import {TextInput} from 'react-native';
+import {useRef, useState} from 'react';
+import {red100} from 'react-native-paper/lib/typescript/styles/themes/v2/colors';
 
 interface props {
   itemsToSell: ItemsToSell;
 }
 
+const handleDeleteWindow = (onOkCallback: () => void) => {
+  Alert.alert('Eliminar', '¿Desea eliminar la lista?', [
+    {text: 'Cancelar', style: 'cancel'},
+    {
+      text: 'OK',
+      style: 'default',
+      onPress: () => {
+        onOkCallback();
+      },
+    },
+  ]);
+};
+
 const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
   const {removeItemsToSell} = useItemsToSellContext();
   const {setItemModalVisible} = useItemModalContext();
+  const {showSnackMessage} = useSnackBar();
 
   const changeCurrentWindow = () => {
     setItemModalVisible(true, itemsToSell.id);
-  };
-
-  const handleDeleteWindow = () => {
-    Alert.alert('Eliminar', '¿Desea eliminar la lista?', [
-      {text: 'Cancelar', style: 'cancel'},
-      {
-        text: 'OK',
-        style: 'default',
-        onPress: () => {
-          removeItemsToSell(itemsToSell.id);
-        },
-      },
-    ]);
   };
 
   return (
@@ -39,13 +45,13 @@ const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
           alignItems: 'center',
           paddingBottom: 2,
         }}>
-        <Text
-          style={[
-            {fontSize: 18, fontWeight: 'bold', justifyContent: 'flex-start'},
-          ]}>
-          {itemsToSell.name}
-        </Text>
-        <TouchableRipple onPress={handleDeleteWindow}>
+
+        <TopInfo title={itemsToSell.name} id={itemsToSell.id}></TopInfo>
+
+        <TouchableRipple
+          onPress={() =>
+            handleDeleteWindow(() => removeItemsToSell(itemsToSell.id))
+          }>
           <Text style={[globalStyles.boldText, globalStyles.errorText]}>
             Eliminar
           </Text>
@@ -99,6 +105,72 @@ const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
   );
 };
 
+const TopInfo = ({title, id}: {title: string, id:string}) => {
+  const [isEditTitle, setIsEditTitle] = useState(false);
+  const [inputValue, setInputValue] = useState(title);
+  const inputRef = useRef<any | null>(null);
+  const {updateItemsListName} = useItemsToSellContext()
+
+  const handleEditListName = () => {
+    setIsEditTitle(!isEditTitle);
+    setTimeout(()=>{inputRef.current?.focus();},10)
+    
+  };
+
+  const handleOnCloseInput = () =>{
+    setInputValue(title)
+    setIsEditTitle(!isEditTitle);
+  }
+
+  const handleUpdateName = ()=>{
+    updateItemsListName(id,inputValue);
+    setIsEditTitle(!isEditTitle);
+  }
+
+  return (
+    <View style={{flexDirection: 'row'}}>
+      {!isEditTitle && <Text style={globalStyles.title}>{title}</Text>}
+      {isEditTitle && (
+        <View style={styles.container}>
+          <TextInput
+            ref={inputRef}
+            style={styles.textInput}
+            value={inputValue}
+            onChangeText={setInputValue}></TextInput>
+        </View>
+      )}
+      {!isEditTitle && (
+        <TouchableOpacity onPress={() => handleEditListName()}>
+          <FontAwesome
+            name="pencil"
+            size={18}
+            style={{paddingTop: 3, paddingHorizontal: 4}}></FontAwesome>
+        </TouchableOpacity>
+      )}
+      {isEditTitle && (
+        <View style={{flexDirection: 'row'}}>
+          <TouchableOpacity>
+            <FontAwesome
+              name="close"
+              size={18}
+              color={'red'}
+              onPress={() => handleOnCloseInput()}
+              style={{paddingTop: 3, paddingHorizontal: 6}}></FontAwesome>
+          </TouchableOpacity>
+          <TouchableOpacity>
+            <FontAwesome
+            onPress={()=>handleUpdateName()}
+              name="check"
+              disabled={inputValue.length>16}
+              size={18}
+              style={{paddingTop: 3, paddingHorizontal: 6}}></FontAwesome>
+          </TouchableOpacity>
+        </View>
+      )}
+    </View>
+  );
+};
+
 const styles = StyleSheet.create({
   ventana: {
     padding: 5,
@@ -111,6 +183,15 @@ const styles = StyleSheet.create({
   buttonIcon: {
     width: 32,
     height: 32,
+  },
+  container: {
+    borderBottomWidth: 1,
+    borderColor: 'gray',
+  },
+  textInput: {
+    padding: 0,
+    margin: 0,
+    fontSize: 16,
   },
 });
 

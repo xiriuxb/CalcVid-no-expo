@@ -84,6 +84,17 @@ export const ItemsToSellListProvider = ({
     setItemsToSellList(newMap);
   };
 
+  const updateItemsListName = (itemsToSellId:string, newName:string)=>{
+    const itemsToSell = itemsToSellList.get(itemsToSellId);
+    if(itemsToSell){
+      itemsToSell.setName(newName);
+      const newList = itemsToSellList.set(itemsToSellId,itemsToSell);
+      setItemsToSellList(new Map(newList))
+    } else {
+      console.error('no existe')
+    }
+  }
+
   return (
     <ItemsToSellContext.Provider
       value={{
@@ -95,6 +106,7 @@ export const ItemsToSellListProvider = ({
         addItemToItemsToSell,
         editItemInItemsToSell,
         deleteItem,
+        updateItemsListName,
       }}>
       {children}
     </ItemsToSellContext.Provider>

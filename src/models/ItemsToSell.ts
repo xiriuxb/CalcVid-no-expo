@@ -81,4 +81,8 @@ export class ItemsToSell {
     }
     throw new Error('No existe el elemento');
   }
+
+  setName(newName: string) {
+    this._name = newName;
+  }
 }
