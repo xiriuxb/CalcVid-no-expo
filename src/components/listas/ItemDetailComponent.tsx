@@ -4,6 +4,7 @@ import {Item} from '../../models/';
 import {TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import {useItemModalContext, useItemsToSellContext} from './context';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
 const ItemDetailComponent = ({
   item,
@@ -54,7 +55,9 @@ const ItemDetailComponent = ({
       <View>
         <TouchableOpacity onPress={openModalToEdit}>
           <Text style={globalStyles.sizedText}>
-            {`${item.width} x ${item.height} =${item.quantity} | ${item.product.name}`}
+            {`${item.product.type === 'calculated' ? `${item.width} x ` : ''}${
+              item.product.type != 'unique' ? `${item.height} =` : ''
+            }${item.quantity} | ${item.product.name}`}
           </Text>
         </TouchableOpacity>
       </View>
@@ -76,11 +79,15 @@ const ItemDetailComponent = ({
         </TouchableOpacity>
       </View>
 
-      <TouchableRipple onPress={createTwoButtonAlert}>
-        <Text style={[globalStyles.boldText, globalStyles.errorText]}>
-          Eliminar
-        </Text>
-      </TouchableRipple>
+        <TouchableOpacity onPress={createTwoButtonAlert}>
+          <FontAwesome
+            name="trash"
+            size={17}
+            color={'red'}
+            style={{paddingTop: 3, paddingHorizontal: 4}}
+          />
+          <Text style={{color: 'white'}}>Info</Text>
+        </TouchableOpacity>
     </View>
   );
 };

@@ -3,9 +3,11 @@ import {Product, ProductsList} from '../../../../models';
 
 export interface ContextTypes {
   productsList: ProductsList;
-  addProduct: (newProduct: Product) => void;
-  updateProduct: (productId: string, newProduct: Product) => void;
-  deleteProduct: (productId: string) => void;
+  productListCrudOptions: (
+    crudFunc: 'added' | 'changed' | 'deleted',
+    id: string | undefined,
+    newProduct: Product | undefined,
+  ) => void;
   errorAtLoadingProducts: boolean;
 }
 

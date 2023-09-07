@@ -81,10 +81,10 @@ const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
           borderTopWidth: 1,
           borderTopColor: 'black',
         }}>
-        <Text>Medidas = Cant</Text>
+        <Text>Medidas(cm) = Cant</Text>
         <Text>Área</Text>
         <Text>Precios</Text>
-        <Text>Accion</Text>
+        <Text>Func</Text>
       </View>
       {Array.from(itemsToSell.items.values()).map(el => {
         return (

@@ -1,15 +1,15 @@
 import {createContext} from 'react';
-import {Item, ItemsToSell} from '../../../../models';
+import {CreateItemNoProdDto, Item, ItemsToSell} from '../../../../models';
 
 interface ContextTypes {
   itemsToSellList: Map<string, ItemsToSell> | null;
   addItemsToSell: () => void;
-  addItemToItemsToSell: (windowId: string, newItem: Item) => void;
+  addItemToItemsToSell: (windowId: string, newItem: CreateItemNoProdDto) => void;
   removeItemsToSell: (id: string) => void;
   editItemInItemsToSell: (
     itemsToSellId: string,
     itemId: string,
-    editedItem: Item,
+    editedItem: CreateItemNoProdDto,
   ) => void;
   deleteItem: (itemsToSellId: string, itemId: string) => void;
   totals: {totalArea: number; totalItems: number; totalPrice: number};

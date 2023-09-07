@@ -1,6 +1,7 @@
 import {useState, useEffect} from 'react';
 import {ItemsToSellContext} from './ItemsToSellContext';
-import {Item, ItemsToSell} from '../../../../models';
+import {Item, ItemsToSell, CreateItemNoProdDto} from '../../../../models';
+import {useProductsContext} from '../../../vidrios/context/products-context';
 
 export const ItemsToSellListProvider = ({
   children,
@@ -16,24 +17,24 @@ export const ItemsToSellListProvider = ({
     totalPrice: 0,
   });
 
+  const {productsList} = useProductsContext();
+
   useEffect(() => {
     totalSums();
   }, [itemsToSellList]);
 
   const addItemsToSell = () => {
-    const newMap = new Map(itemsToSellList);
     const newItemsToSell = new ItemsToSell(
       `Lista ${itemsToSellList.size + 1}`,
       new Map(),
     );
-    newMap.set(newItemsToSell.id, newItemsToSell);
-    setItemsToSellList(newMap);
+    itemsToSellList.set(newItemsToSell.id, newItemsToSell);
+    setItemsToSellList(new Map(itemsToSellList));
   };
 
   const removeItemsToSell = (id: string) => {
-    const newMap = new Map(itemsToSellList);
-    newMap.delete(id);
-    setItemsToSellList(newMap);
+    itemsToSellList.delete(id);
+    setItemsToSellList(new Map(itemsToSellList));
   };
 
   const totalSums = () => {
@@ -50,30 +51,50 @@ export const ItemsToSellListProvider = ({
     setTotals(totals);
   };
 
-  const addItemToItemsToSell = (itemsToSellId: string, newItem: Item) => {
-    const itemsToSell = itemsToSellList.get(itemsToSellId);
-    itemsToSell?.setItemsToSell(itemsToSell.items.set(newItem.id, newItem));
-    const newMap = new Map(itemsToSellList);
-    newMap.set(itemsToSellId, itemsToSell!);
-    setItemsToSellList(newMap);
+  const getItemsList = (id: string) => {
+    const itemsToSell = itemsToSellList.get(id);
+    if (!itemsToSell) {
+      throw new Error('Lista de items no existe.');
+    }
+    return itemsToSell;
+  };
+
+  const addItemToItemsToSell = (
+    itemsToSellId: string,
+    dto: CreateItemNoProdDto,
+  ) => {
+    try {
+      const itemsToSell = getItemsList(itemsToSellId);
+      const product = productsList.getProduct(dto.productId);
+      const newItem = new Item(product, dto.quantity, dto.height, dto.width);
+      itemsToSell.items.set(newItem.id, newItem);
+      itemsToSellList.set(itemsToSellId, itemsToSell);
+      setItemsToSellList(new Map(itemsToSellList));
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const editItemInItemsToSell = (
     itemsToSellId: string,
     itemId: string,
-    editedItem: Item,
+    dto: CreateItemNoProdDto,
   ) => {
-    const itemsToSell = itemsToSellList.get(itemsToSellId);
-    const newItemsToSell = itemsToSell!.editItem(
-      itemId,
-      editedItem.width,
-      editedItem.height,
-      editedItem.quantity,
-      editedItem.product,
-    );
-    const newMap = new Map(itemsToSellList);
-    newMap.set(itemsToSellId, newItemsToSell);
-    setItemsToSellList(newMap);
+    try {
+      const itemsToSell = getItemsList(itemsToSellId);
+      const product = productsList.getProduct(dto.productId);
+      itemsToSell.editItem(
+        itemId,
+        product,
+        dto.quantity,
+        dto.width,
+        dto.height,
+      );
+      itemsToSellList.set(itemsToSellId, itemsToSell);
+      setItemsToSellList(new Map(itemsToSellList));
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const deleteItem = (itemsToSellId: string, itemId: string) => {
@@ -84,16 +105,16 @@ export const ItemsToSellListProvider = ({
     setItemsToSellList(newMap);
   };
 
-  const updateItemsListName = (itemsToSellId:string, newName:string)=>{
+  const updateItemsListName = (itemsToSellId: string, newName: string) => {
     const itemsToSell = itemsToSellList.get(itemsToSellId);
-    if(itemsToSell){
+    if (itemsToSell) {
       itemsToSell.setName(newName);
-      const newList = itemsToSellList.set(itemsToSellId,itemsToSell);
-      setItemsToSellList(new Map(newList))
+      const newList = itemsToSellList.set(itemsToSellId, itemsToSell);
+      setItemsToSellList(new Map(newList));
     } else {
-      console.error('no existe')
+      console.error('no existe');
     }
-  }
+  };
 
   return (
     <ItemsToSellContext.Provider

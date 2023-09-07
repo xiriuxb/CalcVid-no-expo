@@ -11,6 +11,7 @@ import globalStyles from '../common/Styles';
 import {Product} from '../../models';
 import {useProductsContext} from './context/products-context';
 import {useProductModalContext} from './context/product-modal-context';
+import { useSnackBar } from '../snack-bar/SnackBarContext';
 
 interface props {
   product: Product;
@@ -29,8 +30,9 @@ const createTwoButtonAlert = (onOkCallback: (id: any) => void) => {
 const ProductDetailComponent = ({product}: props) => {
   const [showDetails, setShowDetails] = useState(false);
 
-  const {deleteProduct} = useProductsContext();
+  const {productListCrudOptions} = useProductsContext();
   const {setProductModalVisible, setEditProductId} = useProductModalContext();
+  const {showSnackMessage} = useSnackBar();
 
   const handleShowDetails = () => {
     setShowDetails(!showDetails);
@@ -41,6 +43,11 @@ const ProductDetailComponent = ({product}: props) => {
     setEditProductId(product.id);
   };
 
+  const handleDeleteProduct = () =>{
+    productListCrudOptions('deleted',product.id, undefined);
+    showSnackMessage('Eliminado', 1000);
+  }
+
   return (
     <View style={styles.ventana}>
       <TouchableNativeFeedback onPress={handleShowDetails}>
@@ -50,7 +57,11 @@ const ProductDetailComponent = ({product}: props) => {
         <View style={styles.ventana}>
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Tipo: </Text>
-            {product.type == 'calculated'?'Calculado':'No calculado'}
+            {product.type == 'calculated'
+              ? 'Calculado'
+              : product.type == 'calculated-simple'
+              ? 'Calculado Simple'
+              : 'No calculado'}
           </Text>
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Precio A: </Text>
@@ -72,7 +83,7 @@ const ProductDetailComponent = ({product}: props) => {
             <Button
               textColor={'#d15656'}
               onPress={() =>
-                createTwoButtonAlert(() => deleteProduct(product.id))
+                createTwoButtonAlert(() => handleDeleteProduct())
               }>
               Eliminar
             </Button>

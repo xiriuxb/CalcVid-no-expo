@@ -29,17 +29,35 @@ const productTypes = [
 ];
 
 const createInfoAlert = () => {
-  Alert.alert(
-    'Información del tipo de producto',
-    'Calculado: Significa que el precio de venta se calcula con dos medidas (largo y ancho). Por ejemplo, el precio de un pedazo de vidrio.\nEl PVP debería ser el precio por metro cuadrado\n\nNo calculado: El precio no se calcula, el precio es por unidad.\n\nCalculado Simple: EL PVP se calcula con una sola medida. Por ejemplo, un tubo.',
-  );
+  const alertMessage = `
+  Calculado: Significa que el precio de venta se calcula con dos medidas (largo y ancho). Por ejemplo, el precio de un pedazo de vidrio.
+  El PVP debería ser el precio por metro cuadrado
+
+  No calculado: El precio no se calcula, el precio es por unidad.
+
+  Calculado Simple: EL PVP se calcula con una sola medida. Por ejemplo, un tubo.
+`;
+  Alert.alert('Información del tipo de producto', alertMessage);
+};
+
+const generateUnityPrices = (
+  priceA: string,
+  priceB: string,
+  priceC: string,
+) => {
+  const prices: UnityPricesType = {
+    priceA: parseFloat(priceA),
+    priceB: priceB ? parseFloat(priceB) : 0,
+    priceC: priceC ? parseFloat(priceC) : 0,
+  };
+  return prices;
 };
 
 const ProductModal = () => {
   // form
-  const [productType, setProductType] = useState<'unique' | 'calculated-simple' | 'calculated'>(
-    'calculated',
-  );
+  const [productType, setProductType] = useState<
+    'unique' | 'calculated-simple' | 'calculated'
+  >('calculated');
   const [name, onChangeName] = useState('');
   const [priceA, onChangePriceA] = useState('');
   const [priceB, onChangePriceB] = useState('');
@@ -55,11 +73,11 @@ const ProductModal = () => {
   const editMode = useRef(false);
   const editProduct = useRef<Product | null>(null);
   // optional form
-  const {showSnackMessage} = useSnackBar();
   const [showOptional, setShowOptional] = useState(false);
   const showOptionalBtnMessage = useRef('Más...');
   //contexts
-  const {productsList, addProduct, updateProduct} = useProductsContext();
+  const {showSnackMessage} = useSnackBar();
+  const {productsList, productListCrudOptions} = useProductsContext();
   const {editProductId, setProductModalVisible, setEditProductId} =
     useProductModalContext();
 
@@ -73,6 +91,7 @@ const ProductModal = () => {
         onChangePriceA(`${editProduct.current.unityPrices.priceA}`);
         onChangePriceB(`${editProduct.current.unityPrices.priceB}`);
         onChangePriceC(`${editProduct.current.unityPrices.priceC}`);
+        setProductType(editProduct.current.type);
       }
       return () => {
         setEditProductId('');
@@ -85,80 +104,20 @@ const ProductModal = () => {
     setShowOptional(!showOptional);
   };
 
-  const handleAddProduct = () => {
+  const handleAddOrUpdate = () => {
     if (!priceA || !name) {
-      showSnackMessage('Faltan datos', 3000);
-      return;
-    } else {
-      const elementExists = productsList!.productExistByName(name.trim());
-      if (elementExists) {
-        showSnackMessage('Ya existe', 3000);
-        return;
-      } else {
-        const prices: UnityPricesType = {
-          priceA: parseFloat(priceA),
-          priceB: priceB ? parseFloat(priceB) : 0,
-          priceC: priceC ? parseFloat(priceC) : 0,
-        };
-        const product = new Product(
-          name.trim(),
-          productType,
-          prices,
-          extraInfo,
-        );
-        addProduct(product);
-        showSnackMessage('Guardado', 500);
-        atCancel();
-      }
-    }
-  };
-
-  const handleUpdateProduct = () => {
-    if (priceA === '' || name === '') {
       showSnackMessage('Faltan datos', 2000);
-    } else {
-      const mismoNombre = productsList?.productExistByName(name.trim());
-      if (mismoNombre && editProduct.current?.name != name) {
-        showSnackMessage('Ya existe ese nombre', 2000);
-      } else {
-        const prices: UnityPricesType = {
-          priceA: parseFloat(priceA),
-          priceB: priceB ? parseFloat(priceB) : 0,
-          priceC: priceC ? parseFloat(priceC) : 0,
-        };
-        const newProduct = new Product(
-          name.trim(),
-          productType,
-          prices,
-          extraInfo,
-        );
-        updateProduct(editProductId, newProduct);
-        showSnackMessage('Actualizado', 500);
-        atCancel();
-      }
+      return;
     }
-  };
-
-  const atCancel = () => {
-    cleanInputs();
-    setProductModalVisible(false);
-  };
-
-  const cleanInputs = () => {
-    onChangeName('');
-    onChangeExtraInfo('');
-    onChangePriceA('');
-    onChangePriceB('');
-    onChangePriceC('');
-    editMode.current = false;
-  };
-
-  const addOrUpdate = () => {
+    const prices = generateUnityPrices(priceA, priceB, priceC);
+    const newProduct = new Product(name.trim(), productType, prices, extraInfo);
     if (editMode.current && editMode) {
-      handleUpdateProduct();
+      productListCrudOptions('changed',editProductId, newProduct);
     } else {
-      handleAddProduct();
+      productListCrudOptions('added',undefined,newProduct);
     }
+    showSnackMessage('Guardado', 500);
+    setProductModalVisible(false);
   };
 
   return (
@@ -212,7 +171,7 @@ const ProductModal = () => {
             {showOptionalBtnMessage.current}
           </Text>
         </TouchableRipple>
-
+        {/* Optionals */}
         <View style={showOptional ? styles.formContainer : {display: 'none'}}>
           <View style={{flexDirection: 'row'}}>
             <TextInput
@@ -233,7 +192,7 @@ const ProductModal = () => {
               keyboardType="numeric"
               label="Precio (C)"></TextInput>
           </View>
-
+          {/* Buttons */}
           <TextInput
             multiline
             maxLength={100}
@@ -248,14 +207,14 @@ const ProductModal = () => {
 
         <View style={[globalStyles.buttonGroup, globalStyles.centered]}>
           <Button
-            onPress={atCancel}
+            onPress={() => setProductModalVisible(false)}
             mode="outlined"
             textColor="#fff"
             buttonColor="#d15656">
             Cancelar
           </Button>
           <Button
-            onPress={addOrUpdate}
+            onPress={handleAddOrUpdate}
             disabled={!name || !priceA}
             mode="outlined"
             textColor="#fff"

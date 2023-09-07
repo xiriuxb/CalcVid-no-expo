@@ -2,7 +2,7 @@ import {useRef, useState, useEffect, useMemo} from 'react';
 import {View, StyleSheet, Modal, Text} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {Item, Product} from '../../models';
+import {Item, Product, CreateItemNoProdDto} from '../../models';
 import globalStyles from '../common/Styles';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
 import {useItemModalContext, useItemsToSellContext} from './context';
@@ -22,18 +22,19 @@ const listForDropdown = (list: Product[]) => {
   });
 };
 
-const createItem = (
-  width: string,
-  height: string,
+const createItemDto = (
+  productId: string,
   quantity: string,
-  product: Product,
-): Item => {
-  return new Item(
-    product,
-    parseFloat(quantity),
-    parseFloat(height),
-    parseFloat(width),
-  );
+  width?: string,
+  height?: string,
+): CreateItemNoProdDto => {
+  const dto: CreateItemNoProdDto = {
+    productId,
+    quantity: parseInt(quantity),
+    width: width ? parseFloat(width) : undefined,
+    height: height ? parseFloat(height) : undefined,
+  };
+  return dto;
 };
 
 const handleNextInput = (
@@ -41,9 +42,13 @@ const handleNextInput = (
   isEdit: boolean,
 ) => {
   if (nextInputRef && nextInputRef.current && !isEdit) {
-    nextInputRef.current.focus();
+    setTimeout(() => {
+      nextInputRef.current.focus();
+    }, 10);
   } else {
-    nextInputRef.current.focus();
+    setTimeout(() => {
+      nextInputRef.current.focus();
+    }, 10);
   }
 };
 
@@ -57,8 +62,9 @@ const ItemModal = () => {
   const widthRef = useRef<any | null>(null);
   const heightRef = useRef<any | null>(null);
   //others
-  const [tipoVidrioId, setTipoVidrioId] = useState('');
+  const [productId, setProductId] = useState('');
   const [showDropDown, setShowDropDown] = useState(false);
+  const [productType, setProductType] = useState('unique');
   //contexts
   const {addItemToItemsToSell, itemsToSellList, editItemInItemsToSell} =
     useItemsToSellContext();
@@ -75,7 +81,7 @@ const ItemModal = () => {
       setQuantity(selectedPiece!.quantity.toString());
       setWidth(selectedPiece!.width.toString());
       setHeight(selectedPiece!.height.toString());
-      setTipoVidrioId(selectedPiece!.product.id);
+      setProductId(selectedPiece!.product.id);
     } else {
       setQuantity('');
       setHeight('');
@@ -83,10 +89,16 @@ const ItemModal = () => {
     }
   }, [editMode]);
 
-  const getTipoVidrioObject = (prodId: string) => {
-    const vidrio = productsList!.getProduct(prodId);
+  useEffect(() => {
+    if(productId!=''){
+      getProductType()
+    }
+  }, [productId]);
+
+  const getProductType = () => {
+    const vidrio = productsList!.getProduct(productId);
     if (vidrio) {
-      return vidrio;
+      setProductType(vidrio.type);
     } else {
       showSnackMessage('Producto no encontrado', 600);
     }
@@ -99,32 +111,26 @@ const ItemModal = () => {
 
   const handleCreateOrUpdate = () => {
     if (!editMode) {
-      handleAddPiece();
+      handleAddItem();
       return;
     }
-    updateproduct();
+    updateItem();
   };
 
-  const handleAddPiece = () => {
-    const product = getTipoVidrioObject(tipoVidrioId);
-    if (product) {
-      const newPiece = createItem(width, height, quantity, product);
-      addItemToItemsToSell(itemsToSellId, newPiece);
+  const handleAddItem = () => {
+    const productDto = createItemDto(productId,quantity,width,height);
+      addItemToItemsToSell(itemsToSellId, productDto);
       showSnackMessage('Agregado', 500);
-    }
     if (widthRef && widthRef.current) {
       heightRef.current.focus();
       heightRef.current.clear();
     }
   };
 
-  const updateproduct = () => {
-    const product = getTipoVidrioObject(tipoVidrioId);
-    if (product) {
-      const newPiece = createItem(width, height, quantity, product);
-      editItemInItemsToSell(itemsToSellId, itemId, newPiece);
+  const updateItem = () => {
+      const newPieceDto = createItemDto(productId, quantity,width, height);
+      editItemInItemsToSell(itemsToSellId, itemId, newPieceDto);
       setItemModalVisible(false);
-    }
   };
 
   const handleFocusPicker = useMemo(() => {
@@ -147,43 +153,49 @@ const ItemModal = () => {
         <Text style={styles.modalText}>Nuevo</Text>
         <DropDownPicker
           onOpen={handleFocusPicker}
+          
           containerProps={{style: {width: 300}}}
-          placeholder="Tipo de vidrio"
+          placeholder="Producto"
           listMode="FLATLIST"
           style={[styles.input, {alignSelf: 'center'}]}
           mode="BADGE"
           items={listForDropdown(productsList!.getProductsArray())}
-          value={tipoVidrioId}
-          setValue={setTipoVidrioId}
+          value={productId}
+          setValue={setProductId}
           labelProps={{style: {fontSize: 17, color: '#000'}}}
           itemKey="label"
           onClose={() => {
             setTimeout(() => {
-              handleNextInput(heightRef, editMode);
-            }, 0);
+              
+              // handleNextInput(heightRef, editMode);
+            }, 3000);
           }}
           open={showDropDown}
           setOpen={setShowDropDown}></DropDownPicker>
-        <TextInput
-          ref={heightRef}
-          onSubmitEditing={() => handleNextInput(widthRef, editMode)}
-          style={styles.input}
-          value={height}
-          onChangeText={setHeight}
-          keyboardType="number-pad"
-          label="Alto"
-          returnKeyType="next"
-          error={!height}></TextInput>
-        <TextInput
-          ref={widthRef}
-          onSubmitEditing={() => handleNextInput(quantityRef, editMode)}
-          style={styles.input}
-          value={width}
-          onChangeText={setWidth}
-          keyboardType="numeric"
-          label="Ancho"
-          returnKeyType="next"
-          error={!width}></TextInput>
+          {productType!='unique' &&<TextInput
+            ref={heightRef}
+            // onSubmitEditing={() => handleNextInput(widthRef, editMode)}
+            style={styles.input}
+            value={height}
+            onChangeText={setHeight}
+            keyboardType="number-pad"
+            label="Alto"
+            returnKeyType="next"
+            error={!height}
+          />}
+        
+          {productType=='calculated'&&<TextInput
+            ref={widthRef}
+            // onSubmitEditing={() => handleNextInput(quantityRef, editMode)}
+            style={styles.input}
+            value={width}
+            onChangeText={setWidth}
+            keyboardType="numeric"
+            label="Ancho"
+            returnKeyType="next"
+            error={!width}
+          />}
+        
         <TextInput
           ref={quantityRef}
           style={styles.input}
@@ -205,7 +217,7 @@ const ItemModal = () => {
             mode="outlined"
             textColor="#fff"
             buttonColor="#007bff"
-            disabled={!width || !height || !tipoVidrioId}>
+            disabled={!width || !height || !productId}>
             {!editMode ? 'Añadir' : 'Guardar'}
           </Button>
         </View>

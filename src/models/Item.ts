@@ -1,6 +1,13 @@
 import {Product} from './Product';
 import generateUniqueId from './generateUniqueId';
 
+export interface CreateItemNoProdDto {
+  productId: string;
+  quantity: number;
+  width?: number;
+  height?: number;
+}
+
 export class Item {
   id: string;
   height: number;
@@ -12,31 +19,31 @@ export class Item {
   constructor(
     product: Product,
     quantity: number,
-    height: number,
-    width: number,
+    height: number = 1,
+    width: number = 1,
   ) {
     this.selectedPrice = 'A';
     this.id = generateUniqueId();
     this.product = product;
     this.quantity = quantity ? quantity : 1;
-    if (product.type == 'calculated') {
-      this.height = height;
-      this.width = width;
-    } else {
-      this.width = 1;
-      this.height = 1;
-    }
+
+    this.height = height;
+    this.width = width;
   }
 
   get individualArea(): number {
-    if (this.product.type === 'calculated') {
-      return (Math.ceil(this.width / 10) * Math.ceil(this.height / 10)) / 100;
+    switch (this.product.type) {
+      case 'calculated-simple':
+        return this.height / 100;
+      case 'calculated':
+        return (Math.ceil(this.width / 10) * Math.ceil(this.height / 10)) / 100;
+      default:
+        return 1;
     }
-    return 1;
   }
 
   get totalArea(): number {
-    if (this.product.type === 'calculated') {
+    if (this.product.type != 'unique') {
       return this.individualArea * this.quantity;
     }
     return 0;
@@ -49,10 +56,16 @@ export class Item {
   autoSetSelectedPrice() {
     switch (this.selectedPrice) {
       case 'A':
-        this.selectedPrice = 'B';
+        if (this.product.unityPrices.priceB != 0) {
+          this.selectedPrice = 'B';
+        }
         break;
       case 'B':
-        this.selectedPrice = 'C';
+        if (this.product.unityPrices.priceC != 0) {
+          this.selectedPrice = 'C';
+        } else {
+          this.selectedPrice = 'A';
+        }
         break;
       default:
         this.selectedPrice = 'A';
@@ -76,13 +89,12 @@ export class Item {
   editPiece(
     quantity: number,
     product: Product,
-    width: number,
-    height: number,
-  ): Item {
+    width: number = 1,
+    height: number = 1,
+  ) {
     this.quantity = quantity;
     this.product = product;
     this.width = width;
     this.height = height;
-    return this;
   }
 }

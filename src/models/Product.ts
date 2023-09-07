@@ -32,16 +32,4 @@ export class Product {
     this.unityPrices = unityPrices;
     this.extraInfo = extraInfo;
   }
-
-  editProduct(
-    name: string,
-    type: 'unique' | 'calculated-simple' | 'calculated',
-    unityPrices: UnityPricesType,
-    extraInfo: string,
-  ) {
-    this.name = name;
-    this.type = type;
-    this.unityPrices = unityPrices;
-    this.extraInfo = extraInfo;
-  }
 }

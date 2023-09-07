@@ -50,26 +50,26 @@ export class ItemsToSell {
   }
 
   getItem(id: string) {
-    return this.items.get(id);
+    const items = this.items.get(id);
+    if(!items){
+      throw new Error('Item not found')
+    }
+    return items;
   }
 
   //return the list because it needs to be updated
   editItem(
     itemId: string,
-    width: number,
-    height: number,
-    quantity: number,
     product: Product,
+    quantity: number,
+    width: number = 1,
+    height: number=1,
   ) {
-    const item = this._items.get(itemId);
-    if (item) {
+    const item = this.getItem(itemId);
       item.editPiece(quantity, product, width, height);
       this._items.set(itemId, item);
       this.setItemsToSell(this._items);
       return this;
-    } else {
-      throw new Error('No existe el elemento');
-    }
   }
 
   deleteItem(itemId: string) {
