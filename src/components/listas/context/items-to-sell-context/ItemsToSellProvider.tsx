@@ -106,14 +106,16 @@ export const ItemsToSellListProvider = ({
   };
 
   const updateItemsListName = (itemsToSellId: string, newName: string) => {
-    const itemsToSell = itemsToSellList.get(itemsToSellId);
-    if (itemsToSell) {
-      itemsToSell.setName(newName);
-      const newList = itemsToSellList.set(itemsToSellId, itemsToSell);
-      setItemsToSellList(new Map(newList));
-    } else {
-      console.error('no existe');
+    if (newName.trim().length > 16 || newName.trim().length < 1) {
+      throw new Error('Invalid name');
     }
+    const itemsToSell = itemsToSellList.get(itemsToSellId);
+    if (!itemsToSell) {
+      throw new Error('List does not exist');
+    }
+    itemsToSell.setName(newName);
+    const newList = itemsToSellList.set(itemsToSellId, itemsToSell);
+    setItemsToSellList(new Map(newList));
   };
 
   return (

@@ -7,6 +7,7 @@ import {useItemModalContext, useItemsToSellContext} from './context';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {TextInput} from 'react-native';
 import {useRef, useState} from 'react';
+import {useSnackBar} from '../snack-bar/SnackBarContext';
 
 interface props {
   itemsToSell: ItemsToSell;
@@ -106,6 +107,7 @@ const TopInfo = ({title, id}: {title: string; id: string}) => {
   const [inputValue, setInputValue] = useState(title);
   const inputRef = useRef<any | null>(null);
   const {updateItemsListName} = useItemsToSellContext();
+  const {showSnackMessage} = useSnackBar();
 
   const handleEditListName = () => {
     setIsEditTitle(!isEditTitle);
@@ -120,8 +122,12 @@ const TopInfo = ({title, id}: {title: string; id: string}) => {
   };
 
   const handleUpdateName = () => {
-    updateItemsListName(id, inputValue);
-    setIsEditTitle(!isEditTitle);
+    try {
+      updateItemsListName(id, inputValue);
+      setIsEditTitle(!isEditTitle);
+    } catch (e: any) {
+      showSnackMessage(e);
+    }
   };
 
   return (
@@ -133,6 +139,8 @@ const TopInfo = ({title, id}: {title: string; id: string}) => {
             ref={inputRef}
             style={styles.textInput}
             value={inputValue}
+            onSubmitEditing={handleUpdateName}
+            blurOnSubmit={false}
             onChangeText={setInputValue}></TextInput>
         </View>
       )}
@@ -156,9 +164,11 @@ const TopInfo = ({title, id}: {title: string; id: string}) => {
           </TouchableOpacity>
           <TouchableOpacity>
             <FontAwesome
-              onPress={() => handleUpdateName()}
+              onPress={handleUpdateName}
               name="check"
-              disabled={inputValue.length > 16}
+              disabled={
+                inputValue.trim().length > 16 || inputValue.trim().length < 1
+              }
               size={18}
               style={{paddingTop: 3, paddingHorizontal: 6}}></FontAwesome>
           </TouchableOpacity>

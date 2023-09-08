@@ -11,7 +11,7 @@ import globalStyles from '../common/Styles';
 import {Product} from '../../models';
 import {useProductsContext} from './context/products-context';
 import {useProductModalContext} from './context/product-modal-context';
-import { useSnackBar } from '../snack-bar/SnackBarContext';
+import {useSnackBar} from '../snack-bar/SnackBarContext';
 
 interface props {
   product: Product;
@@ -43,10 +43,10 @@ const ProductDetailComponent = ({product}: props) => {
     setEditProductId(product.id);
   };
 
-  const handleDeleteProduct = () =>{
-    productListCrudOptions('deleted',product.id, undefined);
+  const handleDeleteProduct = () => {
+    productListCrudOptions('deleted', product.id, undefined);
     showSnackMessage('Eliminado', 1000);
-  }
+  };
 
   return (
     <View style={styles.ventana}>
@@ -65,16 +65,20 @@ const ProductDetailComponent = ({product}: props) => {
           </Text>
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Precio A: </Text>
-            {product.unityPrices.priceA}
+            {product.unityPrices.priceA} USD
           </Text>
-          <Text style={globalStyles.sizedText}>
-            <Text style={[globalStyles.boldText]}>Precio B: </Text>
-            {product.unityPrices.priceB}
-          </Text>
-          <Text style={globalStyles.sizedText}>
-            <Text style={[globalStyles.boldText]}>Precio C: </Text>
-            {product.unityPrices.priceC}
-          </Text>
+          {!!product.unityPrices.priceB && (
+            <Text style={globalStyles.sizedText}>
+              <Text style={[globalStyles.boldText]}>Precio B: </Text>
+              {product.unityPrices.priceB} USD
+            </Text>
+          )}
+          {!!product.unityPrices.priceC && (
+            <Text style={globalStyles.sizedText}>
+              <Text style={[globalStyles.boldText]}>Precio C: </Text>
+              {product.unityPrices.priceC} USD
+            </Text>
+          )}
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Información extra: </Text>
             {product.extraInfo}
@@ -82,9 +86,7 @@ const ProductDetailComponent = ({product}: props) => {
           <View style={[globalStyles.buttonGroup, globalStyles.centered]}>
             <Button
               textColor={'#d15656'}
-              onPress={() =>
-                createTwoButtonAlert(() => handleDeleteProduct())
-              }>
+              onPress={() => createTwoButtonAlert(() => handleDeleteProduct())}>
               Eliminar
             </Button>
             <Button
