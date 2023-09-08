@@ -2,7 +2,7 @@ import {useRef, useState, useEffect, useMemo} from 'react';
 import {View, StyleSheet, Modal, Text} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
-import { Product, CreateItemNoProdDto} from '../../models';
+import {Product, CreateItemNoProdDto, ProductPriceCalculus} from '../../models';
 import globalStyles from '../common/Styles';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
 import {useItemModalContext, useItemsToSellContext} from './context';
@@ -41,17 +41,18 @@ const handleNextInput = (
   inputRefs: React.MutableRefObject<any>[],
   isEdit: boolean,
 ) => {
-  setTimeout(()=>{
-    console.log(inputRefs)
-    const nextInputRef = inputRefs.find((ref)=>ref!=undefined && ref.current!=null)
-    if (nextInputRef && nextInputRef.current ) {
-      if(!isEdit){
-          nextInputRef.current.focus();
-      }
+  setTimeout(() => {
+    const nextInputRef = inputRefs.find(
+      ref => ref != undefined && ref.current != null,
+    );
+    if (nextInputRef && nextInputRef.current) {
+      if (!isEdit) {
         nextInputRef.current.focus();
-        nextInputRef.current.blur();
+      }
+      nextInputRef.current.focus();
+      nextInputRef.current.blur();
     }
-  },100)
+  }, 100);
 };
 
 const ItemModal = () => {
@@ -66,7 +67,9 @@ const ItemModal = () => {
   //others
   const [productId, setProductId] = useState('');
   const [showDropDown, setShowDropDown] = useState(false);
-  const [productType, setProductType] = useState('unique');
+  const [productType, setProductType] = useState(
+    ProductPriceCalculus.not_calculated,
+  );
   //contexts
   const {addItemToItemsToSell, itemsToSellList, editItemInItemsToSell} =
     useItemsToSellContext();
@@ -92,15 +95,15 @@ const ItemModal = () => {
   }, [editMode]);
 
   useEffect(() => {
-    if(productId!=''){
-      getProductType()
+    if (productId != '') {
+      getProductType();
     }
   }, [productId]);
 
   const getProductType = () => {
-    const vidrio = productsList!.getProduct(productId);
-    if (vidrio) {
-      setProductType(vidrio.type);
+    const product = productsList!.getProduct(productId);
+    if (product) {
+      setProductType(product.type);
     } else {
       showSnackMessage('Producto no encontrado', 600);
     }
@@ -120,9 +123,9 @@ const ItemModal = () => {
   };
 
   const handleAddItem = () => {
-    const productDto = createItemDto(productId,quantity,width,height);
-      addItemToItemsToSell(itemsToSellId, productDto);
-      showSnackMessage('Agregado', 500);
+    const productDto = createItemDto(productId, quantity, width, height);
+    addItemToItemsToSell(itemsToSellId, productDto);
+    showSnackMessage('Agregado', 500);
     if (widthRef && widthRef.current) {
       heightRef.current.focus();
       heightRef.current.clear();
@@ -130,23 +133,23 @@ const ItemModal = () => {
   };
 
   const updateItem = () => {
-      const newPieceDto = createItemDto(productId, quantity,width, height);
-      editItemInItemsToSell(itemsToSellId, itemId, newPieceDto);
-      setItemModalVisible(false);
+    const newPieceDto = createItemDto(productId, quantity, width, height);
+    editItemInItemsToSell(itemsToSellId, itemId, newPieceDto);
+    setItemModalVisible(false);
   };
 
-  const handleDisableSaveBtn = ()=>{
+  const handleDisableSaveBtn = () => {
     switch (productType) {
-      case 'unique':
+      case ProductPriceCalculus.not_calculated:
         return !productId;
 
-      case 'calculated-simple':
-        return !height || !productId
-    
+      case ProductPriceCalculus.calculated_simple:
+        return !height || !productId;
+
       default:
         return !width || !height || !productId;
     }
-  }
+  };
 
   const handleAtFocusPicker = useMemo(() => {
     return () => {
@@ -180,25 +183,25 @@ const ItemModal = () => {
           itemKey="label"
           onClose={() => {
             setTimeout(() => {
-              
-              handleNextInput([heightRef,widthRef], editMode);
+              handleNextInput([heightRef, widthRef], editMode);
             }, 10);
           }}
           open={showDropDown}
           setOpen={setShowDropDown}></DropDownPicker>
+        {productType != ProductPriceCalculus.not_calculated && <TextInput
+          ref={heightRef}
+          onSubmitEditing={() => handleNextInput([widthRef], editMode)}
+          style={styles.input}
+          value={height}
+          onChangeText={setHeight}
+          keyboardType="number-pad"
+          label="Alto"
+          returnKeyType="next"
+          error={!height}
+        />}
+
+        {productType == ProductPriceCalculus.calculated && (
           <TextInput
-            ref={heightRef}
-            onSubmitEditing={() => handleNextInput([widthRef], editMode)}
-            style={[styles.input, {display:productType!='unique'? 'flex':'none'}]}
-            value={height}
-            onChangeText={setHeight}
-            keyboardType="number-pad"
-            label="Alto"
-            returnKeyType="next"
-            error={!height}
-          />
-        
-          {productType=='calculated'&&<TextInput
             ref={widthRef}
             style={styles.input}
             label="Ancho"
@@ -207,8 +210,9 @@ const ItemModal = () => {
             keyboardType="numeric"
             returnKeyType="next"
             error={!width}
-          />}
-        
+          />
+        )}
+
         <TextInput
           ref={quantityRef}
           style={styles.input}

@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Alert,
 } from 'react-native';
-import {Product, UnityPricesType} from '../../models';
+import {Product, ProductPriceCalculus, UnityPricesType} from '../../models';
 import {Button, TextInput, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
@@ -23,9 +23,9 @@ const handleNextInput = (nextInputRef: React.MutableRefObject<any>) => {
 };
 
 const productTypes = [
-  {label: 'Calculado', value: 'calculated'},
-  {label: 'No Calculado', value: 'unique'},
-  {label: 'Calculado Simple', value: 'calculated-simple'},
+  {label: 'Calculado', value: ProductPriceCalculus.calculated},
+  {label: 'No Calculado', value: ProductPriceCalculus.not_calculated},
+  {label: 'Calculado Simple', value: ProductPriceCalculus.calculated_simple},
 ];
 
 const createInfoAlert = () => {
@@ -56,8 +56,8 @@ const generateUnityPrices = (
 const ProductModal = () => {
   // form
   const [productType, setProductType] = useState<
-    'unique' | 'calculated-simple' | 'calculated'
-  >('calculated');
+    ProductPriceCalculus
+  >(ProductPriceCalculus.calculated);
   const [name, onChangeName] = useState('');
   const [priceA, onChangePriceA] = useState('');
   const [priceB, onChangePriceB] = useState('');

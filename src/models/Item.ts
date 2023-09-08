@@ -1,4 +1,4 @@
-import {Product} from './Product';
+import {Product, ProductPriceCalculus} from './Product';
 import generateUniqueId from './generateUniqueId';
 
 export interface CreateItemNoProdDto {
@@ -33,9 +33,9 @@ export class Item {
 
   get individualArea(): number {
     switch (this.product.type) {
-      case 'calculated-simple':
+      case ProductPriceCalculus.calculated_simple:
         return this.height / 100;
-      case 'calculated':
+      case ProductPriceCalculus.calculated:
         return (Math.ceil(this.width / 10) * Math.ceil(this.height / 10)) / 100;
       default:
         return 1;
@@ -43,7 +43,7 @@ export class Item {
   }
 
   get totalArea(): number {
-    if (this.product.type != 'unique') {
+    if (this.product.type != ProductPriceCalculus.not_calculated) {
       return this.individualArea * this.quantity;
     }
     return 0;

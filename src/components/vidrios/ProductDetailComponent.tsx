@@ -8,7 +8,7 @@ import {
   Alert,
 } from 'react-native';
 import globalStyles from '../common/Styles';
-import {Product} from '../../models';
+import {Product, ProductPriceCalculus,} from '../../models';
 import {useProductsContext} from './context/products-context';
 import {useProductModalContext} from './context/product-modal-context';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
@@ -57,9 +57,9 @@ const ProductDetailComponent = ({product}: props) => {
         <View style={styles.ventana}>
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Tipo: </Text>
-            {product.type == 'calculated'
+            {product.type == ProductPriceCalculus.calculated
               ? 'Calculado'
-              : product.type == 'calculated-simple'
+              : product.type == ProductPriceCalculus.calculated_simple
               ? 'Calculado Simple'
               : 'No calculado'}
           </Text>

@@ -6,16 +6,22 @@ export interface UnityPricesType {
   priceC?: number;
 }
 
+export enum ProductPriceCalculus{
+  'calculated',
+  'calculated_simple',
+  'not_calculated'
+}
+
 export class Product {
   id: string;
-  type: 'unique' | 'calculated-simple' | 'calculated';
+  type: ProductPriceCalculus;
   name: string;
   unityPrices: UnityPricesType;
   extraInfo: string;
 
   constructor(
     name: string,
-    type: 'unique' | 'calculated-simple' | 'calculated',
+    type: ProductPriceCalculus,
     unityPrices: UnityPricesType,
     extraInfo: string,
   ) {
