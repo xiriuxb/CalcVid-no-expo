@@ -1,9 +1,24 @@
-import {useState, useEffect} from 'react';
+import {useState, useEffect, memo} from 'react';
 import {ItemsToSellContext} from './ItemsToSellContext';
 import {Item, ItemsToSell, CreateItemNoProdDto} from '../../../../models';
 import {useProductsContext} from '../../../vidrios/context/products-context';
 
-export const ItemsToSellListProvider = ({
+const itemsListHasItem = (
+  itemsList: ItemsToSell,
+  productdto: CreateItemNoProdDto,
+) => {
+  const element = Array.from(itemsList.items.values()).find(el => {
+    return (
+      el.product.id == productdto.productId &&
+      (el.height == productdto.height || el.height == productdto.width || !productdto.height) &&
+      (el.width == productdto.width || el.width == productdto.height || !productdto.width)
+    );
+  });
+  console.log('elemento', element);
+  return element ? element : undefined;
+};
+
+export const ItemsToSellListProvider = memo(({
   children,
 }: {
   children: React.ReactNode;
@@ -66,6 +81,14 @@ export const ItemsToSellListProvider = ({
     try {
       const itemsToSell = getItemsList(itemsToSellId);
       const product = productsList.getProduct(dto.productId);
+      const itemExist = itemsListHasItem(itemsToSell, dto);
+      if (itemExist) {
+        editItemInItemsToSell(itemsToSellId, itemExist.id, {
+          ...dto,
+          quantity: itemExist.quantity + dto.quantity,
+        });
+        return;
+      }
       const newItem = new Item(product, dto.quantity, dto.height, dto.width);
       itemsToSell.items.set(newItem.id, newItem);
       itemsToSellList.set(itemsToSellId, itemsToSell);
@@ -134,4 +157,4 @@ export const ItemsToSellListProvider = ({
       {children}
     </ItemsToSellContext.Provider>
   );
-};
+});

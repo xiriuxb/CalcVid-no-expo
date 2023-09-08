@@ -18,7 +18,7 @@ export class Item {
 
   constructor(
     product: Product,
-    quantity: number,
+    quantity: number = 1,
     height: number = 1,
     width: number = 1,
   ) {

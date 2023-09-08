@@ -24,13 +24,13 @@ const listForDropdown = (list: Product[]) => {
 
 const createItemDto = (
   productId: string,
-  quantity: string,
+  quantity?: string,
   width?: string,
   height?: string,
 ): CreateItemNoProdDto => {
   const dto: CreateItemNoProdDto = {
     productId,
-    quantity: parseInt(quantity),
+    quantity: quantity ? parseInt(quantity) : 1,
     width: width ? parseFloat(width) : undefined,
     height: height ? parseFloat(height) : undefined,
   };
@@ -123,10 +123,17 @@ const ItemModal = () => {
   };
 
   const handleAddItem = () => {
-    const productDto = createItemDto(productId, quantity, width, height);
+    const productDto = createItemDto(
+      productId,
+      quantity,
+      productType == ProductPriceCalculus.calculated ? width : undefined,
+      productType != ProductPriceCalculus.not_calculated ? height : undefined,
+    );
     addItemToItemsToSell(itemsToSellId, productDto);
     showSnackMessage('Agregado', 500);
     if (widthRef && widthRef.current) {
+      setWidth('');
+      setHeight('');
       heightRef.current.focus();
       heightRef.current.clear();
     }
@@ -188,17 +195,19 @@ const ItemModal = () => {
           }}
           open={showDropDown}
           setOpen={setShowDropDown}></DropDownPicker>
-        {productType != ProductPriceCalculus.not_calculated && <TextInput
-          ref={heightRef}
-          onSubmitEditing={() => handleNextInput([widthRef], editMode)}
-          style={styles.input}
-          value={height}
-          onChangeText={setHeight}
-          keyboardType="number-pad"
-          label="Alto"
-          returnKeyType="next"
-          error={!height}
-        />}
+        {productType != ProductPriceCalculus.not_calculated && (
+          <TextInput
+            ref={heightRef}
+            onSubmitEditing={() => handleNextInput([widthRef], editMode)}
+            style={styles.input}
+            value={height}
+            onChangeText={setHeight}
+            keyboardType="number-pad"
+            label="Alto"
+            returnKeyType="next"
+            error={!height}
+          />
+        )}
 
         {productType == ProductPriceCalculus.calculated && (
           <TextInput

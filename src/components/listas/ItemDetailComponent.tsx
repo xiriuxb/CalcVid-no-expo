@@ -1,7 +1,6 @@
 import {useMemo} from 'react';
 import {Alert, Text, TouchableOpacity, View} from 'react-native';
-import {Item} from '../../models/';
-import {TouchableRipple} from 'react-native-paper';
+import {Item, ProductPriceCalculus} from '../../models/';
 import globalStyles from '../common/Styles';
 import {useItemModalContext, useItemsToSellContext} from './context';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -55,8 +54,14 @@ const ItemDetailComponent = ({
       <View>
         <TouchableOpacity onPress={openModalToEdit}>
           <Text style={globalStyles.sizedText}>
-            {`${item.product.type === 'calculated' ? `${item.width} x ` : ''}${
-              item.product.type != 'unique' ? `${item.height} =` : ''
+            {`${
+              item.product.type === ProductPriceCalculus.calculated
+                ? `${item.width} x `
+                : ''
+            }${
+              item.product.type != ProductPriceCalculus.not_calculated
+                ? `${item.height} =`
+                : ''
             }${item.quantity} | ${item.product.name}`}
           </Text>
         </TouchableOpacity>
@@ -79,15 +84,15 @@ const ItemDetailComponent = ({
         </TouchableOpacity>
       </View>
 
-        <TouchableOpacity onPress={createTwoButtonAlert}>
-          <FontAwesome
-            name="trash"
-            size={17}
-            color={'red'}
-            style={{paddingTop: 3, paddingHorizontal: 4}}
-          />
-          <Text style={{color: 'white'}}>Info</Text>
-        </TouchableOpacity>
+      <TouchableOpacity onPress={createTwoButtonAlert}>
+        <FontAwesome
+          name="trash"
+          size={17}
+          color={'red'}
+          style={{paddingTop: 3, paddingHorizontal: 4}}
+        />
+        <Text style={{color: 'white'}}>Info</Text>
+      </TouchableOpacity>
     </View>
   );
 };
