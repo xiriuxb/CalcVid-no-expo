@@ -5,8 +5,9 @@ export const SnackBarProvider = ({children}: {children: React.ReactNode}) => {
   const [snackMessage, setSnackMessage] = useState('');
   const snackDuration = useRef(3000);
 
-  const showSnackMessage = (newMessage: string, duration?: number) => {
-    setSnackMessage(newMessage);
+  const showSnackMessage = (newMessage: any, duration?: number) => {
+    const message = newMessage instanceof Error ? newMessage.message : newMessage;
+    setSnackMessage(message);
     if (duration) {
       snackDuration.current = duration;
     }

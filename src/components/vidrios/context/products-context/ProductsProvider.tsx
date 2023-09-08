@@ -1,76 +1,35 @@
-import {useState, useEffect, useReducer} from 'react';
+import {useState, useEffect, useReducer, useRef} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Product, ProductsList} from '../../../../models';
 import {useSnackBar} from '../../../snack-bar/SnackBarContext';
 import {ProductsContext} from './ProductsContext';
 
-const storeProducts = async (
-  map: Map<string, Product>,
-  onErrorCallback: () => void,
-) => {
+const storeProducts = async (map: Map<string, Product>) => {
   const mapAsArray = Array.from(map.entries());
   try {
     await AsyncStorage.setItem('products', JSON.stringify(mapAsArray));
   } catch (error) {
-    () => onErrorCallback();
+    throw new Error('Error at loading products');
   }
 };
 
-const getProductsFromStorage = async (onErrorCallback: () => void) => {
+const getProductsFromStorage = async () => {
   try {
     const storedProducts = await AsyncStorage.getItem('products');
     if (storedProducts === null) {
-      onErrorCallback();
+      throw new Error('Error at loading products');
     } else {
       const deserializedArray = JSON.parse(storedProducts);
       return new Map<string, Product>(deserializedArray);
     }
   } catch (e) {
-    onErrorCallback();
+    throw new Error('Error at loading products');
   }
 };
 
-function tasksReducer(
-  productsClass: ProductsList,
-  action: {
-    type: string;
-    productData?: {id: string; newProd: Product | undefined};
-    productsMap: Map<string, Product>;
-  },
-) {
-  switch (action.type) {
-    case 'added': {
-      productsClass.addProduct(action.productData!.newProd!);
-      return productsClass;
-    }
-    case 'changed': {
-      productsClass.updateProduct(
-        action.productData!.id,
-        action.productData!.newProd!,
-      );
-      return productsClass;
-    }
-    case 'deleted': {
-      productsClass.deleteProduct(action.productData!.id);
-      return productsClass;
-    }
-    case 'setted': {
-      return new ProductsList(action.productsMap);
-    }
-    default: {
-      throw Error('Unknown action: ' + action.type);
-    }
-  }
-}
-
 export const ProductsProvider = ({children}: {children: React.ReactNode}) => {
-  const [productsList, setProductsList] = useState<Map<string, Product>>(
-    new Map(),
-  );
-  const [listaClass, dispatch] = useReducer(
-    tasksReducer,
-    new ProductsList(productsList),
-  );
+  const [listClass, setListClass] = useState(new ProductsList(new Map()));
+  const firsExecutionRef = useRef<boolean>(true);
   const [errorAtLoadingProducts, setErrorAtLoadingProducts] = useState(false);
   const {showSnackMessage} = useSnackBar();
 
@@ -79,20 +38,30 @@ export const ProductsProvider = ({children}: {children: React.ReactNode}) => {
   }, []);
 
   useEffect(() => {
-    dispatch({type: 'setted', productsMap: productsList});
-  }, [productsList]);
+    if (firsExecutionRef.current) {
+      firsExecutionRef.current = false;
+    } else {
+      try {
+        storeProducts(listClass.productsMap);
+      } catch (e) {
+        const errorMessage = e instanceof Error ? e.message : String(e);
+        showSnackMessage(errorMessage);
+      }
+    }
+  }, [listClass]);
 
   const loadProductsList = async () => {
-    const val = await getProductsFromStorage(handleErrorAtListLoad);
-    if (val != undefined) {
-      setProductsList(new Map(val));
-      dispatch({type: 'setted', productsMap: productsList});
+    try {
+      const val = await getProductsFromStorage();
+      firsExecutionRef.current = true; //this is for avoid the execution of StoreProducts the first time the list os loaded
+      if (val != undefined) {
+        setListClass(new ProductsList(val));
+      }
+    } catch (e) {
+      const errorMessage = e instanceof Error ? e.message : String(e);
+      showSnackMessage(errorMessage);
+      setErrorAtLoadingProducts(true);
     }
-  };
-
-  const handleErrorAtListLoad = () => {
-    showSnackMessage('Error al cargar productos');
-    setErrorAtLoadingProducts(true);
   };
 
   const handleCRUD = (
@@ -101,26 +70,40 @@ export const ProductsProvider = ({children}: {children: React.ReactNode}) => {
     newProduct: Product | undefined,
   ) => {
     try {
-      dispatch({
-        type: crudFunc,
-        productData: {id: id, newProd: newProduct},
-        productsMap: productsList,
-      });
-      storeProducts(listaClass.productsMap, () => {
-        showSnackMessage('error saving products');
-      }).then(() => {
-        setProductsList(new Map(listaClass.productsMap));
-      });
+      const crudFunctions = {
+        added: () => handleAddProduct(newProduct!),
+        changed: () => handleUpdateProduct(id,newProduct!),
+        deleted: () => handleDeleteProduct(id),
+      };
+      return crudFunctions[crudFunc]();
     } catch (e) {
       const errorMessage = e instanceof Error ? e.message : String(e);
-      showSnackMessage(errorMessage);
+      throw new Error(errorMessage);
     }
+  };
+
+  const handleAddProduct = (newProduct: Product) => {
+    const updatedClass = new ProductsList(listClass.productsMap);
+    updatedClass.addProduct(newProduct!);
+    setListClass(updatedClass);
+  };
+
+  const handleUpdateProduct = (prodId:string, newProduct: Product) => {
+    const updatedClass = new ProductsList(listClass.productsMap);
+    updatedClass.updateProduct(prodId,newProduct!);
+    setListClass(updatedClass);
+  };
+
+  const handleDeleteProduct = (prodId:string,) => {
+    const updatedClass = new ProductsList(listClass.productsMap);
+    updatedClass.deleteProduct(prodId);
+    setListClass(updatedClass);
   };
 
   return (
     <ProductsContext.Provider
       value={{
-        productsList: listaClass,
+        productsList: listClass,
         productListCrudOptions: handleCRUD,
         errorAtLoadingProducts,
       }}>

@@ -2,7 +2,7 @@ import {useRef, useState, useEffect, useMemo} from 'react';
 import {View, StyleSheet, Modal, Text} from 'react-native';
 import {Button, TextInput} from 'react-native-paper';
 import DropDownPicker from 'react-native-dropdown-picker';
-import {Item, Product, CreateItemNoProdDto} from '../../models';
+import { Product, CreateItemNoProdDto} from '../../models';
 import globalStyles from '../common/Styles';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
 import {useItemModalContext, useItemsToSellContext} from './context';
@@ -38,18 +38,20 @@ const createItemDto = (
 };
 
 const handleNextInput = (
-  nextInputRef: React.MutableRefObject<any>,
+  inputRefs: React.MutableRefObject<any>[],
   isEdit: boolean,
 ) => {
-  if (nextInputRef && nextInputRef.current && !isEdit) {
-    setTimeout(() => {
-      nextInputRef.current.focus();
-    }, 10);
-  } else {
-    setTimeout(() => {
-      nextInputRef.current.focus();
-    }, 10);
-  }
+  setTimeout(()=>{
+    console.log(inputRefs)
+    const nextInputRef = inputRefs.find((ref)=>ref!=undefined && ref.current!=null)
+    if (nextInputRef && nextInputRef.current ) {
+      if(!isEdit){
+          nextInputRef.current.focus();
+      }
+        nextInputRef.current.focus();
+        nextInputRef.current.blur();
+    }
+  },100)
 };
 
 const ItemModal = () => {
@@ -133,7 +135,20 @@ const ItemModal = () => {
       setItemModalVisible(false);
   };
 
-  const handleFocusPicker = useMemo(() => {
+  const handleDisableSaveBtn = ()=>{
+    switch (productType) {
+      case 'unique':
+        return !productId;
+
+      case 'calculated-simple':
+        return !height || !productId
+    
+      default:
+        return !width || !height || !productId;
+    }
+  }
+
+  const handleAtFocusPicker = useMemo(() => {
     return () => {
       if (widthRef.current) {
         widthRef.current.blur();
@@ -152,8 +167,7 @@ const ItemModal = () => {
       <View style={styles.modalContainer}>
         <Text style={styles.modalText}>Nuevo</Text>
         <DropDownPicker
-          onOpen={handleFocusPicker}
-          
+          onOpen={handleAtFocusPicker}
           containerProps={{style: {width: 300}}}
           placeholder="Producto"
           listMode="FLATLIST"
@@ -167,31 +181,30 @@ const ItemModal = () => {
           onClose={() => {
             setTimeout(() => {
               
-              // handleNextInput(heightRef, editMode);
-            }, 3000);
+              handleNextInput([heightRef,widthRef], editMode);
+            }, 10);
           }}
           open={showDropDown}
           setOpen={setShowDropDown}></DropDownPicker>
-          {productType!='unique' &&<TextInput
+          <TextInput
             ref={heightRef}
-            // onSubmitEditing={() => handleNextInput(widthRef, editMode)}
-            style={styles.input}
+            onSubmitEditing={() => handleNextInput([widthRef], editMode)}
+            style={[styles.input, {display:productType!='unique'? 'flex':'none'}]}
             value={height}
             onChangeText={setHeight}
             keyboardType="number-pad"
             label="Alto"
             returnKeyType="next"
             error={!height}
-          />}
+          />
         
           {productType=='calculated'&&<TextInput
             ref={widthRef}
-            // onSubmitEditing={() => handleNextInput(quantityRef, editMode)}
             style={styles.input}
+            label="Ancho"
             value={width}
             onChangeText={setWidth}
             keyboardType="numeric"
-            label="Ancho"
             returnKeyType="next"
             error={!width}
           />}
@@ -217,7 +230,7 @@ const ItemModal = () => {
             mode="outlined"
             textColor="#fff"
             buttonColor="#007bff"
-            disabled={!width || !height || !productId}>
+            disabled={handleDisableSaveBtn()}>
             {!editMode ? 'Añadir' : 'Guardar'}
           </Button>
         </View>

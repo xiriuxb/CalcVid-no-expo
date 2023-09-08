@@ -39,7 +39,9 @@ export class ProductsList {
   }
 
   addProduct(newProduct: Product) {
+    console.log('ssa')
     if (this.productExistByName(newProduct.name)) {
+      console.log('duplicated name')
       throw new Error('Duplicated name');
     }
     this.productsMap.set(newProduct.id, newProduct);

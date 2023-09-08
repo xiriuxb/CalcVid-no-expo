@@ -105,19 +105,25 @@ const ProductModal = () => {
   };
 
   const handleAddOrUpdate = () => {
-    if (!priceA || !name) {
-      showSnackMessage('Faltan datos', 2000);
-      return;
+    try{
+      if (!priceA || !name) {
+        throw new Error('Faltan datos');
+      }
+      if (productsList.productExistByName(name,editProduct.current?.id)){
+        throw new Error('Nombre ya existe');
+      }
+      const prices = generateUnityPrices(priceA, priceB, priceC);
+      const newProduct = new Product(name.trim(), productType, prices, extraInfo);
+      if (editMode.current) {
+        productListCrudOptions('changed',editProductId, newProduct);
+      } else {
+        productListCrudOptions('added',undefined,newProduct);
+      }
+      showSnackMessage('Guardado', 500);
+      setProductModalVisible(false);
+    } catch (e:any) {
+      showSnackMessage(e);
     }
-    const prices = generateUnityPrices(priceA, priceB, priceC);
-    const newProduct = new Product(name.trim(), productType, prices, extraInfo);
-    if (editMode.current && editMode) {
-      productListCrudOptions('changed',editProductId, newProduct);
-    } else {
-      productListCrudOptions('added',undefined,newProduct);
-    }
-    showSnackMessage('Guardado', 500);
-    setProductModalVisible(false);
   };
 
   return (
@@ -215,7 +221,7 @@ const ProductModal = () => {
           </Button>
           <Button
             onPress={handleAddOrUpdate}
-            disabled={!name || !priceA}
+            
             mode="outlined"
             textColor="#fff"
             buttonColor="#007bff">
