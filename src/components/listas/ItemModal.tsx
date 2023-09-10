@@ -73,7 +73,7 @@ const ItemModal = () => {
   //contexts
   const {addItemToItemsToSell, itemsToSellList, editItemInItemsToSell} =
     useItemsToSellContext();
-  const {productsList} = useProductsContext();
+  const {productsMap} = useProductsContext();
   const {showSnackMessage} = useSnackBar();
   const {setItemModalVisible, editMode, itemsToSellId, setEditMode, itemId} =
     useItemModalContext();
@@ -101,7 +101,7 @@ const ItemModal = () => {
   }, [productId]);
 
   const getProductType = () => {
-    const product = productsList!.getProduct(productId);
+    const product = productsMap!.getProduct(productId);
     if (product) {
       setProductType(product.type);
     } else {
@@ -183,7 +183,7 @@ const ItemModal = () => {
           listMode="FLATLIST"
           style={[styles.input, {alignSelf: 'center'}]}
           mode="BADGE"
-          items={listForDropdown(productsList!.getProductsArray())}
+          items={listForDropdown(productsMap!.getProductsArray())}
           value={productId}
           setValue={setProductId}
           labelProps={{style: {fontSize: 17, color: '#000'}}}

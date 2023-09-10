@@ -5,7 +5,7 @@ import ProductDetailComponent from './ProductDetailComponent';
 import {useProductsContext} from './context/products-context';
 import {AddEditModalComponent} from './AddEditModal';
 import {useProductModalContext} from './context/product-modal-context';
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 const ProductsView = () => {
   const {productModalVisible, setProductModalVisible} =
@@ -13,29 +13,31 @@ const ProductsView = () => {
 
   const {productsMap, errorAtLoadingProducts} = useProductsContext();
 
-  const [productsArrL,setProductArrL] = useState(productsMap.getProductsArray());
+  const [productsArr, setProductArr] = useState(
+    productsMap.getProductsArray(),
+  );
 
-  const [searchValue, setSearchValue] = useState('')
+  const [searchValue, setSearchValue] = useState('');
 
-  const filterArr = () =>{
-
-  }
-
-  useEffect(()=>{
-    if(searchValue){
-      const filtered = productsMap.getProductsArray().filter((pr)=>pr.name.toLowerCase().includes(searchValue.toLowerCase()))
-      setProductArrL(filtered);
+  useEffect(() => {
+    if (searchValue) {
+      const filtered = productsMap
+        .getProductsArray()
+        .filter(pr =>
+          pr.name.toLowerCase().includes(searchValue.toLowerCase()),
+        );
+      setProductArr(filtered);
     } else {
-      setProductArrL(productsMap.getProductsArray())
+      setProductArr(productsMap.getProductsArray());
     }
-  }, [searchValue])
+  }, [searchValue]);
 
   return (
     <View style={{flex: 1}}>
       <View style={styles.optionsBar}>
         <TextInput
-        value={searchValue}
-        onChangeText={(text)=>setSearchValue(text)}
+          value={searchValue}
+          onChangeText={text => setSearchValue(text)}
           style={styles.searchInput}
           clearButtonMode="always"
           placeholder="Buscar"></TextInput>
@@ -53,7 +55,7 @@ const ProductsView = () => {
       {errorAtLoadingProducts ? (
         <ErrorAtLoadingComponent />
       ) : (
-        <ScrollProductsMap productsMap={productsArrL} />
+        <ScrollProductsMap productsMap={productsArr} />
       )}
     </View>
   );
