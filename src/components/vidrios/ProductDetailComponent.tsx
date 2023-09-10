@@ -22,13 +22,13 @@ const createTwoButtonAlert = (onOkCallback: (id: any) => void) => {
   ]);
 };
 
-const pricesArr = (prices:UnityPricesType) => {
+const pricesArr = (prices: UnityPricesType) => {
   return [
-    {name:'A',val:prices.priceA},
-    {name:'B',val:prices.priceB},
-    {name:'C',val:prices.priceC},
-  ]
-}
+    {name: 'A', val: prices.priceA},
+    {name: 'B', val: prices.priceB},
+    {name: 'C', val: prices.priceC},
+  ];
+};
 
 const ProductDetailComponent = ({product}: props) => {
   const [showDetails, setShowDetails] = useState(false);
@@ -49,7 +49,10 @@ const ProductDetailComponent = ({product}: props) => {
 
   return (
     <View style={styles.ventana}>
-      <TouchableShowMore showMore={showDetails} setShowMore={setShowDetails}>
+      <TouchableShowMore
+        showMore={showDetails}
+        setShowMore={setShowDetails}
+        style={showDetails?[styles.touchable,styles.shadow]:styles.touchable}>
         <View
           style={{
             flexDirection: 'row',
@@ -64,7 +67,7 @@ const ProductDetailComponent = ({product}: props) => {
         </View>
       </TouchableShowMore>
       {showDetails && (
-        <View style={styles.ventana2}>
+        <View style={styles.ventana}>
           <Text style={globalStyles.sizedText}>
             <Text style={[globalStyles.boldText]}>Tipo: </Text>
             {product.type == ProductPriceCalculus.calculated
@@ -76,12 +79,15 @@ const ProductDetailComponent = ({product}: props) => {
           <View style={{flexDirection: 'row'}}>
             <Text style={globalStyles.boldText}>Precios (USD):</Text>
             <View style={{flexDirection: 'row'}}>
-              {pricesArr(product.unityPrices).map((el) => {
+              {pricesArr(product.unityPrices).map(el => {
                 return (
-                  <View>
+                  <View key={el.name}>
                     {!!el.val && (
                       <Text style={globalStyles.sizedText}>
-                        <Text style={[globalStyles.boldText]}> | {el.name}: </Text>
+                        <Text style={[globalStyles.boldText]}>
+                          {' '}
+                          | {el.name}:{' '}
+                        </Text>
                         {el.val}
                       </Text>
                     )}
@@ -96,13 +102,14 @@ const ProductDetailComponent = ({product}: props) => {
           </Text>
           <View style={[globalStyles.buttonGroup, globalStyles.centered]}>
             <Button
-              textColor={'#d15656'}
+              textColor={'#d15656e0'}
+              compact
               onPress={() => createTwoButtonAlert(() => handleDeleteProduct())}>
               Eliminar
             </Button>
             <Button
-              textColor="white"
-              buttonColor="#007bff"
+              textColor="#007bff"
+              mode='elevated'
               onPress={() => handleToEdit()}>
               Editar
             </Button>
@@ -115,13 +122,8 @@ const ProductDetailComponent = ({product}: props) => {
 
 const styles = StyleSheet.create({
   ventana: {
-    borderColor: '#000',
     borderRadius: 5,
-    borderStyle: 'solid',
-    borderWidth: 1,
     margin: 5,
-    paddingVertical: 1,
-    paddingHorizontal: 10,
   },
   name: {
     backgroundColor: '#20212400',
@@ -129,7 +131,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: 'black',
   },
-  ventana2: {},
+  touchable: {
+    backgroundColor: '#fff',
+    borderRadius:5,
+    borderColor:'#999',
+    borderStyle:'solid',
+    borderWidth:1
+  },
+  shadow:{
+    elevation: 20,
+    shadowColor: '#2b2b2b',
+  }
 });
 
 export default ProductDetailComponent;

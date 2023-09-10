@@ -103,7 +103,7 @@ export const ProductsProvider = ({children}: {children: React.ReactNode}) => {
   return (
     <ProductsContext.Provider
       value={{
-        productsList: listClass,
+        productsMap: listClass,
         productListCrudOptions: handleCRUD,
         errorAtLoadingProducts,
       }}>

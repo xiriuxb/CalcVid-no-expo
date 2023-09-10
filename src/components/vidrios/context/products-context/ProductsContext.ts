@@ -2,7 +2,7 @@ import {createContext} from 'react';
 import {Product, ProductsList} from '../../../../models';
 
 export interface ContextTypes {
-  productsList: ProductsList;
+  productsMap: ProductsList;
   productListCrudOptions: (
     crudFunc: 'added' | 'changed' | 'deleted',
     id: string | undefined,

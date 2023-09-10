@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {StyleProp, StyleSheet, ViewStyle} from 'react-native';
 import {View} from 'react-native';
 import {TouchableOpacity} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -7,7 +7,7 @@ interface Props {
   children: JSX.Element;
   showMore: boolean;
   setShowMore: React.Dispatch<React.SetStateAction<boolean>>;
-  style?: {};
+  style?: StyleProp<ViewStyle>;
 }
 
 const TouchableShowMore = ({children, showMore, setShowMore, style}: Props) => {
@@ -17,8 +17,8 @@ const TouchableShowMore = ({children, showMore, setShowMore, style}: Props) => {
 
   return (
     <TouchableOpacity
-      onPress={handleShowDetails}
-      style={[styles.touchable, style]}>
+      onPress={handleShowDetails} style={[styles.touchable, style]}
+      >
       <View style={{flex: 1}}>{children}</View>
       <FontAwesome
         name={showMore ? 'chevron-up' : 'chevron-down'}
@@ -33,6 +33,8 @@ const styles = StyleSheet.create({
   touchable: {
     flexDirection: 'row',
     alignItems: 'center',
+    flex:1,
+    paddingHorizontal:3,
   },
 });
 
