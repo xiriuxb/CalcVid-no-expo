@@ -51,7 +51,13 @@ const ItemDetailComponent = ({
         borderTopWidth: 1,
         borderTopColor: 'black',
       }}>
-      <View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          flex: 1,
+          alignItems: 'center',
+        }}>
         <TouchableOpacity onPress={openModalToEdit}>
           <Text style={globalStyles.sizedText}>
             {`${
@@ -65,23 +71,22 @@ const ItemDetailComponent = ({
             }${item.quantity} | ${item.product.name}`}
           </Text>
         </TouchableOpacity>
-      </View>
-      <Text style={{textAlign: 'center'}}>
-        {`${item.individualArea.toFixed(2)}\n${item.totalArea.toFixed(2)}`}
-      </Text>
-
-      <View style={{flexDirection: 'row'}}>
-        <Text style={{alignSelf: 'center'}}>{item.selectedPrice} </Text>
-        <TouchableOpacity onPress={changePrice}>
-          <View>
-            <Text style={globalStyles.sizedText}>
-              {item.individualPrice().toFixed(2)}
-            </Text>
-            <Text style={globalStyles.sizedText}>
-              {item.totalPrice.toFixed(2)}
-            </Text>
-          </View>
-        </TouchableOpacity>
+        <Text style={{textAlign: 'center'}}>
+          {`${item.individualArea.toFixed(2)}\n${item.totalArea.toFixed(2)}`}
+        </Text>
+        <View style={{flexDirection: 'row'}}>
+          <Text style={{alignSelf: 'center'}}>{item.selectedPrice} </Text>
+          <TouchableOpacity onPress={changePrice}>
+            <View>
+              <Text style={globalStyles.sizedText}>
+                {item.individualPrice().toFixed(2)}
+              </Text>
+              <Text style={globalStyles.sizedText}>
+                {item.totalPrice.toFixed(2)}
+              </Text>
+            </View>
+          </TouchableOpacity>
+        </View>
       </View>
 
       <TouchableOpacity onPress={createTwoButtonAlert}>
@@ -89,7 +94,7 @@ const ItemDetailComponent = ({
           name="trash"
           size={17}
           color={'red'}
-          style={{paddingTop: 3, paddingHorizontal: 4}}
+          style={{paddingTop: 6, paddingHorizontal: 5}}
         />
         <Text style={{color: 'white'}}>Info</Text>
       </TouchableOpacity>

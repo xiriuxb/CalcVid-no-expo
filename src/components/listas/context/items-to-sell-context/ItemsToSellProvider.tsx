@@ -14,7 +14,6 @@ const itemsListHasItem = (
       (el.width == productdto.width || el.width == productdto.height || !productdto.width)
     );
   });
-  console.log('elemento', element);
   return element ? element : undefined;
 };
 
@@ -32,7 +31,7 @@ export const ItemsToSellListProvider = memo(({
     totalPrice: 0,
   });
 
-  const {productsList} = useProductsContext();
+  const {productsMap} = useProductsContext();
 
   useEffect(() => {
     totalSums();
@@ -80,7 +79,7 @@ export const ItemsToSellListProvider = memo(({
   ) => {
     try {
       const itemsToSell = getItemsList(itemsToSellId);
-      const product = productsList.getProduct(dto.productId);
+      const product = productsMap.getProduct(dto.productId);
       const itemExist = itemsListHasItem(itemsToSell, dto);
       if (itemExist) {
         editItemInItemsToSell(itemsToSellId, itemExist.id, {
@@ -90,7 +89,7 @@ export const ItemsToSellListProvider = memo(({
         return;
       }
       const newItem = new Item(product, dto.quantity, dto.height, dto.width);
-      itemsToSell.items.set(newItem.id, newItem);
+      itemsToSell.addItem(newItem);
       itemsToSellList.set(itemsToSellId, itemsToSell);
       setItemsToSellList(new Map(itemsToSellList));
     } catch (e) {
@@ -105,7 +104,7 @@ export const ItemsToSellListProvider = memo(({
   ) => {
     try {
       const itemsToSell = getItemsList(itemsToSellId);
-      const product = productsList.getProduct(dto.productId);
+      const product = productsMap.getProduct(dto.productId);
       itemsToSell.editItem(
         itemId,
         product,
@@ -122,9 +121,9 @@ export const ItemsToSellListProvider = memo(({
 
   const deleteItem = (itemsToSellId: string, itemId: string) => {
     const itemsToSell = itemsToSellList.get(itemsToSellId);
-    const newItemsToSell = itemsToSell!.deleteItem(itemId);
+    itemsToSell!.deleteItem(itemId);
     const newMap = new Map(itemsToSellList);
-    newMap.set(itemsToSellId, newItemsToSell);
+    newMap.set(itemsToSellId, itemsToSell!);
     setItemsToSellList(newMap);
   };
 

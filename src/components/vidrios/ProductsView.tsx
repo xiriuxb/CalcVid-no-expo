@@ -19,6 +19,10 @@ const ProductsView = () => {
 
   const [searchValue, setSearchValue] = useState('');
 
+  useEffect(()=>{
+    setProductArr(productsMap.getProductsArray());
+  },[productsMap])
+
   useEffect(() => {
     if (searchValue) {
       const filtered = productsMap
@@ -55,7 +59,7 @@ const ProductsView = () => {
       {errorAtLoadingProducts ? (
         <ErrorAtLoadingComponent />
       ) : (
-        <ScrollProductsMap productsMap={productsArr} />
+        <ScrollProductsMap productsList={productsArr} />
       )}
     </View>
   );
@@ -69,16 +73,16 @@ const ErrorAtLoadingComponent = React.memo(() => {
   );
 });
 
-const ScrollProductsMap = ({productsMap}: {productsMap: Product[]}) => {
+const ScrollProductsMap = ({productsList}: {productsList: Product[]}) => {
   return (
     <ScrollView contentContainerStyle={{flexGrow: 1}}>
-      {productsMap.length == 0 && (
+      {productsList.length == 0 && (
         <View>
           <Text>No hay productos</Text>
         </View>
       )}
-      {productsMap.length > 0 &&
-        productsMap!.map((product: Product) => {
+      {productsList.length > 0 &&
+        productsList.map((product: Product) => {
           return (
             <ProductDetailComponent
               product={product}

@@ -24,6 +24,10 @@ export class ItemsToSell {
     return this._items;
   }
 
+  addItem(newItem:Item){
+    this._items.set(newItem.id,newItem);
+  }
+
   setItemsToSell(newItems: Map<string, Item>): void {
     this._items = newItems;
   }
@@ -69,20 +73,40 @@ export class ItemsToSell {
       item.editPiece(quantity, product, width, height);
       this._items.set(itemId, item);
       this.setItemsToSell(this._items);
-      return this;
   }
 
   deleteItem(itemId: string) {
     const updatedItemMap = this._items;
     const exist = updatedItemMap.delete(itemId);
-    if (exist) {
-      this.setItemsToSell(updatedItemMap);
-      return this;
+    if (!exist) {
+      throw new Error('No existe el elemento');
     }
-    throw new Error('No existe el elemento');
   }
 
   setName(newName: string) {
     this._name = newName;
   }
+
+  getItemsArray(){
+    return Array.from(this._items.values());
+  }
+
+  orderItems(orderBy:'productType'|'productName'){
+    const arr = this.getItemsArray();
+    const ordered = arr.reduce((orderedMap,curr)=>{
+      const order = orderBy === 'productType' ? curr.product.type.toString() : curr.product.name;
+      const exist = orderedMap.get(order);
+      if(exist){
+        exist.items.set(curr.id,curr);
+        orderedMap.set(order,exist);
+      } else {
+        const itemMap = new ItemsToSell(order,new Map())
+        itemMap.items.set(curr.id,curr);
+        orderedMap.set(order,itemMap);
+      }
+      return orderedMap;
+    },new Map<string,ItemsToSell>());
+    return ordered;
+  }
+
 }

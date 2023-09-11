@@ -84,7 +84,7 @@ export const ProductsProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleAddProduct = (newProduct: Product) => {
     const updatedClass = new ProductsList(listClass.productsMap);
-    updatedClass.addProduct(newProduct!);
+    updatedClass.addProduct(newProduct);
     setListClass(updatedClass);
   };
 

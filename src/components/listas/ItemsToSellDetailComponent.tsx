@@ -2,12 +2,12 @@ import {View, Text, StyleSheet, Alert, TouchableOpacity} from 'react-native';
 import {Button, TouchableRipple} from 'react-native-paper';
 import globalStyles from '../common/Styles';
 import {ItemsToSell} from '../../models';
-import ItemDetailComponent from './ItemDetailComponent';
 import {useItemModalContext, useItemsToSellContext} from './context';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {TextInput} from 'react-native';
-import {useRef, useState} from 'react';
+import {useEffect, useRef, useState} from 'react';
 import {useSnackBar} from '../snack-bar/SnackBarContext';
+import ItemListByCatComponent from './items-details/ItemListByCatComponent';
 
 interface props {
   itemsToSell: ItemsToSell;
@@ -27,8 +27,13 @@ const handleDeleteWindow = (onOkCallback: () => void) => {
 };
 
 const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
-  const {removeItemsToSell} = useItemsToSellContext();
+  const {removeItemsToSell, itemsToSellList} = useItemsToSellContext();
   const {setItemModalVisible} = useItemModalContext();
+  const [orderedItems, setOrderedItems] = useState<Map<string,ItemsToSell>>(new Map());
+
+  useEffect(()=>{
+    setOrderedItems(itemsToSell.orderItems('productType'));
+  },[itemsToSellList])
 
   const changeCurrentWindow = () => {
     setItemModalVisible(true, itemsToSell.id);
@@ -56,43 +61,21 @@ const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
       </View>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <View style={{flexDirection: 'row'}}>
-          <Text style={globalStyles.boldText}>M²: </Text>
-          <Text style={globalStyles.sizedText}>
-            {`${itemsToSell.totalArea().toFixed(2)}`}
-          </Text>
-        </View>
-        <View style={{flexDirection: 'row'}}>
-          <Text style={globalStyles.boldText}>TotalVidrios: </Text>
+          <Text style={globalStyles.boldText}>Total Productos: </Text>
           <Text style={globalStyles.sizedText}>
             {itemsToSell.totalItems()}{' '}
           </Text>
         </View>
         <View style={{flexDirection: 'row'}}>
-          <Text style={globalStyles.boldText}>PrecioTotal: </Text>
+          <Text style={globalStyles.boldText}>Precio Total: </Text>
           <Text style={globalStyles.sizedText}>
-            {itemsToSell.totalPrice().toFixed(2)}{' '}
+            $ {itemsToSell.totalPrice().toFixed(2)}{' '}
           </Text>
         </View>
       </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          borderTopWidth: 1,
-          borderTopColor: 'black',
-        }}>
-        <Text>Medidas(cm) = Cant</Text>
-        <Text>Área</Text>
-        <Text>Precios</Text>
-        <Text>Func</Text>
-      </View>
-      {Array.from(itemsToSell.items.values()).map(el => {
+      {Array.from(orderedItems.values()).map(el => {
         return (
-          <ItemDetailComponent
-            item={el}
-            key={el.id}
-            itemsToSellId={itemsToSell.id}></ItemDetailComponent>
+          <ItemListByCatComponent itemsArray={el} itemsToSellId={itemsToSell.id} />
         );
       })}
       <Button mode="contained-tonal" onPress={changeCurrentWindow}>
@@ -184,7 +167,7 @@ const styles = StyleSheet.create({
     borderColor: '#000',
     borderRadius: 5,
     borderStyle: 'solid',
-    borderWidth: 1,
+    borderWidth: 1.2,
     margin: 5,
   },
   buttonIcon: {

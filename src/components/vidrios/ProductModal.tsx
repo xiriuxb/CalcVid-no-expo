@@ -77,14 +77,14 @@ const ProductModal = () => {
   const showOptionalBtnMessage = useRef('Más...');
   //contexts
   const {showSnackMessage} = useSnackBar();
-  const {productsList, productListCrudOptions} = useProductsContext();
+  const {productsMap, productListCrudOptions} = useProductsContext();
   const {editProductId, setProductModalVisible, setEditProductId} =
     useProductModalContext();
 
   useEffect(() => {
     if (editProductId) {
       editMode.current = true;
-      editProduct.current = productsList!.getProduct(editProductId)!;
+      editProduct.current = productsMap!.getProduct(editProductId)!;
       if (editProduct) {
         onChangeName(`${editProduct.current.name}`);
         onChangeExtraInfo(`${editProduct.current.extraInfo}`);
@@ -109,7 +109,7 @@ const ProductModal = () => {
       if (!priceA || !name) {
         throw new Error('Faltan datos');
       }
-      if (productsList.productExistByName(name,editProduct.current?.id)){
+      if (productsMap.productExistByName(name,editProduct.current?.id)){
         throw new Error('Nombre ya existe');
       }
       const prices = generateUnityPrices(priceA, priceB, priceC);
@@ -221,7 +221,6 @@ const ProductModal = () => {
           </Button>
           <Button
             onPress={handleAddOrUpdate}
-            
             mode="outlined"
             textColor="#fff"
             buttonColor="#007bff">
