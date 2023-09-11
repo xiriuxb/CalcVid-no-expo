@@ -71,9 +71,11 @@ const ItemDetailComponent = ({
             }${item.quantity} | ${item.product.name}`}
           </Text>
         </TouchableOpacity>
-        <Text style={{textAlign: 'center'}}>
-          {`${item.individualArea.toFixed(2)}\n${item.totalArea.toFixed(2)}`}
-        </Text>
+        {item.product.type != ProductPriceCalculus.not_calculated && (
+          <Text style={{textAlign: 'center'}}>
+            {`${item.individualArea.toFixed(2)}\n${item.totalArea.toFixed(2)}`}
+          </Text>
+        )}
         <View style={{flexDirection: 'row'}}>
           <Text style={{alignSelf: 'center'}}>{item.selectedPrice} </Text>
           <TouchableOpacity onPress={changePrice}>

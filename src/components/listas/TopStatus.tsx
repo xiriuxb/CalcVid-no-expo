@@ -7,15 +7,11 @@ export const TopStatus = () => {
   return (
     <View style={styles.container}>
       <Text style={globalStyles.sizedText}>
-        <Text style={globalStyles.boldText}>Metros(m²):</Text>
-        {totals.totalArea.toFixed(2)}
-      </Text>
-      <Text style={globalStyles.sizedText}>
-        <Text style={globalStyles.boldText}>Vidrios:</Text>
+        <Text style={globalStyles.boldText}>Productos Totales:</Text>
         {totals.totalItems}
       </Text>
       <Text style={globalStyles.sizedText}>
-        <Text style={globalStyles.boldText}>Precio:</Text>{' '}
+        <Text style={globalStyles.boldText}>Precio : $</Text>{' '}
         {totals.totalPrice.toFixed(2)}
       </Text>
     </View>
@@ -29,5 +25,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: 'black',
     borderBottomStyle: 'solid',
+    paddingHorizontal:5
   },
 });

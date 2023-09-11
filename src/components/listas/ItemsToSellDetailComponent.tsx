@@ -29,11 +29,13 @@ const handleDeleteWindow = (onOkCallback: () => void) => {
 const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
   const {removeItemsToSell, itemsToSellList} = useItemsToSellContext();
   const {setItemModalVisible} = useItemModalContext();
-  const [orderedItems, setOrderedItems] = useState<Map<string,ItemsToSell>>(new Map());
+  const [orderedItems, setOrderedItems] = useState<Map<string, ItemsToSell>>(
+    new Map(),
+  );
 
-  useEffect(()=>{
+  useEffect(() => {
     setOrderedItems(itemsToSell.orderItems('productType'));
-  },[itemsToSellList])
+  }, [itemsToSellList]);
 
   const changeCurrentWindow = () => {
     setItemModalVisible(true, itemsToSell.id);
@@ -49,7 +51,6 @@ const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
           paddingBottom: 2,
         }}>
         <TopInfo title={itemsToSell.name} id={itemsToSell.id}></TopInfo>
-
         <TouchableRipple
           onPress={() =>
             handleDeleteWindow(() => removeItemsToSell(itemsToSell.id))
@@ -59,6 +60,9 @@ const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
           </Text>
         </TouchableRipple>
       </View>
+        <Button mode="contained-tonal" onPress={changeCurrentWindow}>
+          Añadir
+        </Button>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
         <View style={{flexDirection: 'row'}}>
           <Text style={globalStyles.boldText}>Total Productos: </Text>
@@ -75,12 +79,13 @@ const ItemsToSellDetailComponent = ({itemsToSell}: props) => {
       </View>
       {Array.from(orderedItems.values()).map(el => {
         return (
-          <ItemListByCatComponent itemsArray={el} itemsToSellId={itemsToSell.id} />
+          <ItemListByCatComponent
+            key={el.id}
+            itemsArray={el}
+            itemsToSellId={itemsToSell.id}
+          />
         );
       })}
-      <Button mode="contained-tonal" onPress={changeCurrentWindow}>
-        Añadir
-      </Button>
     </View>
   );
 };
